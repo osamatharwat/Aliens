@@ -2,29 +2,43 @@
 const googleFormUrl = "https://forms.gle/YourActualStudentFormLink"; 
 const partnershipFormUrl = "https://forms.gle/YourActualPartnerFormLink";
 
-// 🔒 2. التحكم الأمني المباشر (اجعلها true لفتح التقديم، أو false لقفل تقديم الطلاب فوراً)
-const isRecruitmentOpen = false; 
+// 🔒 2. التحكم الأمني المباشر (True تعني مفتوح / False تعني مغلق)
+const isRecruitmentOpen = false;  // تحكم استمارة الطلاب
+const isPartnershipOpen = false;  // تحكم استمارة البارتنر (الشركاء)
 
-// تهيئة نظام التفاعل والتحكم في بوابات القبول للطلاب
+// ⚙️ 3. تهيئة نظام التفاعل والتحكم في بوابات القبول للطلاب والشركاء
 function updateRecruitmentState() {
     const joinBtn = document.getElementById('joinTeamBtn');
     const heroBtn = document.getElementById('heroActionBtn');
     const statusMsg = document.getElementById('recruitmentStatusMsg');
+    const partnerBtn = document.querySelector('.portal-card.partner-card .cta-btn');
 
+    // أولاً: فحص حالة تقديم الطلاب
     if (isRecruitmentOpen) {
         joinBtn.disabled = false;
         joinBtn.innerHTML = "Join Our Crew 🛸";
         heroBtn.innerHTML = "Join The Crew";
         heroBtn.href = "#join";
         statusMsg.innerText = "🛸 باب التقديم مفتوح للطلاب الآن! انضم إلينا فوراً.";
-        statusMsg.style.color = "#39ff14";
+        statusMsg.style.color = "#39ff14"; // نيون أخضر
     } else {
         joinBtn.disabled = true;
         joinBtn.innerHTML = "Boarding Closed";
         heroBtn.innerHTML = "Application Closed";
         heroBtn.removeAttribute('href');
         statusMsg.innerText = "🔒 استمارة التقديم مغلقة حالياً. تابعونا للموعد القادم!";
-        statusMsg.style.color = "#ef4444";
+        statusMsg.style.color = "#ef4444"; // أحمر تنبيهي
+    }
+
+    // ثانياً: فحص حالة تقديم الشركات (البارتنر)
+    if (isPartnershipOpen) {
+        partnerBtn.disabled = false;
+        partnerBtn.innerHTML = "Become a Partner 🤝";
+        partnerBtn.style.cursor = "pointer";
+    } else {
+        partnerBtn.disabled = true;
+        partnerBtn.innerHTML = "Partnership Closed";
+        partnerBtn.style.cursor = "not-allowed";
     }
 }
 
@@ -35,12 +49,14 @@ function openApplicationForm() {
     }
 }
 
-// فتح استمارة الرعاة والشراكات المخصصة للشركات
+// فتح استمارة الرعاة والشراكات (بشرط أن تكون مفتوحة)
 function openPartnershipForm() {
-    window.open(partnershipFormUrl, '_blank');
+    if (isPartnershipOpen) {
+        window.open(partnershipFormUrl, '_blank');
+    }
 }
 
-// 🌌 3. إعدادات مكتبة النجوم التفاعلية والمتحركة Particles.js
+// 🌌 4. إعدادات مكتبة النجوم التفاعلية والمتحركة Particles.js
 particlesJS("particles-js", {
   "particles": {
     "number": { "value": 100, "density": { "enable": true, "value_area": 800 } },
@@ -54,8 +70,8 @@ particlesJS("particles-js", {
   "interactivity": {
     "detect_on": "canvas",
     "events": {
-      "onhover": { "enable": true, "mode": "bubble" }, // يجعل النجوم تتفاعل عند مرور الماوس
-      "onclick": { "enable": true, "mode": "repulse" }, // تبعد النجوم عن الماوس عند الضغط
+      "onhover": { "enable": true, "mode": "bubble" }, // تفاعل النجوم عند مرور الماوس
+      "onclick": { "enable": true, "mode": "repulse" }, // ابتعاد النجوم عند الضغط
       "resize": true
     },
     "modes": {
@@ -66,7 +82,7 @@ particlesJS("particles-js", {
   "retina_detect": true
 });
 
-// ⏳ 4. تشغيل وتفعيل جميع التحسينات فور فتح الويبسايت
+// ⏳ 5. تشغيل وتفعيل جميع التحسينات فور فتح الويبسايت
 window.onload = function() {
     updateRecruitmentState();
     
