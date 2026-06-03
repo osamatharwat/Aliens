@@ -2,7 +2,7 @@
 const googleFormUrl = "https://forms.gle/YourActualGoogleFormLink"; 
 
 // 🔒 التحكم الأمني: اجعلها true لفتح التقديم، أو false لقفل التقديم نهائياً
-const isRecruitmentOpen = true; 
+const isRecruitmentOpen = false; 
 
 function updateRecruitmentState() {
     const joinBtn = document.getElementById('joinTeamBtn');
