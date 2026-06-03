@@ -1,345 +1,131 @@
-/* --- الهوية البصرية المستقبلية (Cyberpunk Space Dashboard) --- */
+/* --- الألوان الثابتة والهوية الفضائية المستحدثة (Alien Space Cyber) --- */
 :root {
-    --space-black: #03060b;
-    --deep-space: #090f1e;
+    --space-black: #05080f;
+    --deep-space: #0b1221;
     --alien-green: #39ff14;
-    --neon-glow: rgba(57, 255, 20, 0.3);
-    --neon-border: rgba(57, 255, 20, 0.12);
-    --glass-bg: rgba(9, 15, 30, 0.65);
+    --alien-green-dark: #2ab810;
+    --glass-bg: rgba(11, 18, 33, 0.65);
+    --neon-border: rgba(57, 255, 20, 0.2);
     --text-white: #f8fafc;
     --text-gray: #94a3b8;
 }
 
-/* --- الإعدادات العامة والتأثيرات السيبرانية --- */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    scroll-behavior: smooth;
-    -webkit-font-smoothing: antialiased;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+body { background-color: var(--space-black); color: var(--text-white); font-family: 'Segoe UI', system-ui, sans-serif; overflow-x: hidden; }
 
-body {
-    background-color: var(--space-black);
-    color: var(--text-white);
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    overflow-x: hidden;
-    line-height: 1.6;
-}
+#particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at center, var(--deep-space) 0%, var(--space-black) 100%); }
 
-/* خلفية الفضاء المتحركة للـ Particles */
-#particles-js {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    z-index: -1;
-    background: radial-gradient(circle at center, var(--deep-space) 0%, var(--space-black) 100%);
-}
+/* --- Navbar --- */
+header { position: fixed; top: 0; width: 100%; background: rgba(5, 8, 15, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); z-index: 1000; border-bottom: 1px solid var(--neon-border); box-shadow: 0 4px 30px rgba(0,0,0,0.5); }
+.nav-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; }
+.logo { font-size: 1.8rem; font-weight: 900; color: var(--text-white); text-decoration: none; display: flex; align-items: center; gap: 10px; letter-spacing: 1px; }
+.ufo-icon { display: inline-block; animation: floatUFO 3s ease-in-out infinite; text-shadow: 0 0 15px var(--alien-green); }
+@keyframes floatUFO { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-8px) rotate(5deg); } }
+.nav-links { display: flex; gap: 25px; list-style: none; align-items: center; }
+.nav-links li a { color: var(--text-gray); text-decoration: none; font-size: 1rem; font-weight: 700; transition: all 0.3s ease; position: relative; }
+.nav-links li a:hover { color: var(--alien-green); text-shadow: 0 0 10px var(--alien-green); }
+.back-home-btn { color: var(--alien-green); text-decoration: none; font-weight: 700; border: 1px solid var(--neon-border); padding: 8px 16px; border-radius: 12px; font-size: 0.9rem; transition: all 0.3s; background: rgba(57, 255, 20, 0.05); }
+.back-home-btn:hover { background: var(--alien-green); color: var(--space-black); box-shadow: 0 0 15px var(--alien-green); }
 
-/* --- الهيدر الفخم الشفاف --- */
-header {
-    position: fixed;
-    top: 0; width: 100%;
-    background: rgba(3, 6, 11, 0.7);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-    z-index: 1000;
-    border-bottom: 1px solid var(--neon-border);
-}
+/* --- Hero Section --- */
+.hero { height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 24px; background: linear-gradient(rgba(5, 8, 15, 0.6), rgba(5, 8, 15, 0.9)), url('familia.jpg') no-repeat center center/cover; border-bottom: 1px solid var(--neon-border); }
+.hero-content h1 { font-size: 4.5rem; margin-bottom: 20px; font-weight: 900; letter-spacing: 2px; }
+.hero-content h1 span { color: var(--alien-green); text-shadow: 0 0 30px var(--alien-green); }
+.hero-content p { font-size: 1.3rem; color: #e2e8f0; max-width: 750px; margin: 0 auto 40px; line-height: 1.8; }
+.hero-buttons { display: flex; justify-content: center; gap: 20px; }
 
-.nav-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 24px;
-}
+/* Buttons */
+.cta-btn { padding: 15px 40px; font-size: 1.1rem; font-weight: 700; border-radius: 12px; cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); text-decoration: none; }
+.primary-btn { background: transparent; color: var(--alien-green); border: 2px solid var(--alien-green); box-shadow: 0 0 15px rgba(57, 255, 20, 0.15); }
+.primary-btn:hover:not(:disabled) { background: var(--alien-green); color: var(--space-black); box-shadow: 0 0 30px var(--alien-green); transform: translateY(-4px); }
+.secondary-btn { background: rgba(255,255,255,0.05); color: #fff; border: 2px solid rgba(255,255,255,0.2); }
+.secondary-btn:hover { background: #fff; color: var(--space-black); transform: translateY(-4px); box-shadow: 0 0 25px #fff; }
+.cta-btn:disabled { border-color: #334155; color: #475569; box-shadow: none; cursor: not-allowed; }
 
-.logo {
-    font-size: 1.8rem;
-    font-weight: 900;
-    color: var(--text-white);
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    letter-spacing: 1.5px;
-}
+/* --- General Sections --- */
+section { padding: 100px 24px; max-width: 1200px; margin: 0 auto; }
+.section-title { text-align: center; font-size: 2.8rem; margin-bottom: 60px; font-weight: 900; letter-spacing: 1px; }
+.section-title span { color: var(--alien-green); text-shadow: 0 0 20px rgba(57, 255, 20, 0.4); }
 
-.ufo-icon {
-    display: inline-block;
-    animation: floatUFO 4s ease-in-out infinite;
-    text-shadow: 0 0 20px var(--alien-green);
-}
+/* --- About Grid --- */
+.about-grid { display: grid; grid-template-cols: repeat(auto-fit, minmax(300px, 1fr)); gap: 35px; }
+.about-card { background: var(--glass-bg); padding: 45px 35px; border-radius: 20px; border: 1px solid var(--neon-border); text-align: center; backdrop-filter: blur(12px); transition: all 0.4s ease; }
+.about-card:hover { transform: translateY(-10px); border-color: var(--alien-green); box-shadow: 0 15px 35px rgba(0,0,0,0.5), 0 0 20px rgba(57, 255, 20, 0.1); }
+.about-card i { font-size: 3.2rem; color: var(--alien-green); margin-bottom: 20px; text-shadow: 0 0 15px rgba(57, 255, 20, 0.3); }
+.about-card h3 { margin-bottom: 12px; font-size: 1.6rem; font-weight: 800; }
+.about-card p { color: var(--text-gray); font-size: 1.05rem; line-height: 1.7; }
 
-@keyframes floatUFO {
-    0% { transform: translateY(0px) rotate(0deg) scale(1); }
-    50% { transform: translateY(-10px) rotate(8deg) scale(1.05); }
-    100% { transform: translateY(0px) rotate(0deg) scale(1); }
-}
+/* --- Sub Pages Header (Committees & Gallery) --- */
+.sub-page .page-hero-section { text-align: center; padding-top: 150px; padding-bottom: 30px; }
+.page-intro-text { color: var(--text-gray); font-size: 1.25rem; max-width: 700px; margin: 15px auto 0; line-height: 1.8; }
 
-.nav-links { display: flex; gap: 35px; list-style: none; }
-.nav-links a { 
-    color: var(--text-gray); 
-    text-decoration: none; 
-    font-size: 0.95rem; 
-    font-weight: 700;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); 
-    position: relative;
-}
-.nav-links a::after {
-    content: ''; position: absolute; bottom: -5px; right: 0; width: 0; height: 2px;
-    background-color: var(--alien-green); transition: width 0.3s ease;
-    box-shadow: 0 0 8px var(--alien-green);
-}
-.nav-links a:hover { color: var(--alien-green); }
-.nav-links a:hover::after { width: 100%; }
-
-/* --- الـ Hero Section السينمائي ثلاثي الأبعاد --- */
-.hero {
-    position: relative;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 0 24px;
-    background: linear-gradient(rgba(3, 6, 11, 0.5), rgba(3, 6, 11, 0.9)), url('familia.jpg') no-repeat center center/cover;
-    border-bottom: 1px solid rgba(57, 255, 20, 0.25);
-}
-
-.hero-content h1 { 
-    font-size: 4.5rem; 
-    margin-bottom: 25px; 
-    font-weight: 900; 
-    letter-spacing: 3px;
-    line-height: 1.1;
-}
-.hero-content h1 span { 
-    color: var(--alien-green); 
-    text-shadow: 0 0 30px var(--alien-green), 0 0 60px rgba(57, 255, 20, 0.3); 
-}
-.hero-content p { 
-    font-size: 1.4rem; 
-    color: #e2e8f0; 
-    max-width: 800px; 
-    margin: 0 auto 45px; 
-    line-height: 1.8;
-}
-
-.hero-buttons { display: flex; justify-content: center; gap: 25px; }
-
-/* أزرار مستقبلية مع تأثير الـ Shimmer الضوئي */
-.cta-btn {
-    padding: 16px 45px; font-size: 1.15rem; font-weight: 700; border-radius: 16px;
-    cursor: pointer; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-    text-decoration: none; display: inline-block; text-align: center;
-    position: relative; overflow: hidden;
-}
-
-.primary-btn {
-    background: transparent; color: var(--alien-green); border: 2px solid var(--alien-green);
-    box-shadow: 0 0 15px rgba(57, 255, 20, 0.1);
-}
-.primary-btn:hover:not(:disabled) {
-    background: var(--alien-green); color: var(--space-black);
-    box-shadow: 0 0 35px var(--alien-green), 0 0 15px rgba(57, 255, 20, 0.5);
-    transform: translateY(-4px);
-}
-
-.secondary-btn {
-    background: rgba(255, 255, 255, 0.03); color: #ffffff; border: 2px solid rgba(255, 255, 255, 0.2);
-}
-.secondary-btn:hover {
-    background: #ffffff; color: var(--space-black);
-    box-shadow: 0 0 35px #ffffff;
-    border-color: #ffffff;
-    transform: translateY(-4px);
-}
-
-/* --- تنسيق الأقسام بشكل سفينة القيادة (Cyber Frames) --- */
-section { padding: 120px 24px; max-width: 1200px; margin: 0 auto; }
-
-.section-title { 
-    text-align: center; font-size: 2.8rem; margin-bottom: 80px; font-weight: 900; 
-    letter-spacing: 1px; text-transform: uppercase;
-}
-.section-title span { color: var(--alien-green); text-shadow: 0 0 20px var(--neon-glow); }
-.section-title::after {
-    content: '🛸'; display: block; font-size: 1.2rem; margin-top: 15px;
-    animation: pulseGlow 2s infinite alternate;
-}
-
-@keyframes pulseGlow {
-    0% { opacity: 0.3; text-shadow: 0 0 0px transparent; }
-    100% { opacity: 1; text-shadow: 0 0 15px var(--alien-green); }
-}
-
-/* --- كروت عرض البيانات (About Section) --- */
-.about-grid { display: grid; grid-template-cols: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; }
-.about-card {
-    background: var(--glass-bg); padding: 50px 35px; border-radius: 24px;
-    border: 1px solid var(--neon-border); text-align: center;
-    backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-    position: relative; overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-/* إضافة خط نيون علوي للكارت ليعطيه مظهر الشاشة الرقمية */
-.about-card::before {
-    content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
-    background: linear-gradient(90deg, transparent, var(--alien-green), transparent);
-}
-.about-card:hover {
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(57, 255, 20, 0.15);
-    transform: translateY(-10px);
-    border-color: rgba(57, 255, 20, 0.4);
-}
-.about-card i { font-size: 3.2rem; color: var(--alien-green); margin-bottom: 25px; text-shadow: 0 0 20px var(--neon-glow); }
-.about-card h3 { margin-bottom: 15px; font-size: 1.7rem; font-weight: 800; }
-.about-card p { color: var(--text-gray); font-size: 1.05rem; line-height: 1.8; }
-
-/* --- سيكشن اللجان (Flip Cards Dashboard) --- */
+/* --- Committees Grid --- */
+.committees-container { padding-top: 10px; }
 .committees-grid { display: grid; grid-template-cols: repeat(auto-fit, minmax(260px, 1fr)); gap: 35px; }
 .flip-card { background-color: transparent; width: 100%; height: 280px; perspective: 1500px; cursor: pointer; }
-.flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; }
+.flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; }
 .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+.flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 25px; }
+.flip-card-front { background: var(--glass-bg); border: 1px solid var(--neon-border); backdrop-filter: blur(12px); }
+.flip-card-front i { font-size: 3.8rem; color: var(--alien-green); margin-bottom: 15px; text-shadow: 0 0 20px rgba(57, 255, 20, 0.3); }
+.flip-card-front h3 { font-size: 1.5rem; font-weight: 800; }
+.tap-hint { font-size: 0.85rem; color: var(--alien-green); margin-top: 15px; opacity: 0.6; letter-spacing: 1px; }
+.flip-card-back { background: linear-gradient(135deg, var(--deep-space) 0%, #030509 100%); color: var(--text-white); transform: rotateY(180deg); border: 1px solid var(--alien-green); box-shadow: 0 10px 30px rgba(57, 255, 20, 0.2); }
+.flip-card-back h3 { color: var(--alien-green); margin-bottom: 12px; font-size: 1.5rem; }
+.flip-card-back p { font-size: 1rem; line-height: 1.6; color: #f1f5f9; }
 
-.flip-card-front, .flip-card-back {
-    position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden;
-    border-radius: 24px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 30px;
-}
+/* --- Stats Grid --- */
+.stats-grid { display: grid; grid-template-cols: repeat(auto-fit, minmax(220px, 1fr)); gap: 30px; text-align: center; }
+.stat-box { background: var(--glass-bg); border: 1px solid var(--neon-border); padding: 45px 20px; border-radius: 20px; backdrop-filter: blur(12px); transition: all 0.3s; }
+.stat-box:hover { border-color: var(--alien-green); box-shadow: 0 0 25px rgba(57, 255, 20, 0.15); }
+.stat-box h2 { font-size: 3.8rem; color: var(--alien-green); margin-bottom: 10px; font-weight: 900; text-shadow: 0 0 20px rgba(57, 255, 20, 0.3); }
 
-.flip-card-front { 
-    background: var(--glass-bg); 
-    border: 1px solid var(--neon-border);
-    backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-}
-.flip-card:hover .flip-card-front { border-color: rgba(57, 255, 20, 0.3); box-shadow: 0 0 20px rgba(57, 255, 20, 0.1); }
-.flip-card-front i { font-size: 3.6rem; color: var(--alien-green); margin-bottom: 15px; text-shadow: 0 0 20px var(--neon-glow); }
-.flip-card-front h3 { font-size: 1.55rem; font-weight: 800; letter-spacing: 0.5px; }
+/* --- Gallery Grid --- */
+.main-gallery-container { padding-top: 10px; }
+.gallery-subtitle { font-size: 1.6rem; color: var(--alien-green); margin: 60px 0 25px; border-right: 4px solid var(--alien-green); padding-right: 15px; font-weight: 800; }
+.gallery-fluid-grid { display: grid; grid-template-cols: repeat(2, 1fr); gap: 30px; }
+.awareness-fluid-grid { grid-template-cols: repeat(3, 1fr); }
+.gallery-fluid-item { position: relative; border-radius: 20px; overflow: hidden; border: 1px solid var(--neon-border); height: 320px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); background-color: #000; }
+.gallery-fluid-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; filter: brightness(0.85); }
+.gallery-fluid-item:hover img { transform: scale(1.08); filter: brightness(1.1); }
+.img-caption { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(transparent, rgba(5, 8, 15, 0.95)); padding: 25px 20px; font-size: 1.1rem; text-align: right; color: var(--text-white); font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
 
-.flip-card-back { 
-    background: linear-gradient(135deg, #091022 0%, var(--space-black) 100%); 
-    color: var(--text-white); transform: rotateY(180deg); 
-    border: 2px solid var(--alien-green); 
-    box-shadow: 0 15px 35px rgba(57, 255, 20, 0.25); 
-}
-.flip-card-back h3 { color: var(--alien-green); margin-bottom: 15px; font-size: 1.5rem; font-weight: 800; }
-.flip-card-back p { font-size: 1rem; line-height: 1.7; color: #f8fafc; }
+/* --- Join Section & Partners --- */
+.join-section { background: rgba(11, 18, 33, 0.45); border-radius: 30px; padding: 80px 40px; border: 1px solid var(--neon-border); backdrop-filter: blur(15px); }
+.join-desc { color: var(--text-gray); max-width: 800px; margin: 0 auto 50px; font-size: 1.15rem; text-align: center; line-height: 1.7; }
+.action-box { display: flex; gap: 35px; justify-content: center; flex-wrap: wrap; }
+.portal-card { background: rgba(5, 8, 15, 0.85); border: 1px solid var(--neon-border); padding: 50px 35px; border-radius: 20px; flex: 1; min-width: 320px; max-width: 480px; text-align: center; transition: all 0.4s ease; }
+.portal-card h3 { font-size: 1.65rem; margin-bottom: 15px; font-weight: 800; }
+.portal-card p { color: var(--text-gray); margin-bottom: 35px; height: 50px; line-height: 1.6; }
+.portal-card:hover { border-color: var(--alien-green); box-shadow: 0 15px 35px rgba(0,0,0,0.5), 0 0 25px rgba(57, 255, 20, 0.15); transform: translateY(-6px); }
 
-/* --- عرض الإنجازات بـ الهالات النيون (Stat Boxes) --- */
-.stats-grid { display: grid; grid-template-cols: repeat(auto-fit, minmax(220px, 1fr)); gap: 35px; text-align: center; }
-.stat-box { 
-    background: var(--glass-bg); 
-    border: 1px solid var(--neon-border); 
-    padding: 45px 25px; border-radius: 24px; 
-    backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-    position: relative;
-}
-/* تأثير النبض الضوئي الدائري خلف الأرقام */
-.stat-box::after {
-    content: ''; position: absolute; top: 15px; left: 15px; right: 15px; bottom: 15px;
-    border-radius: 20px; border: 1px dashed rgba(57, 255, 20, 0.05); pointer-events: none;
-    animation: rotateOrbit 20s linear infinite;
-}
-@keyframes rotateOrbit { 100% { transform: rotate(360deg); } }
+/* أزرار الشركاء */
+.partner-contact-links { display: flex; flex-direction: column; gap: 15px; }
+.partner-link-btn { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 14px; font-weight: 700; font-size: 1.05rem; border-radius: 12px; text-decoration: none; transition: all 0.3s; }
+.whatsapp-btn { background: rgba(37, 211, 102, 0.05); color: #25d366; border: 1px solid #25d366; }
+.whatsapp-btn:hover { background: #25d366; color: #000; box-shadow: 0 0 20px rgba(37, 211, 102, 0.4); }
+.email-btn { background: rgba(57, 255, 20, 0.05); color: var(--alien-green); border: 1px solid var(--alien-green); }
+.email-btn:hover { background: var(--alien-green); color: #000; box-shadow: 0 0 20px rgba(57, 255, 20, 0.4); }
+.recruitment-status-text { margin-top: 20px; font-size: 1.05rem; font-weight: 700; }
 
-.stat-box h2 { font-size: 3.8rem; color: var(--alien-green); margin-bottom: 12px; font-weight: 900; text-shadow: 0 0 25px var(--alien-green); }
-.stat-box p { color: #ffffff; font-weight: 700; font-size: 1.1rem; letter-spacing: 0.5px; }
+footer { background: #020305; padding: 40px 24px; text-align: center; border-top: 1px solid var(--neon-border); color: var(--text-gray); margin-top: 80px; font-size: 1rem; font-weight: 600; }
 
-/* --- تصميم ثوري لمعرض الأعمال السينمائي (Cinematic Masonry Gallery) --- */
-.gallery-subtitle { 
-    font-size: 1.6rem; color: var(--alien-green); margin: 70px 0 30px 0; 
-    border-right: 4px solid var(--alien-green); padding-right: 15px; font-weight: 800; 
-    text-shadow: 0 0 10px var(--neon-glow);
-}
-.gallery-grid { 
-    display: grid; 
-    grid-template-cols: repeat(2, 1fr); /* صورتين متناسقتين بجانب بعض ككادر سينمائي */
-    gap: 35px; 
-}
-.awareness-grid { 
-    grid-template-cols: repeat(auto-fit, minmax(300px, 1fr)); /* توزيع الـ 6 صور بذكاء */
-}
-
-.gallery-item { 
-    position: relative; border-radius: 28px; overflow: hidden; 
-    border: 1px solid var(--neon-border); height: 340px; 
-    box-shadow: 0 20px 45px rgba(0,0,0,0.6);
-    background-color: var(--space-black);
-}
-
-/* القناع الضوئي المستقبلي فوق الصور */
-.gallery-item::before {
-    content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(57, 255, 20, 0.08); /* مسحة خضراء نيون خفيفة تختفي عند الحركة */
-    z-index: 1; transition: all 0.5s ease; pointer-events: none;
-}
-.gallery-item:hover::before { background: transparent; }
-
-.gallery-item img { 
-    width: 100%; height: 100%; object-fit: cover; 
-    filter: grayscale(20%); /* مظهر سينمائي عتيق */
-    transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1), filter 0.5s ease; 
-}
-.gallery-item:hover img { transform: scale(1.08); filter: grayscale(0%); }
-
-/* الكابشن الذي يظهر كشاشة عائمة أسفل الصورة */
-.img-caption { 
-    position: absolute; bottom: -100px; left: 20px; right: 20px;
-    background: rgba(4, 7, 14, 0.75); backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border: 1px solid rgba(255,255,255,0.08);
-    padding: 20px; border-radius: 18px; font-size: 1.1rem; text-align: right; 
-    color: var(--text-white); font-weight: 700; z-index: 2;
-    transition: bottom 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-}
-.gallery-item:hover final .img-caption,
-.gallery-item:hover .img-caption { bottom: 20px; }
-
-/* --- بوابات التسجيل المزدوجة المتطورة (Join Section) --- */
-.join-section { 
-    background: linear-gradient(180deg, rgba(9, 15, 30, 0.4) 0%, rgba(3, 6, 11, 0.8) 100%); 
-    border-radius: 40px; padding: 100px 40px; 
-    border: 1px solid var(--neon-border); 
-    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-}
-.join-desc { color: var(--text-gray); max-width: 800px; margin: 0 auto 60px; line-height: 1.8; font-size: 1.2rem; }
-
-.action-box { display: flex; gap: 40px; justify-content: center; flex-wrap: wrap; }
-.portal-card {
-    background: rgba(3, 6, 11, 0.9); border: 1px solid var(--neon-border);
-    padding: 60px 40px; border-radius: 28px; flex: 1; min-width: 320px; max-width: 480px;
-    text-align: center; position: relative;
-    transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-.portal-card h3 { font-size: 1.75rem; margin-bottom: 20px; color: #ffffff; font-weight: 800; }
-.portal-card p { color: var(--text-gray); font-size: 1.05rem; line-height: 1.7; margin-bottom: 40px; height: 50px; }
-
-.portal-card:hover { border-color: var(--alien-green); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(57, 255, 20, 0.2); transform: translateY(-7px); }
-.partner-card:hover { border-color: #ffffff; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 255, 255, 0.15); transform: translateY(-7px); }
-
-.recruitment-status-text { margin-top: 25px; font-size: 1.1rem; font-weight: 700; }
-
-/* --- الفوتر السيبراني منخفض الارتفاع --- */
-footer { 
-    background: #010204; padding: 45px 24px; text-align: center; 
-    border-top: 1px solid var(--neon-border); 
-    color: var(--text-gray); margin-top: 100px; 
-    font-size: 1rem; font-weight: 600;
-}
-
-/* --- التوافق المتقدم المتجاوب للموبايل --- */
+/* --- Mobile Responsiveness --- */
 @media (max-width: 768px) {
     .nav-links { display: none; }
+    .back-home-btn { font-size: 0.85rem; padding: 8px 14px; }
     .hero-content h1 { font-size: 2.8rem; }
-    .hero-content p { font-size: 1.2rem; }
-    .hero-buttons { flex-direction: column; gap: 18px; padding: 0 15px; }
-    .gallery-grid { grid-template-cols: 1fr; gap: 25px; }
-    .gallery-item { height: 280px; }
+    .hero-content p { font-size: 1.15rem; }
+    .hero-buttons { flex-direction: column; gap: 15px; padding: 0 15px; }
+    
+    .gallery-fluid-grid, .awareness-fluid-grid { grid-template-cols: 1fr; gap: 20px; }
+    .gallery-fluid-item { height: 250px; border-radius: 16px; }
+    .img-caption { font-size: 1rem; padding: 15px; }
+    
     .action-box { flex-direction: column; align-items: center; }
-    .portal-card { width: 100%; padding: 45px 24px; }
-    .section-title { font-size: 2.3rem; }
-    .img-caption { bottom: 20px; font-size: 0.95rem; padding: 15px; } /* تظهر ثابتة على الموبايل لعدم وجود ماوس */
+    .portal-card { width: 100%; padding: 40px 24px; }
+    .section-title { font-size: 2.2rem; margin-bottom: 40px; }
+    section { padding: 70px 16px; }
+    
+    .flip-card:active .flip-card-inner { transform: rotateY(180deg); }
 }

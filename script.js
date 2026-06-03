@@ -1,94 +1,64 @@
-// 🛸 1. روابط الاستمارات الفضائية الخاصة بالتيم (املأها بروابط جوجل فورمز الفعلية)
 const googleFormUrl = "https://forms.gle/YourActualStudentFormLink"; 
-const partnershipFormUrl = "https://forms.gle/YourActualPartnerFormLink";
+const isRecruitmentOpen = false; 
 
-// 🔒 2. التحكم الأمني المباشر (True تعني مفتوح / False تعني مغلق)
-const isRecruitmentOpen = false;  // تحكم استمارة الطلاب
-const isPartnershipOpen = false;  // تحكم استمارة البارتنر (الشركاء)
-
-// ⚙️ 3. تهيئة نظام التفاعل والتحكم في بوابات القبول للطلاب والشركاء
 function updateRecruitmentState() {
     const joinBtn = document.getElementById('joinTeamBtn');
     const heroBtn = document.getElementById('heroActionBtn');
     const statusMsg = document.getElementById('recruitmentStatusMsg');
-    const partnerBtn = document.querySelector('.portal-card.partner-card .cta-btn');
 
-    // أولاً: فحص حالة تقديم الطلاب
-    if (isRecruitmentOpen) {
-        joinBtn.disabled = false;
-        joinBtn.innerHTML = "Join Our Crew 🛸";
-        heroBtn.innerHTML = "Join The Crew";
-        heroBtn.href = "#join";
-        statusMsg.innerText = "🛸 باب التقديم مفتوح للطلاب الآن! انضم إلينا فوراً.";
-        statusMsg.style.color = "#39ff14"; // نيون أخضر
-    } else {
-        joinBtn.disabled = true;
-        joinBtn.innerHTML = "Boarding Closed";
-        heroBtn.innerHTML = "Application Closed";
-        heroBtn.removeAttribute('href');
-        statusMsg.innerText = "🔒 استمارة التقديم مغلقة حالياً. تابعونا للموعد القادم!";
-        statusMsg.style.color = "#ef4444"; // أحمر تنبيهي
-    }
-
-    // ثانياً: فحص حالة تقديم الشركات (البارتنر)
-    if (isPartnershipOpen) {
-        partnerBtn.disabled = false;
-        partnerBtn.innerHTML = "Become a Partner 🤝";
-        partnerBtn.style.cursor = "pointer";
-    } else {
-        partnerBtn.disabled = true;
-        partnerBtn.innerHTML = "Partnership Closed";
-        partnerBtn.style.cursor = "not-allowed";
+    // التأكد من وجود الزرار في الصفحة الحالية لتفادي الأخطاء البرمجية
+    if (joinBtn && heroBtn && statusMsg) {
+        if (isRecruitmentOpen) {
+            joinBtn.disabled = false;
+            joinBtn.innerHTML = "Join Our Crew 🛸";
+            heroBtn.innerHTML = "Join The Crew";
+            heroBtn.href = "#join";
+            statusMsg.innerText = "🛸 باب التقديم مفتوح للطلاب الآن! انضم إلينا فوراً.";
+            statusMsg.style.color = "#39ff14";
+        } else {
+            joinBtn.disabled = true;
+            joinBtn.innerHTML = "Boarding Closed";
+            heroBtn.innerHTML = "Application Closed";
+            heroBtn.removeAttribute('href');
+            statusMsg.innerText = "🔒 استمارة التقديم مغلقة حالياً. تابعونا للموعد القادم!";
+            statusMsg.style.color = "#ef4444";
+        }
     }
 }
 
-// فتح استمارة الطلاب في نافذة جديدة
 function openApplicationForm() {
     if (isRecruitmentOpen) {
         window.open(googleFormUrl, '_blank');
     }
 }
 
-// فتح استمارة الرعاة والشراكات (بشرط أن تكون مفتوحة)
-function openPartnershipForm() {
-    if (isPartnershipOpen) {
-        window.open(partnershipFormUrl, '_blank');
-    }
-}
-
-// 🌌 4. إعدادات مكتبة النجوم التفاعلية والمتحركة Particles.js
+// إعدادات النجوم الفضائية (مجهزة بخطوط توصيل نيون خضراء)
 particlesJS("particles-js", {
   "particles": {
-    "number": { "value": 100, "density": { "enable": true, "value_area": 800 } },
+    "number": { "value": 90, "density": { "enable": true, "value_area": 800 } },
     "color": { "value": "#ffffff" },
     "shape": { "type": "circle" },
-    "opacity": { "value": 0.5, "random": true, "anim": { "enable": true, "speed": 1, "opacity_min": 0.1, "sync": false } },
+    "opacity": { "value": 0.6, "random": true, "anim": { "enable": true, "speed": 1, "opacity_min": 0.1, "sync": false } },
     "size": { "value": 3, "random": true, "anim": { "enable": false } },
-    "line_linked": { "enable": true, "distance": 130, "color": "#39ff14", "opacity": 0.15, "width": 1 },
+    "line_linked": { "enable": true, "distance": 140, "color": "#39ff14", "opacity": 0.2, "width": 1 },
     "move": { "enable": true, "speed": 1.5, "direction": "none", "random": true, "straight": false, "out_mode": "out", "bounce": false }
   },
   "interactivity": {
     "detect_on": "canvas",
     "events": {
-      "onhover": { "enable": true, "mode": "bubble" }, // تفاعل النجوم عند مرور الماوس
-      "onclick": { "enable": true, "mode": "repulse" }, // ابتعاد النجوم عند الضغط
+      "onhover": { "enable": true, "mode": "bubble" },
+      "onclick": { "enable": true, "mode": "repulse" },
       "resize": true
     },
     "modes": {
-      "bubble": { "distance": 150, "size": 5, "duration": 2, "opacity": 0.8, "speed": 3 },
-      "repulse": { "distance": 200, "duration": 0.4 }
+      "bubble": { "distance": 180, "size": 6, "duration": 2, "opacity": 0.9, "speed": 3 },
+      "repulse": { "distance": 250, "duration": 0.4 }
     }
   },
   "retina_detect": true
 });
 
-// ⏳ 5. تشغيل وتفعيل جميع التحسينات فور فتح الويبسايت
 window.onload = function() {
     updateRecruitmentState();
-    
-    // تشغيل مكتبة الأنيميشن عند السكرول AOS بالتوقيت الافتراضي
-    AOS.init({
-        duration: 900,
-        once: true // الأنيميشن يعمل مرة واحدة فقط أثناء النزول لراحة العين
-    });
+    AOS.init({ duration: 800, once: true });
 };

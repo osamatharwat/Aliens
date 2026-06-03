@@ -2,53 +2,45 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Aliens Student Activity | Delta University</title>
-    <!-- أيقونة المتصفح (Favicon) -->
-<link rel="icon" type="image/png" href="icon.png">
-    <!-- ربط الأيقونات (Font Awesome) -->
+    
+    <link rel="icon" type="image/png" href="icon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- ربط مكتبة الأنيميشن عند السكرول (AOS) -->
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-    
-    <!-- ربط ملف التصميم الخارجي (CSS) -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- حاوية النجوم المتحركة التفاعلية خلف الموقع بالكامل -->
+    <!-- خلفية النجوم التفاعلية -->
     <div id="particles-js"></div>
 
-    <!-- الهيدر والقائمة (Navbar) -->
+    <!-- القائمة العلوية -->
     <header>
         <div class="nav-container">
-            <a href="#" class="logo">
-                <span class="ufo-icon">🛸</span> ALIENS
-            </a>
+            <a href="index.html" class="logo"><span class="ufo-icon">🛸</span> ALIENS</a>
             <ul class="nav-links">
                 <li><a href="#about">من نحن</a></li>
-                <li><a href="#committees">لجاننا</a></li>
-                <li><a href="#achievements">إنجازاتنا</a></li>
-                <li><a href="#gallery">معرض الصور</a></li>
+                <li><a href="committees.html">لجان التيم 👽</a></li>
+                <li><a href="gallery.html">معرض الصور 📸</a></li>
                 <li><a href="#join">بوابة التقديم</a></li>
             </ul>
         </div>
     </header>
 
-    <!-- قسم الـ Hero وصورة الـ Familia الجماعية -->
+    <!-- البداية -->
     <section class="hero" id="home">
-        <div class="hero-content" data-aos="fade-up" data-aos-duration="1200">
+        <div class="hero-content" data-aos="fade-up">
             <h1>WELCOME TO THE <span>MOTHERSHIP</span></h1>
             <p>نحن نشاط طلابي رسمي بكلية الصيدلة جامعة الدلتا تأسس عام 2019. نهدف إلى ردم الفجوة بين الحياة الأكاديمية وسوق العمل وتمكين الطلاب بالمهارات الحقيقية.</p>
             <div class="hero-buttons">
                 <a href="#join" class="cta-btn primary-btn" id="heroActionBtn">Explore Boarding</a>
-                <a href="#join" class="cta-btn secondary-btn">Become a Partner</a>
+                <a href="committees.html" class="cta-btn secondary-btn">استكشف طاقم الفضائيين</a>
             </div>
         </div>
     </section>
 
-    <!-- قسم من نحن والرؤية (Overview) -->
+    <!-- من نحن -->
     <section id="about">
         <h2 class="section-title" data-aos="fade-down">استكشف <span>مدارنا</span></h2>
         <div class="about-grid">
@@ -70,200 +62,36 @@
         </div>
     </section>
 
-    <!-- قسم اللجان (Committees) -->
-    <section id="committees">
-        <h2 class="section-title" data-aos="fade-down">طاقم <span>المركبة</span> (Committees)</h2>
-        <div class="committees-grid">
-            
-            <!-- Marketing -->
-            <div class="flip-card" data-aos="fade-up" data-aos-delay="100">
-                <div class="flip-card-inner">
-                    <div class="flip-card-front">
-                        <i class="fa-solid fa-chart-line"></i>
-                        <h3>Marketing</h3>
-                        <p class="tap-hint">اضغط للاستكشاف</p>
-                    </div>
-                    <div class="flip-card-back">
-                        <h3>Marketing</h3>
-                        <p>عقول التيم المدبرة؛ نضع الخطط والاستراتيجيات لنشر فكر Aliens، ونستهدف الجمهور بدقة لنصنع لمركبتنا الصدارة دائماً.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Media -->
-            <div class="flip-card" data-aos="fade-up" data-aos-delay="200">
-                <div class="flip-card-inner">
-                    <div class="flip-card-front">
-                        <i class="fa-solid fa-camera-retro"></i>
-                        <h3>Media</h3>
-                        <p class="tap-hint">اضغط للاستكشاف</p>
-                    </div>
-                    <div class="flip-card-back">
-                        <h3>Media</h3>
-                        <p>عين Aliens التي توثق الرحلة؛ نصنع التصاميم البصرية والفيديوهات السينمائية التي تعكس قوة التيم وأحداثه بأعلى جودة.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- PR -->
-            <div class="flip-card" data-aos="fade-up" data-aos-delay="300">
-                <div class="flip-card-inner">
-                    <div class="flip-card-front">
-                        <i class="fa-solid fa-handshake"></i>
-                        <h3>Public Relations (PR)</h3>
-                        <p class="tap-hint">اضغط للاستكشاف</p>
-                    </div>
-                    <div class="flip-card-back">
-                        <h3>Public Relations</h3>
-                        <p>دبلوماسيّو المركبة الفضائية؛ نبني جسور التواصل مع الشركات والجهات الخارجية والمحاضرين لضمان نجاح فعالياتنا.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- IR -->
-            <div class="flip-card" data-aos="fade-up" data-aos-delay="400">
-                <div class="flip-card-inner">
-                    <div class="flip-card-front">
-                        <i class="fa-solid fa-users-gear"></i>
-                        <h3>Internal Relations (IR)</h3>
-                        <p class="tap-hint">اضغط للاستكشاف</p>
-                    </div>
-                    <div class="flip-card-back">
-                        <h3>Internal Relations</h3>
-                        <p>صمام أمان التيم؛ نهتم بالفضائيين داخل المركبة، نتابع الأداء، ونحافظ على الروابط والبيئة الإيجابية بين الجميع.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Magic Hand -->
-            <div class="flip-card" data-aos="fade-up" data-aos-delay="100">
-                <div class="flip-card-inner">
-                    <div class="flip-card-front">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i>
-                        <h3>Magic Hand</h3>
-                        <p class="tap-hint">اضغط للاستكشاف</p>
-                    </div>
-                    <div class="flip-card-back">
-                        <h3>Magic Hand</h3>
-                        <p>مهندسو الواقع؛ نحول الأفكار إلى مجسمات وديكورات ملموسة على الأرض تعبر عن ثيم الفضاء في كل حدث.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Charity -->
-            <div class="flip-card" data-aos="fade-up" data-aos-delay="200">
-                <div class="flip-card-inner">
-                    <div class="flip-card-front">
-                        <i class="fa-solid fa-hand-holding-heart"></i>
-                        <h3>Charity</h3>
-                        <p class="tap-hint">اضغط للاستكشاف</p>
-                    </div>
-                    <div class="flip-card-back">
-                        <h3>Charity</h3>
-                        <p>قلب Aliens النابض بالخير؛ ننظم حملات الدعم والمساعدات المجتمعية لنترك أثراً طيباً في كل مكان نزوره.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Secretariat -->
-            <div class="flip-card" data-aos="fade-up" data-aos-delay="300">
-                <div class="flip-card-inner">
-                    <div class="flip-card-front">
-                        <i class="fa-solid fa-folder-open"></i>
-                        <h3>Secretariat</h3>
-                        <p class="tap-hint">اضغط للاستكشاف</p>
-                    </div>
-                    <div class="flip-card-back">
-                        <h3>Secretariat</h3>
-                        <p>عمود التنظيم الفقري؛ نتولى إدارة البيانات، التوثيق، شؤون الأعضاء، والتأكد من أن كل تفصيلة في التيم تسير بدقة ساعة فضائية.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Event Planning -->
-            <div class="flip-card" data-aos="fade-up" data-aos-delay="400">
-                <div class="flip-card-inner">
-                    <div class="flip-card-front">
-                        <i class="fa-solid fa-calendar-check"></i>
-                        <h3>Event Planning</h3>
-                        <p class="tap-hint">اضغط للاستكشاف</p>
-                    </div>
-                    <div class="flip-card-back">
-                        <h3>Event Planning</h3>
-                        <p>قادة الأدرينالين؛ نخطط لكل حدث من البداية للنهاية، ندير لوجستيات الفعاليات ونضمن خروجها بشكل مبهر للجمهور.</p>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- قسم الإنجازات بالأرقام -->
+    <!-- الأرقام والإنجازات -->
     <section id="achievements">
         <h2 class="section-title" data-aos="fade-down">إنجازات حققناها في <span>الفضاء</span></h2>
         <div class="stats-grid">
-            <div class="stat-box" data-aos="counter-up" data-aos-delay="100">
-                <h2>+3</h2>
-                <p>ملتقيات توظيف كبرى (Job Fair 5,6,7)</p>
+            <div class="stat-box" data-aos="zoom-in" data-aos-delay="100">
+                <h2>5 | 6 | 7 | 8</h2>
+                <p>تنظيم ملتقيات توظيف كبرى (Job Fair)</p>
             </div>
-            <div class="stat-box" data-aos="counter-up" data-aos-delay="200">
-                <h2>112</h2>
-                <p>مستفيد من حملات التوعية بالسرطان</p>
+            <div class="stat-box" data-aos="zoom-in" data-aos-delay="200">
+                <h2>+1000</h2>
+                <p>مستفيد من حملات التوعية المختلفة</p>
             </div>
-            <div class="stat-box" data-aos="counter-up" data-aos-delay="300">
-                <h2>90</h2>
-                <p>حضور في ملتقى الخريجين المتميز</p>
+            <div class="stat-box" data-aos="zoom-in" data-aos-delay="300">
+                <h2>+150</h2>
+                <p>عضو وفرد داخل طاقم الفضائيين</p>
             </div>
-            <div class="stat-box" data-aos="counter-up" data-aos-delay="400">
+            <div class="stat-box" data-aos="zoom-in" data-aos-delay="400">
                 <h2>Annual</h2>
-                <p>مشاركة سنوية في Techne Summit</p>
+                <p>مشاركة سنوية متميزة في Techne Summit</p>
             </div>
         </div>
     </section>
 
-    <!-- قسم معرض الصور (Gallery) -->
-    <section id="gallery">
-        <h2 class="section-title" data-aos="fade-down">معرض الفعاليات والـ <span>Familia</span></h2>
-        
-        <!-- JobFair -->
-        <h3 class="gallery-subtitle" data-aos="fade-right">الملتقى التوظيفي (Job Fair)</h3>
-        <div class="gallery-grid">
-            <div class="gallery-item" data-aos="flip-left"><img src="jobfair1.jpg" alt="Job Fair 1"><div class="img-caption">ملتقى التوظيف 1</div></div>
-            <div class="gallery-item" data-aos="flip-right"><img src="jobfair2.jpg" alt="Job Fair 2"><div class="img-caption">ملتقى التوظيف 2</div></div>
-        </div>
-
-        <!-- دار الايتام -->
-        <h3 class="gallery-subtitle" data-aos="fade-right">زيارات دار الأيتام</h3>
-        <div class="gallery-grid">
-            <div class="gallery-item" data-aos="flip-left"><img src="orphanage1.jpg" alt="دار الايتام 1"><div class="img-caption">دار الأيتام 1</div></div>
-            <div class="gallery-item" data-aos="flip-right"><img src="orphanage2.jpg" alt="دار الايتام 2"><div class="img-caption">دار الأيتام 2</div></div>
-        </div>
-
-        <!-- Welcome Day -->
-        <h3 class="gallery-subtitle" data-aos="fade-right">حفل الاستقبال (Welcome Day)</h3>
-        <div class="gallery-grid">
-            <div class="gallery-item" data-aos="flip-left"><img src="welcomeday1.jpg" alt="Welcome Day 1"><div class="img-caption">يوم الاستقبال 1</div></div>
-            <div class="gallery-item" data-aos="flip-right"><img src="welcomeday2.jpg" alt="Welcome Day 2"><div class="img-caption">يوم الاستقبال 2</div></div>
-        </div>
-
-        <!-- حملات التوعية (6 صور) -->
-        <h3 class="gallery-subtitle" data-aos="fade-right">حملات التوعية (Awareness Campaigns)</h3>
-        <div class="gallery-grid awareness-grid">
-            <div class="gallery-item" data-aos="zoom-in"><img src="awareness1.jpg" alt="حملات التوعية 1"><div class="img-caption">توعية 1</div></div>
-            <div class="gallery-item" data-aos="zoom-in"><img src="awareness2.jpg" alt="حملات التوعية 2"><div class="img-caption">توعية 2</div></div>
-            <div class="gallery-item" data-aos="zoom-in"><img src="awareness3.jpg" alt="حملات التوعية 3"><div class="img-caption">توعية 3</div></div>
-            <div class="gallery-item" data-aos="zoom-in"><img src="awareness4.jpg" alt="حملات التوعية 4"><div class="img-caption">توعية 4</div></div>
-            <div class="gallery-item" data-aos="zoom-in"><img src="awareness5.jpg" alt="حملات التوعية 5"><div class="img-caption">توعية 5</div></div>
-            <div class="gallery-item" data-aos="zoom-in"><img src="awareness6.jpg" alt="حملات التوعية 6"><div class="img-caption">توعية 6</div></div>
-        </div>
-    </section>
-
-    <!-- قسم التقديم المزدوج وشراكة الرعاة -->
-    <section id="join" class="join-section" data-aos="zoom-out">
+    <!-- بوابات التقديم والشراكة -->
+    <section id="join" class="join-section" data-aos="fade-up">
         <h2 class="section-title">انضم إلى <span>كوكبنا</span> الآن</h2>
-        <p class="join-desc">سواء كنت طالباً تبحث عن شغفك وتطوير مهاراتك الصيدلانية، أو كنت شركة تبحث عن شريك استراتيجي قوي داخل أسوار الجامعة للتأثير والانتشار؛ مركبة Aliens تفتح أبوابها لك.</p>
+        <p class="join-desc">سواء كنت طالباً تبحث عن شغفك، أو شركة ورائد أعمال تبحث عن شريك استراتيجي قوي وفعال داخل أسوار الجامعة؛ مركبة Aliens ترحب بك.</p>
         
         <div class="action-box">
+            <!-- بوابة الطلاب -->
             <div class="portal-card">
                 <h3>بوابة الطلاب والفضائيين</h3>
                 <p>سجل معنا لتطوير مهاراتك العملية والنزول لسوق العمل الفعلي بثقة وقوة.</p>
@@ -271,26 +99,25 @@
                 <div id="recruitmentStatusMsg" class="recruitment-status-text"></div>
             </div>
             
+            <!-- بوابة الشركاء بالروابط المباشرة -->
             <div class="portal-card partner-card">
                 <h3>بوابة الشركات والرعاة</h3>
-                <p>استفد من طاقتنا التنظيمية وشريحة طلابنا الواسعة لبناء شراكة متبادلة مستدامة.</p>
-                <button class="cta-btn secondary-btn" onclick="openPartnershipForm()">Become a Partner 🤝</button>
+                <p>تواصل معنا مباشرة عبر قنواتنا الرسمية لبحث سبل التعاون المشرك والشراكات المستدامة.</p>
+                <div class="partner-contact-links">
+                    <a href="https://api.whatsapp.com/send?phone=201000971248" target="_blank" class="partner-link-btn whatsapp-btn"><i class="fa-brands fa-whatsapp"></i> PR Head</a>
+                    <a href="https://api.whatsapp.com/send?phone=201063299441" target="_blank" class="partner-link-btn whatsapp-btn"><i class="fa-brands fa-whatsapp"></i> PR Sub-Head</a>
+                    <a href="mailto:aliensdelta23@gmail.com" class="partner-link-btn email-btn"><i class="fa-solid fa-envelope"></i> Official Email</a>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- الفوتر -->
     <footer>
         <p>© 2026 Aliens Student Activity - Delta University. Designed with 💚 for the Familia.</p>
     </footer>
 
-    <!-- استدعاء سكريبت النجوم المتحركة (Particles.js) -->
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    
-    <!-- استدعاء سكريبت الـ الأنيميشن عند السكرول (AOS) -->
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-    
-    <!-- ربط ملف الـ JavaScript الخارجي المطور -->
     <script src="script.js"></script>
 </body>
 </html>
