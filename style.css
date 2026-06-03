@@ -34,7 +34,6 @@ header { position: fixed; top: 0; width: 100%; background: rgba(5, 8, 15, 0.85);
 .hero-content p { font-size: 1.3rem; color: #e2e8f0; max-width: 750px; margin: 0 auto 40px; line-height: 1.8; }
 .hero-buttons { display: flex; justify-content: center; gap: 20px; }
 
-/* Buttons */
 .cta-btn { padding: 15px 40px; font-size: 1.1rem; font-weight: 700; border-radius: 12px; cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); text-decoration: none; }
 .primary-btn { background: transparent; color: var(--alien-green); border: 2px solid var(--alien-green); box-shadow: 0 0 15px rgba(57, 255, 20, 0.15); }
 .primary-btn:hover:not(:disabled) { background: var(--alien-green); color: var(--space-black); box-shadow: 0 0 30px var(--alien-green); transform: translateY(-4px); }
@@ -80,31 +79,45 @@ section { padding: 100px 24px; max-width: 1200px; margin: 0 auto; }
 .stat-box:hover { border-color: var(--alien-green); box-shadow: 0 0 25px rgba(57, 255, 20, 0.15); }
 .stat-box h2 { font-size: 3.8rem; color: var(--alien-green); margin-bottom: 10px; font-weight: 900; text-shadow: 0 0 20px rgba(57, 255, 20, 0.3); }
 
-/* --- Gallery Grid الذكي والجديد لتوفير المساحة --- */
+/* ====================================================
+   🔥 Gallery Grid (الشكل المربع/المستطيل الذكي والجديد) 
+   ==================================================== */
 .main-gallery-container { padding-top: 10px; }
 .gallery-subtitle { font-size: 1.5rem; color: var(--alien-green); margin: 60px 0 20px; border-right: 4px solid var(--alien-green); padding-right: 15px; font-weight: 800; }
 
-/* الشبكة بقت مرنة جداً: بتعرض اكبر عدد ممكن من الصور في نفس السطر */
+/* شبكة الصور: بتعرض الصور جنب بعض حسب مساحة الشاشة */
 .gallery-fluid-grid, .awareness-fluid-grid { 
     display: grid; 
-    grid-template-cols: repeat(auto-fill, minmax(220px, 1fr)); 
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* الكمبيوتر: 3 أو 4 صور في السطر */
     gap: 20px; 
 }
 
-/* تصغير حجم الصور وتجميل الحواف */
+/* الكارت نفسه (الإطار اللي شايل الصورة) */
 .gallery-fluid-item { 
     position: relative; 
     border-radius: 16px; 
     overflow: hidden; 
     border: 1px solid var(--neon-border); 
-    height: 220px; /* الارتفاع صغر عشان يوفر مساحة */
+    aspect-ratio: 4 / 3; /* يخلي الكارت مستطيل متناسق زي إطار الصورة الحقيقية */
     box-shadow: 0 10px 25px rgba(0,0,0,0.5); 
-    background-color: #000; 
+    background-color: #030509; /* لون أسود ورا الصورة لو فيها مساحات فاضية */
 }
 
-.gallery-fluid-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; filter: brightness(0.85); }
-.gallery-fluid-item:hover img { transform: scale(1.08); filter: brightness(1.1); }
+/* الصورة نفسها جوه الإطار */
+.gallery-fluid-item img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: contain; /* السر هنا! الصورة بتتعرض كاملة بحجمها الطبيعي بدون أي قص */
+    transition: transform 0.4s ease; 
+    filter: brightness(0.9); 
+}
 
+.gallery-fluid-item:hover img { 
+    transform: scale(1.03); 
+    filter: brightness(1.1); 
+}
+
+/* الكابشن (النص اللي تحت الصورة) */
 .img-caption { 
     position: absolute; bottom: 0; left: 0; width: 100%; 
     background: linear-gradient(transparent, rgba(5, 8, 15, 0.95)); 
@@ -113,6 +126,13 @@ section { padding: 100px 24px; max-width: 1200px; margin: 0 auto; }
     text-align: right; 
     color: var(--text-white); 
     font-weight: 700; 
+    opacity: 0; /* مخفي في العادي عشان ميبوظش شكل الصورة */
+    transition: opacity 0.3s ease; 
+}
+
+/* يظهر بس لما تقف بالماوس */
+.gallery-fluid-item:hover .img-caption { 
+    opacity: 1; 
 }
 
 /* --- Join Section & Partners --- */
@@ -135,7 +155,7 @@ section { padding: 100px 24px; max-width: 1200px; margin: 0 auto; }
 
 footer { background: #020305; padding: 40px 24px; text-align: center; border-top: 1px solid var(--neon-border); color: var(--text-gray); margin-top: 80px; font-size: 1rem; font-weight: 600; }
 
-/* --- Mobile Responsiveness --- */
+/* --- Mobile Responsiveness (تظبيط الموبايل) --- */
 @media (max-width: 768px) {
     .nav-links { display: none; }
     .back-home-btn { font-size: 0.85rem; padding: 8px 14px; }
@@ -143,18 +163,21 @@ footer { background: #020305; padding: 40px 24px; text-align: center; border-top
     .hero-content p { font-size: 1.15rem; }
     .hero-buttons { flex-direction: column; gap: 15px; padding: 0 15px; }
     
-    /* الشبكة الجديدة للموبايل: بتعرض صورتين جنب بعض وتصغرهم بياخدوا مساحة ممتازة! */
+    /* 📱 الموبايل: صورتين جنب بعض (شكل مربعات) */
     .gallery-fluid-grid, .awareness-fluid-grid { 
-        grid-template-cols: repeat(2, 1fr); 
+        grid-template-columns: repeat(2, 1fr); 
         gap: 12px; 
     }
+    
     .gallery-fluid-item { 
-        height: 160px; /* الارتفاع صغر جدا للموبايل عشان مياخدش السكرين كلها */
+        aspect-ratio: 1 / 1; /* بيخلي الكارت مربع متساوي الأضلاع على الموبايل */
         border-radius: 12px; 
     }
+    
     .img-caption { 
-        font-size: 0.85rem; 
-        padding: 10px; 
+        opacity: 1; /* النص هيفضل ظاهر علطول في الموبايل عشان مفيش ماوس */
+        font-size: 0.8rem; 
+        padding: 8px; 
     }
     
     .action-box { flex-direction: column; align-items: center; }
