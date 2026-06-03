@@ -1,0 +1,303 @@
+/* --- الألوان والهوية البصرية (Space & Neon Theme) --- */
+:root {
+    --space-black: #070b12;
+    --deep-space: #0f172a;
+    --alien-green: #39ff14;
+    --neon-glow: #26b90c;
+    --text-white: #f8fafc;
+    --text-gray: #94a3b8;
+    --card-bg: rgba(15, 23, 42, 0.6);
+}
+
+/* --- الإعدادات العامة --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--space-black);
+    color: var(--text-white);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow-x: hidden;
+}
+
+/* تأثير النجوم في الخلفية */
+.starfield {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+    z-index: -2;
+}
+
+/* --- الهيدر والقائمة (Navbar) --- */
+header {
+    position: fixed;
+    top: 0; width: 100%;
+    background: rgba(7, 11, 18, 0.85);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    border-bottom: 1px solid rgba(57, 255, 20, 0.1);
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+}
+
+.logo {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: var(--text-white);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo span { color: var(--alien-green); text-shadow: 0 0 10px var(--alien-green); }
+
+.nav-links {
+    display: flex;
+    gap: 25px;
+    list-style: none;
+}
+
+.nav-links a {
+    color: var(--text-gray);
+    text-decoration: none;
+    font-size: 1rem;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover { color: var(--alien-green); }
+
+/* --- قسم البداية (Hero Section) مع صورة Familia --- */
+.hero {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 20px;
+    background: linear-gradient(rgba(7, 11, 18, 0.65), rgba(7, 11, 18, 0.9)), url('familia.jpg') no-repeat center center/cover;
+    border-bottom: 2px solid var(--alien-green);
+    box-shadow: 0 10px 30px rgba(57, 255, 20, 0.15);
+}
+
+.hero-content h1 {
+    font-size: 3.5rem;
+    margin-bottom: 15px;
+    letter-spacing: 2px;
+}
+
+.hero-content h1 span {
+    color: var(--alien-green);
+    text-shadow: 0 0 20px var(--alien-green);
+}
+
+.hero-content p {
+    font-size: 1.3rem;
+    color: var(--text-gray);
+    max-width: 700px;
+    margin: 0 auto 35px;
+    line-height: 1.6;
+}
+
+/* زرار التقديم التفاعلي الكبير */
+.cta-btn {
+    background: transparent;
+    color: var(--alien-green);
+    border: 2px solid var(--alien-green);
+    padding: 14px 45px;
+    font-size: 1.25rem;
+    font-weight: bold;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    box-shadow: 0 0 15px rgba(57, 255, 20, 0.2);
+    text-decoration: none;
+    display: inline-block;
+}
+
+.cta-btn:hover:not(:disabled) {
+    background: var(--alien-green);
+    color: var(--space-black);
+    box-shadow: 0 0 30px var(--alien-green);
+    transform: translateY(-3px);
+}
+
+.cta-btn:disabled {
+    border-color: #475569;
+    color: #475569;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+.recruitment-status-text {
+    margin-top: 15px;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+/* --- الأقسام العامة --- */
+section {
+    padding: 80px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2.2rem;
+    margin-bottom: 50px;
+    position: relative;
+}
+
+.section-title span { color: var(--alien-green); }
+
+/* --- قسم عن التيم (Overview) --- */
+.about-grid {
+    display: grid;
+    grid-template-cols: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.about-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 35px;
+    border-radius: 15px;
+    transition: transform 0.3s, border 0.3s;
+    backdrop-filter: blur(5px);
+}
+
+.about-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(57, 255, 20, 0.3);
+}
+
+.about-card i {
+    font-size: 2.5rem;
+    color: var(--alien-green);
+    margin-bottom: 20px;
+}
+
+.about-card h3 { margin-bottom: 15px; font-size: 1.5rem; }
+.about-card p { color: var(--text-gray); line-height: 1.6; }
+
+/* --- قسم الإنجازات بالأرقام --- */
+.stats-grid {
+    display: grid;
+    grid-template-cols: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 25px;
+    text-align: center;
+}
+
+.stat-box {
+    background: linear-gradient(135deg, rgba(15,23,42,0.8) 0%, rgba(7,11,18,0.8) 100%);
+    border: 1px solid rgba(57, 255, 20, 0.1);
+    padding: 30px;
+    border-radius: 12px;
+}
+
+.stat-box h2 {
+    font-size: 3rem;
+    color: var(--alien-green);
+    margin-bottom: 10px;
+    text-shadow: 0 0 10px rgba(57, 255, 20, 0.3);
+}
+
+.stat-box p { color: var(--text-white); font-weight: 500; }
+
+/* --- قسم الميزة التنافسية والشركاء --- */
+.perks-container {
+    background: var(--card-bg);
+    border-radius: 15px;
+    padding: 40px;
+    margin-top: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.perks-list {
+    list-style: none;
+    display: grid;
+    grid-template-cols: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.perks-list li {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: var(--text-gray);
+    font-size: 1.1rem;
+}
+
+.perks-list li i { color: var(--alien-green); font-size: 1.2rem; }
+
+/* --- قسم التقديم --- */
+.join-section {
+    text-align: center; 
+    background: rgba(15, 23, 42, 0.4); 
+    border-radius: 20px; 
+    padding: 60px 20px;
+}
+
+.join-desc {
+    color: var(--text-gray); 
+    max-width: 600px; 
+    margin: 0 auto 30px; 
+    line-height: 1.6;
+}
+
+/* --- الفوتر --- */
+footer {
+    background: #04070d;
+    padding: 30px 20px;
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    color: var(--text-gray);
+    font-size: 0.95rem;
+    margin-top: 50px;
+}
+
+/* --- لوحة تحكم الأدمن --- */
+.admin-dashboard {
+    background: #111827;
+    border: 1px dashed var(--alien-green);
+    padding: 15px 25px;
+    position: fixed;
+    bottom: 15px; left: 15px;
+    border-radius: 10px;
+    z-index: 9999;
+    max-width: 280px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    direction: ltr;
+    font-family: sans-serif;
+}
+.admin-dashboard h4 { color: var(--alien-green); margin-bottom: 5px; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;}
+.admin-switch-wrapper { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+
+.switch { position: relative; display: inline-block; width: 50px; height: 26px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #374151; transition: .3s; border-radius: 34px; }
+.slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .3s; border-radius: 50%; }
+input:checked + .slider { background-color: #22c55e; }
+input:checked + .slider:before { transform: translateX(24px); }
+#statusLabel { font-weight: bold; font-size: 0.85rem; }
+
+/* الموبايل والـ Responsiveness */
+@media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hero-content h1 { font-size: 2.3rem; }
+    .hero-content p { font-size: 1.1rem; }
+    .admin-dashboard { display: none; } /* مخفية في الموبايل */
+}
