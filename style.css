@@ -80,15 +80,40 @@ section { padding: 100px 24px; max-width: 1200px; margin: 0 auto; }
 .stat-box:hover { border-color: var(--alien-green); box-shadow: 0 0 25px rgba(57, 255, 20, 0.15); }
 .stat-box h2 { font-size: 3.8rem; color: var(--alien-green); margin-bottom: 10px; font-weight: 900; text-shadow: 0 0 20px rgba(57, 255, 20, 0.3); }
 
-/* --- Gallery Grid --- */
+/* --- Gallery Grid الذكي والجديد لتوفير المساحة --- */
 .main-gallery-container { padding-top: 10px; }
-.gallery-subtitle { font-size: 1.6rem; color: var(--alien-green); margin: 60px 0 25px; border-right: 4px solid var(--alien-green); padding-right: 15px; font-weight: 800; }
-.gallery-fluid-grid { display: grid; grid-template-cols: repeat(2, 1fr); gap: 30px; }
-.awareness-fluid-grid { grid-template-cols: repeat(3, 1fr); }
-.gallery-fluid-item { position: relative; border-radius: 20px; overflow: hidden; border: 1px solid var(--neon-border); height: 320px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); background-color: #000; }
-.gallery-fluid-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; filter: brightness(0.85); }
+.gallery-subtitle { font-size: 1.5rem; color: var(--alien-green); margin: 60px 0 20px; border-right: 4px solid var(--alien-green); padding-right: 15px; font-weight: 800; }
+
+/* الشبكة بقت مرنة جداً: بتعرض اكبر عدد ممكن من الصور في نفس السطر */
+.gallery-fluid-grid, .awareness-fluid-grid { 
+    display: grid; 
+    grid-template-cols: repeat(auto-fill, minmax(220px, 1fr)); 
+    gap: 20px; 
+}
+
+/* تصغير حجم الصور وتجميل الحواف */
+.gallery-fluid-item { 
+    position: relative; 
+    border-radius: 16px; 
+    overflow: hidden; 
+    border: 1px solid var(--neon-border); 
+    height: 220px; /* الارتفاع صغر عشان يوفر مساحة */
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5); 
+    background-color: #000; 
+}
+
+.gallery-fluid-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; filter: brightness(0.85); }
 .gallery-fluid-item:hover img { transform: scale(1.08); filter: brightness(1.1); }
-.img-caption { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(transparent, rgba(5, 8, 15, 0.95)); padding: 25px 20px; font-size: 1.1rem; text-align: right; color: var(--text-white); font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+
+.img-caption { 
+    position: absolute; bottom: 0; left: 0; width: 100%; 
+    background: linear-gradient(transparent, rgba(5, 8, 15, 0.95)); 
+    padding: 15px; 
+    font-size: 0.95rem; 
+    text-align: right; 
+    color: var(--text-white); 
+    font-weight: 700; 
+}
 
 /* --- Join Section & Partners --- */
 .join-section { background: rgba(11, 18, 33, 0.45); border-radius: 30px; padding: 80px 40px; border: 1px solid var(--neon-border); backdrop-filter: blur(15px); }
@@ -118,9 +143,19 @@ footer { background: #020305; padding: 40px 24px; text-align: center; border-top
     .hero-content p { font-size: 1.15rem; }
     .hero-buttons { flex-direction: column; gap: 15px; padding: 0 15px; }
     
-    .gallery-fluid-grid, .awareness-fluid-grid { grid-template-cols: 1fr; gap: 20px; }
-    .gallery-fluid-item { height: 250px; border-radius: 16px; }
-    .img-caption { font-size: 1rem; padding: 15px; }
+    /* الشبكة الجديدة للموبايل: بتعرض صورتين جنب بعض وتصغرهم بياخدوا مساحة ممتازة! */
+    .gallery-fluid-grid, .awareness-fluid-grid { 
+        grid-template-cols: repeat(2, 1fr); 
+        gap: 12px; 
+    }
+    .gallery-fluid-item { 
+        height: 160px; /* الارتفاع صغر جدا للموبايل عشان مياخدش السكرين كلها */
+        border-radius: 12px; 
+    }
+    .img-caption { 
+        font-size: 0.85rem; 
+        padding: 10px; 
+    }
     
     .action-box { flex-direction: column; align-items: center; }
     .portal-card { width: 100%; padding: 40px 24px; }
