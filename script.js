@@ -265,6 +265,23 @@ if (!isEmail(input)) {
           email,
           role: 'member'
         });
+const { data, error } = await sb.auth.signUp({
+  email,
+  password: pw
+});
+
+if (!error) {
+
+  await sb.from('profiles').insert([
+    {
+      id: data.user.id,
+      username: user.toLowerCase(),
+      full_name: name,
+      email: email,
+      role: 'member'
+    }
+  ]);
+}
       } catch (err) {
         console.warn('Profile upsert skipped:', err);
       }
