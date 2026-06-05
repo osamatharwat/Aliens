@@ -1549,3 +1549,61 @@ header{
     border-radius: 20px !important;
     background: rgba(11, 18, 33, 0.9) !important;
 }
+
+/* ==========================================
+   ✨ تحسينات الداشبورد والموبايل (UI/UX)
+   ========================================== */
+/* تنظيم جريد الداشبورد ليكون مرن جداً على الموبايل */
+.admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* مرونة كاملة */
+    gap: 25px;
+    align-items: start;
+}
+
+/* شكل أنيق لكروت الداشبورد */
+.admin-card {
+    background: linear-gradient(145deg, rgba(11,18,33,0.9), rgba(5,8,15,0.95));
+    border: 1px solid rgba(57,255,20,0.1);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    border-radius: 24px;
+    padding: 30px 25px;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+.admin-card:hover {
+    border-color: rgba(57,255,20,0.4);
+    transform: translateY(-5px);
+}
+
+/* تحسين حقول الإدخال لتكون أسهل في اللمس على الموبايل */
+.admin-form-group input, 
+.admin-form-group select {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 16px;
+    border-radius: 16px;
+    font-size: 1rem;
+    color: white;
+}
+.admin-form-group input:focus, 
+.admin-form-group select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 15px rgba(57,255,20,0.1);
+    background: rgba(0, 0, 0, 0.6);
+}
+
+/* تحسين أزرار الداشبورد */
+.admin-card .cta-btn {
+    width: 100%;
+    margin-top: 10px;
+    padding: 16px;
+    border-radius: 16px;
+    font-size: 1.05rem;
+}
+
+/* تظبيط القوائم المنسدلة الذكية (Datalist) */
+input::-webkit-calendar-picker-indicator {
+    opacity: 1; /* إظهار السهم للقوائم المنسدلة */
+    cursor: pointer;
+    filter: invert(1); /* عشان السهم يبان لونه أبيض في الدارك مود */
+}

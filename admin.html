@@ -68,19 +68,55 @@
             <input type="text" id="gallerySectionName" required placeholder="اسم القسم أو الإيفنت">
           </div>
           <div class="admin-form-group">
-            <label>اختر الصورة (من الجهاز)</label>
-           <input type="file" id="galleryImgFile" accept="image/*" class="file-input" multiple required>
+            <label>اسم السكشن</label>
+            <input list="gallerySectionsList" type="text" id="gallerySectionName" required placeholder="اختر قسم موجود أو اكتب اسم جديد...">
+            <datalist id="gallerySectionsList"></datalist>
           </div>
-          <button type="submit" class="cta-btn primary-btn" id="gallerySubmitBtn" style="grid-column: 1 / -1;">رفع الصورة للمعرض 🖼️</button>
-          <p id="galleryMsg" class="auth-msg" style="grid-column: 1 / -1;"></p>
-        </form>
-      </div>
 
       <div class="admin-card" style="grid-column: 1 / -1;">
         <h3><i class="fa-solid fa-calendar-days"></i> الفعاليات الحالية</h3>
         <div id="eventsManagementList" class="management-list"></div>
       </div>
-    </div>
+    <<div class="admin-card" style="grid-column: 1 / -1;">
+        <h3><i class="fa-solid fa-trash-can"></i> إدارة وحذف صور المعرض</h3>
+        <div id="galleryManagementList" class="management-list" style="max-height: 250px; overflow-y: auto;"></div>
+      </div>
+      <div class="admin-card">
+        <h3><i class="fa-solid fa-book-medical"></i> إضافة للمجتمع الثقافي</h3>
+        <form id="addCulturalForm" class="table-like">
+        <div class="admin-form-group">
+            <label>القسم</label>
+            <input list="cultSectionsList" type="text" id="cultSection" placeholder="اختر قسم (مثال: OTC) أو اكتب جديد..." required>
+            <datalist id="cultSectionsList"></datalist>
+          </div>
+          <div class="admin-form-group"><select id="cultPremium"><option value="false">متاح للكل</option><option value="true">للمميزين فقط 🌟</option></select></div>
+          <button type="submit" class="cta-btn primary-btn">إضافة المصدر 📚</button>
+        </form>
+      </div>
+      <div class="admin-card">
+     <div class="admin-card">
+        <h3><i class="fa-solid fa-briefcase"></i> فرصة إنترنشيب جديدة</h3>
+        <form id="addInternshipForm" class="table-like">
+          <div class="admin-form-group"><input type="text" id="intCompany" placeholder="اسم الشركة" required></div>
+          <div class="admin-form-group"><input type="text" id="intTitle" placeholder="المسمى الوظيفي" required></div>
+          <div class="admin-form-group"><input type="text" id="intDesc" placeholder="التفاصيل المختصرة" required></div>
+          <div class="admin-form-group"><input type="url" id="intLink" placeholder="رابط التقديم" required></div>
+          <div class="admin-form-group"><label style="color:var(--accent);">صورة الشركة/الفرصة</label><input type="file" id="intImgFile" accept="image/*" class="file-input"></div>
+          <button type="submit" class="cta-btn primary-btn" style="background:var(--warning); color:#000;">نشر الفرصة 🌟</button>
+        </form>
+      </div>
+      <div class="admin-card">
+        <h3><i class="fa-solid fa-lightbulb"></i> إضافة مشروع/منتج لعضو</h3>
+        <form id="addProjectForm" class="table-like">
+          <div class="admin-form-group"><input type="text" id="projTitle" placeholder="اسم المشروع/المنتج" required></div>
+          <div class="admin-form-group"><input type="text" id="projDesc" placeholder="وصف المشروع" required></div>
+          <div class="admin-form-group"><input type="text" id="projPhone" placeholder="رقم واتساب للتواصل (اختياري)"></div>
+          <div class="admin-form-group"><input type="url" id="projSocial" placeholder="لينك السوشيال ميديا (اختياري)"></div>
+          <div class="admin-form-group"><input type="url" id="projLink" placeholder="رابط المشروع الخارجي (اختياري)"></div>
+          <div class="admin-form-group"><label style="color:var(--accent);">صور المشروع (يمكنك تحديد أكثر من صورة)</label><input type="file" id="projImgFile" accept="image/*" class="file-input" multiple></div>
+          <button type="submit" class="cta-btn primary-btn">إضافة المشروع 💡</button>
+        </form>
+      </div>
 
       <div class="admin-card">
   <h3>

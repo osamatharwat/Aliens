@@ -128,8 +128,16 @@
       ['events.html', 'الفعاليات']
     ];
 
-    if (ctx.role === 'head' || ctx.role === 'member') {
+    // للأعضاء، المميزين، والقادة
+    if (ctx.role) {
       navItems.push(['memories.html', 'الذكريات']);
+      navItems.push(['cultural.html', 'المجتمع الثقافي']);
+      navItems.push(['projects.html', 'مشاريع الأعضاء']);
+    }
+
+    // للمميزين والقادة فقط
+    if (ctx.role === 'premium' || ctx.role === 'head') {
+      navItems.push(['internships.html', 'الإنترنشيب 🌟']);
     }
 
     if (ctx.role === 'head') {
@@ -141,10 +149,21 @@
       .join('');
 
     if (ctx.session) {
-      const roleLabel = ctx.role === 'head' ? 'Head' : 'Member';
-      links.innerHTML += `<span class="user-chip">${escapeHtml(ctx.profile?.full_name || ctx.session.user.email || 'User')} · ${roleLabel}</span>`;
+      const roleLabel = ctx.role === 'head' ? 'Head 👑' : ctx.role === 'premium' ? 'Premium 🌟' : 'Member';
+      
+      // حولنا الشريحة لزرار يقدر يضغط عليه عشان يفتح تعديل البروفايل
+      links.innerHTML += `
+        <button class="user-chip" id="updateProfileBtn" style="cursor:pointer; background:rgba(255,255,255,0.05); transition:0.3s;" title="تعديل حسابي" onmouseover="this.style.background='rgba(57,255,20,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
+          <i class="fa-solid fa-pen" style="font-size:0.8rem; margin-left:5px;"></i> ${escapeHtml(ctx.profile?.full_name || 'User')} · ${roleLabel}
+        </button>
+      `;
       actions.innerHTML = `<button type="button" class="nav-btn danger" id="logoutBtn">Logout</button>`;
+      
       q('#logoutBtn')?.addEventListener('click', handleLogout);
+      
+      // بمجرد الضغط، نستدعي نافذة التعديل اللي عملناها فوق
+      q('#updateProfileBtn')?.addEventListener('click', () => window.openProfileEditor(ctx));
+      
     } else {
       actions.innerHTML = `<a href="auth.html" class="nav-btn ghost">Login</a>`;
     }
@@ -227,44 +246,43 @@ if (!isEmail(input)) {
   }
 
   async function signupAction(event) {
-
   event.preventDefault();
 
   const name = q('#signupName')?.value.trim() || '';
   const username = normalizeUsername(q('#signupUsername')?.value);
   const email = q('#signupEmail')?.value.trim() || '';
   const password = q('#signupPassword')?.value || '';
+  const promo = q('#signupPromo')?.value.trim() || '';
+  const avatarFile = q('#signupAvatar')?.files[0];
   const msg = q('#signupMsg');
 
   setMessage(msg, 'جاري إنشاء الحساب...', '');
 
   const { data, error } = await sb.auth.signUp({
-    email,
-    password,
-    options: {
-      data: {
-        full_name: name,
-        username
-      }
-    }
+    email, password, options: { data: { full_name: name, username } }
   });
 
-  if (error)
-    return setMessage(msg, error.message, 'error');
+  if (error) return setMessage(msg, error.message, 'error');
 
   const userId = data?.user?.id;
-
   if (userId) {
+    // 1. رفع الصورة لو العضو اختار صورة
+    let avatarUrl = null;
+    if (avatarFile) {
+        avatarUrl = await uploadImage(avatarFile, 'avatars');
+    }
+    
+    // 2. تحديد الرتبة بناءً على كود الترقية (SP0)
+    const userRole = (promo === 'SP0') ? 'premium' : 'member';
+
     await sb.from('profiles').upsert({
-      id: userId,
-      full_name: name,
-      username,
-      email,
-      role: 'member'
+      id: userId, full_name: name, username, email,
+      role: userRole, avatar_url: avatarUrl
     });
   }
 
-  setMessage(msg, 'تم إنشاء الحساب بنجاح', 'success');
+  setMessage(msg, 'تم إنشاء الحساب بنجاح ✅', 'success');
+  q('#signupForm')?.reset();
 }
 
   function setupAuth() {
@@ -319,6 +337,14 @@ if (!isEmail(input)) {
         : 'حائط الذكريات متاح بعد تسجيل الدخول كعضو أو مسؤول.';
       setVisible(memoryNote, true);
     }
+const headPhone = settings.get('pr_head_phone');
+    const subPhone = settings.get('pr_sub_phone');
+    const headBtn = q('#headWhatsAppBtn');
+    const subBtn = q('#subWhatsAppBtn');
+
+    if (headBtn && headPhone) headBtn.href = `https://wa.me/${headPhone.replace(/\D/g, '')}`;
+    if (subBtn && subPhone) subBtn.href = `https://wa.me/${subPhone.replace(/\D/g, '')}`;
+    
   }
 
   async function loadEvents() {
@@ -373,10 +399,23 @@ if (!isEmail(input)) {
     }
 
     grid.innerHTML = data.map((mem) => {
-      const urls = safeUrlList(mem.image_url);
-      return `
+      const roleBadge = mem.author_role === 'head' ? '<span class="badge success">Head</span>' : 
+                        mem.author_role === 'premium' ? '<span class="badge warning"><i class="fa-solid fa-star"></i> المميزين</span>' : 
+                        '<span class="badge">Member</span>';
+      
+      const avatarHtml = mem.author_avatar 
+        ? `<img src="${escapeHtml(mem.author_avatar)}" style="width:45px; height:45px; border-radius:50%; object-fit:cover; border:2px solid var(--accent);">` 
+        : `<div style="width:45px; height:45px; border-radius:50%; background:var(--border-strong); display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:var(--accent);"><i class="fa-solid fa-user-astronaut"></i></div>`;
+
+    return `
         <article class="memory-card">
-          <div class="memory-author">${escapeHtml(mem.author_name || 'Anonymous')}</div>
+          <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px; padding-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.05);">
+            ${avatarHtml}
+            <div style="display:flex; flex-direction:column; gap:4px;">
+                <div class="memory-author" style="line-height:1;">${escapeHtml(mem.author_name || 'Anonymous')}</div>
+                <div>${roleBadge}</div>
+            </div>
+          </div>
           <div class="memory-content">${escapeHtml(mem.memory_text || '')}</div>
           ${urls.length ? sliderMarkup(urls, 'slider-img', 'mt-10') : ''}
           ${ctx?.session ? '' : '<div class="memory-timestamp">سجل دخولك لنشر ذكريات جديدة.</div>'}
@@ -385,6 +424,69 @@ if (!isEmail(input)) {
     }).join('');
   }
 
+async function loadCultural(ctx) {
+    const grid = q('.events-grid'); if (!grid || !sb) return; grid.innerHTML = '';
+    const { data } = await sb.from('cultural_resources').select('*').order('id', { ascending: false });
+    if (!data?.length) return grid.innerHTML = '<div class="empty-state">لا توجد مصادر حالياً.</div>';
+    grid.innerHTML = data.map(item => {
+      if (item.is_premium_only && ctx.role !== 'premium' && ctx.role !== 'head') return `<article class="event-card"><div class="event-card-body" style="text-align:center; filter:blur(2px);"><i class="fa-solid fa-lock" style="font-size:3rem; color:var(--warning);"></i><h3>محتوى مميز</h3><p>قم بالترقية لرؤية المحتوى.</p></div></article>`;
+      return `<article class="event-card"><div class="event-card-body"><span class="badge success">${escapeHtml(item.section_name)}</span><h3>${escapeHtml(item.title)}</h3><a class="cta-btn secondary-btn" href="${escapeHtml(item.resource_url)}" target="_blank">فتح المصدر</a></div></article>`;
+    }).join('');
+  }
+
+  async function loadInternships(ctx) {
+    const grid = q('.events-grid'); if (!grid || !sb) return; grid.innerHTML = '';
+    if (ctx.role !== 'premium' && ctx.role !== 'head') return grid.innerHTML = '<div class="empty-state error">غير مصرح لك بدخول هذه الصفحة.</div>';
+    const { data } = await sb.from('internships').select('*').order('id', { ascending: false });
+    if (!data?.length) return grid.innerHTML = '<div class="empty-state">لا توجد فرص متاحة حالياً.</div>';
+    grid.innerHTML = data.map(item => `
+      <article class="event-card" style="border-color:var(--warning);">
+        ${item.image_url ? `<img class="event-cover" src="${escapeHtml(item.image_url)}">` : ''}
+        <div class="event-card-body">
+          <h3 style="color:var(--warning);"><i class="fa-solid fa-briefcase"></i> ${escapeHtml(item.company_name)}</h3>
+          <h4>${escapeHtml(item.title)}</h4><p>${escapeHtml(item.description)}</p>
+          <a class="cta-btn primary-btn" style="background:var(--warning); color:#000;" href="${escapeHtml(item.apply_link)}" target="_blank">تقديم الآن</a>
+        </div>
+      </article>`).join('');
+  }
+
+  async function loadProjects() {
+    const grid = q('.events-grid'); if (!grid || !sb) return; grid.innerHTML = '';
+    const { data } = await sb.from('member_projects').select('*, profiles(full_name)').order('id', { ascending: false });
+    if (!data?.length) return grid.innerHTML = '<div class="empty-state">لم يتم إضافة مشاريع بعد.</div>';
+    grid.innerHTML = data.map(item => {
+      const urls = safeUrlList(item.image_url);
+      const whatsAppBtn = item.contact_phone ? `<a href="https://wa.me/${item.contact_phone.replace(/\D/g, '')}" target="_blank" class="cta-btn primary-btn" style="background:#25d366; color:#000; border:none; flex:1;"><i class="fa-brands fa-whatsapp"></i> تواصل</a>` : '';
+      const socialBtn = item.social_link ? `<a href="${escapeHtml(item.social_link)}" target="_blank" class="cta-btn secondary-btn" style="flex:1;"><i class="fa-solid fa-link"></i> ميديا</a>` : '';
+      const projBtn = item.project_link ? `<a href="${escapeHtml(item.project_link)}" target="_blank" class="cta-btn secondary-btn" style="flex:1;">المشروع</a>` : '';
+      
+      return `
+      <article class="event-card">
+        ${urls.length ? sliderMarkup(urls, 'event-cover') : ''}
+        <div class="event-card-body">
+          <h3>${escapeHtml(item.project_title)}</h3>
+          <p>${escapeHtml(item.description)}</p>
+          <div style="color:var(--accent); font-weight:bold; font-size:0.9rem;">صاحب المشروع: ${escapeHtml(item.profiles?.full_name || 'عضو')}</div>
+          <div class="event-actions" style="margin-top:10px;">${whatsAppBtn}${socialBtn}${projBtn}</div>
+        </div>
+      </article>`;
+    }).join('');
+  }
+
+  async function loadProjects() {
+    const grid = q('.events-grid');
+
+    grid.innerHTML = data.map(item => `
+      <article class="event-card">
+        ${item.image_url ? `<img class="event-cover" src="${escapeHtml(item.image_url)}">` : ''}
+        <div class="event-card-body">
+          <h3>${escapeHtml(item.project_title)}</h3>
+          <p>${escapeHtml(item.description)}</p>
+          <div style="color:var(--accent); font-weight:bold; font-size:0.9rem;">بواسطة: ${escapeHtml(item.profiles?.full_name || 'عضو')}</div>
+          ${item.project_link ? `<a class="cta-btn primary-btn" href="${escapeHtml(item.project_link)}" target="_blank">عرض المشروع</a>` : ''}
+        </div>
+      </article>`).join('');
+  }
   async function handleMemorySubmit(event, ctx) {
     event.preventDefault();
     const msg = q('#memoryMsg');
@@ -408,6 +510,8 @@ if (!isEmail(input)) {
 
       const payload = {
         author_name: ctx.profile?.full_name || ctx.session.user.email || 'Anonymous',
+        author_role: ctx.profile?.role || 'member',
+        author_avatar: ctx.profile?.avatar_url || null,
         memory_text: text,
         image_url: urls.length ? urls.join(',') : null,
         user_id: ctx.session.user.id,
@@ -531,21 +635,27 @@ if (!isEmail(input)) {
       return;
     }
 
-    list.innerHTML = data.map((user) => `
+  list.innerHTML = data.map((user) => {
+      const avatar = user.avatar_url ? `<img src="${escapeHtml(user.avatar_url)}" style="width:45px; height:45px; border-radius:50%; object-fit:cover; border:2px solid var(--accent);">` : `<div style="width:45px;height:45px;border-radius:50%;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;color:var(--accent); font-size:1.2rem;"><i class="fa-solid fa-user"></i></div>`;
+      return `
       <div class="table-row" data-user-id="${escapeHtml(user.id)}">
-        <div class="main">
-          <div class="title">${escapeHtml(user.full_name || user.username || user.email || user.id)}</div>
-          <div class="sub">${escapeHtml(user.email || '')}</div>
+        <div class="main" style="flex-direction:row; align-items:center; gap:12px;">
+          ${avatar}
+          <div style="display:flex; flex-direction:column; gap:4px;">
+            <div class="title">${escapeHtml(user.full_name || user.username || user.email || user.id)}</div>
+            <div class="sub">${escapeHtml(user.email || '')}</div>
+          </div>
         </div>
         <div class="actions">
-          <select class="role-select">
+          <select class="role-select" style="min-width:110px;">
             <option value="member" ${user.role === 'member' ? 'selected' : ''}>Member</option>
-            <option value="head" ${user.role === 'head' ? 'selected' : ''}>Head</option>
+            <option value="premium" ${user.role === 'premium' ? 'selected' : ''}>Premium 🌟</option>
+            <option value="head" ${user.role === 'head' ? 'selected' : ''}>Head 👑</option>
           </select>
           <button type="button" class="cta-btn primary-btn update-profile-btn">تحديث</button>
         </div>
       </div>
-    `).join('');
+    `}).join('');
 
     qa('.update-profile-btn', list).forEach((button) => {
       button.addEventListener('click', async () => {
@@ -795,6 +905,58 @@ if(memoriesList){
       } finally {
         setBusy(btn, false, '', 'رفع الصورة للمعرض 🖼️');
       }
+// إضافة مجتمع ثقافي
+    q('#addCulturalForm')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const { error } = await sb.from('cultural_resources').insert([{
+        section_name: q('#cultSection').value, title: q('#cultTitle').value,
+        resource_url: q('#cultLink').value, is_premium_only: q('#cultPremium').value === 'true'
+      }]);
+      if(error) alert(error.message); else { alert('تم!'); q('#addCulturalForm').reset(); }
+    });
+
+    // إضافة مشروع
+    q('#addProjectForm')?.addEventListener('submit', async(e)=>{ 
+      e.preventDefault(); const btn = q('#addProjectForm button'); setBusy(btn, true, 'جاري الرفع...', 'إضافة المشروع 💡');
+      const files = Array.from(q('#projImgFile').files); let urls = [];
+      for(let f of files) urls.push(await uploadImage(f, 'projects'));
+      await sb.from('member_projects').insert([{ project_title: q('#projTitle').value, description: q('#projDesc').value, contact_phone: q('#projPhone').value, social_link: q('#projSocial').value, project_link: q('#projLink').value, image_url: urls.join(',') }]); 
+      alert('تم الإضافة!'); q('#addProjectForm').reset(); setBusy(btn, false, '', 'إضافة المشروع 💡');
+    });
+
+// ==========================================
+    // 🧠 ميزة الأقسام الذكية (جلب السكاشن السابقة)
+    // ==========================================
+    async function loadExistingSections() {
+      try {
+        // 1. جلب أقسام المعرض
+        const { data: galData } = await sb.from('gallery_images').select('section_name');
+        const galSections = [...new Set((galData || []).map(i => i.section_name))]; // حذف التكرار
+        const galList = q('#gallerySectionsList');
+        if (galList) galList.innerHTML = galSections.map(s => `<option value="${escapeHtml(s)}">`).join('');
+
+        // 2. جلب أقسام المجتمع الثقافي
+        const { data: cultData } = await sb.from('cultural_resources').select('section_name');
+        const cultSections = [...new Set((cultData || []).map(i => i.section_name))]; // حذف التكرار
+        const cultList = q('#cultSectionsList');
+        if (cultList) cultList.innerHTML = cultSections.map(s => `<option value="${escapeHtml(s)}">`).join('');
+      } catch (err) {
+        console.error("Error loading sections:", err);
+      }
+    }
+    
+    // استدعاء الدالة فوراً عند فتح الداشبورد
+    await loadExistingSections();
+    // تحميل وإدارة صور المعرض للحذف
+    async function loadAdminGallery() {
+      const list = q('#galleryManagementList'); if(!list) return;
+      const { data } = await sb.from('gallery_images').select('*').order('id', { ascending: false });
+      if(!data?.length) return list.innerHTML = '<div class="empty-state">المعرض فارغ.</div>';
+      list.innerHTML = data.map(img => `<div class="management-item" style="display:flex; justify-content:space-between; align-items:center;"> <div style="display:flex; gap:15px; align-items:center;"><img src="${escapeHtml(img.image_url)}" style="width:60px; height:60px; object-fit:cover; border-radius:10px; border:1px solid var(--accent);"> <strong>${escapeHtml(img.section_name)}</strong></div> <button type="button" class="cta-btn danger" onclick="deleteGalleryImg(${img.id})">حذف</button> </div>`).join('');
+    }
+    window.deleteGalleryImg = async (id) => { if(confirm("حذف الصورة نهائياً؟")) { await sb.from('gallery_images').delete().eq('id', id); loadAdminGallery(); } };
+    await loadAdminGallery();
+    await loadAdminGallery();
     });
 
     await loadAdminData();
@@ -823,6 +985,75 @@ if(memoriesList){
     }
   }
 
+// ==========================================
+  // نافذة تعديل البروفايل الشخصي (Modal)
+  // ==========================================
+  window.openProfileEditor = function(ctx) {
+    // لو النافذة مفتوحة مسبقاً، نقفلها
+    if (document.getElementById('profileModal')) return;
+
+    const modal = document.createElement('div');
+    modal.className = 'gateway-overlay'; // بنستخدم نفس استايل البوابة عشان الشياكة
+    modal.id = 'profileModal';
+    modal.style.zIndex = '9999';
+    
+    modal.innerHTML = `
+      <div class="gateway-box" style="text-align: right; direction: rtl; max-width: 400px;">
+        <h2 style="color: var(--accent); margin-bottom: 20px;"><i class="fa-solid fa-user-astronaut"></i> تعديل بياناتي</h2>
+        <form id="profileUpdateForm" class="table-like">
+          <div class="admin-form-group">
+            <label>الاسم بالكامل</label>
+            <input type="text" id="editProfileName" value="${escapeHtml(ctx.profile?.full_name || '')}" required style="background: rgba(0,0,0,0.5);">
+          </div>
+          <div class="admin-form-group" style="margin-top: 15px;">
+            <label>الصورة الشخصية (اختياري)</label>
+            <input type="file" id="editProfileAvatar" accept="image/*" class="file-input">
+          </div>
+          <div style="display: flex; gap: 10px; margin-top: 25px;">
+            <button type="submit" class="cta-btn primary-btn" style="flex: 1;" id="saveProfileBtn">حفظ 💾</button>
+            <button type="button" class="cta-btn danger" style="flex: 1;" onclick="document.getElementById('profileModal').remove()">إلغاء</button>
+          </div>
+          <p id="profileUpdateMsg" class="auth-msg" style="margin-top: 15px;"></p>
+        </form>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+
+    // برمجة زرار الحفظ
+    document.getElementById('profileUpdateForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const msg = document.getElementById('profileUpdateMsg');
+      const btn = document.getElementById('saveProfileBtn');
+      const newName = document.getElementById('editProfileName').value.trim();
+      const fileInput = document.getElementById('editProfileAvatar').files[0];
+
+      setBusy(btn, true, 'جاري الحفظ...', 'حفظ 💾');
+      setMessage(msg, 'جاري الحفظ...', '');
+
+      try {
+        let updates = { full_name: newName };
+
+        // لو اختار صورة جديدة، نرفعها الأول
+        if (fileInput) {
+           setMessage(msg, 'جاري رفع الصورة السحابية...', '');
+           const newAvatarUrl = await uploadImage(fileInput, 'avatars');
+           if (newAvatarUrl) updates.avatar_url = newAvatarUrl;
+        }
+
+        // تحديث قاعدة البيانات
+        const { error } = await sb.from('profiles').update(updates).eq('id', ctx.session.user.id);
+        if (error) throw error;
+
+        setMessage(msg, 'تم التحديث بنجاح! ✅ جاري التحميل...', 'success');
+        setTimeout(() => location.reload(), 1000);
+      } catch (err) {
+        setMessage(msg, 'خطأ: ' + err.message, 'error');
+        setBusy(btn, false, '', 'حفظ 💾');
+      }
+    });
+  };
+
   async function initPage() {
     initAnimations();
 
@@ -833,10 +1064,7 @@ if(memoriesList){
     const isHome = page === 'home' || page === 'index';
 
     if (isHome) {
-      const gateway = q('#roleGateway');
-      if (gateway && (ctx.session || localStorage.getItem(GUEST_ROLE_KEY) === 'guest')) {
-        gateway.style.display = 'none';
-      }
+   
       await syncHome(ctx);
     }
 
@@ -874,6 +1102,10 @@ if(memoriesList){
     if (page === 'admin') {
       await setupAdmin(ctx);
     }
+
+if (page === 'cultural') await loadCultural(ctx);
+    if (page === 'internships') await loadInternships(ctx);
+    if (page === 'projects') await loadProjects();
   }
 
   window.handleLogout = handleLogout;
