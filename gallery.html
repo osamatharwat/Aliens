@@ -8,64 +8,30 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css">
   <link rel="stylesheet" href="style.css">
-  
 </head>
 <body data-page="gallery" class="page-shell">
   <div id="particles-js"></div>
 
-<header>
-  <div class="nav-container">
-    <a href="index.html" class="logo"><span class="ufo-icon">🛸</span> ALIENS</a>
-    <nav class="nav-links" id="siteNavLinks"></nav>
-    <div class="nav-links" id="siteNavActions"></div>
-  </div>
-</header>
+  <header>
+    <div class="nav-container">
+      <a href="index.html" class="logo"><span class="ufo-icon">🛸</span> ALIENS</a>
+      <nav class="nav-links" id="siteNavLinks"></nav>
+      <div class="nav-links" id="siteNavActions"></div>
+    </div>
+  </header>
 
   <main>
     <section class="page-hero-section">
       <h1 class="section-title" data-aos="fade-down">سجل فعاليات <span>الأليانز</span></h1>
-      <p class="page-intro-text">معرض مرئي للفعاليات والأنشطة الرئيسية، مع إمكانية إضافة تعليقات مرتبطة بكل صورة.</p>
+      <p class="page-intro-text">معرض مرئي لفعالياتنا. اضغط على ❤️ لتوثيق إعجابك بأي صورة!</p>
     </section>
 
     <section class="main-gallery-container">
       <div id="galleryStatic"></div>
-
-      <section class="comments-section">
-        <h2 class="section-title" data-aos="fade-down">تعليقات <span>المعرض</span></h2>
-        <div class="comment-form" data-aos="fade-up">
-          <form id="galleryCommentForm">
-            <div class="row">
-              <select id="galleryImageName"></select>
-              <select id="galleryCommentFilter">
-                <option value="">كل الصور</option>
-                <option value="Job Fair 1">Job Fair 1</option>
-                <option value="Job Fair 2">Job Fair 2</option>
-                <option value="Orphanage 1">Orphanage 1</option>
-                <option value="Orphanage 2">Orphanage 2</option>
-                <option value="Welcome 1">Welcome 1</option>
-                <option value="Welcome 2">Welcome 2</option>
-                <option value="Awareness 1">Awareness 1</option>
-                <option value="Awareness 2">Awareness 2</option>
-                <option value="Awareness 3">Awareness 3</option>
-                <option value="Awareness 4">Awareness 4</option>
-                <option value="Awareness 5">Awareness 5</option>
-                <option value="Awareness 6">Awareness 6</option>
-                <option value="Awareness 7">Awareness 7</option>
-              </select>
-            </div>
-            <textarea id="galleryCommentText" placeholder="اكتب تعليقك على الصورة..." required></textarea>
-            <button type="submit" class="cta-btn primary-btn" id="submitGalleryCommentBtn">نشر التعليق 💬</button>
-            <p id="galleryCommentMsg" class="auth-msg"></p>
-            <p id="galleryAccessNote" class="helper-text"></p>
-          </form>
-        </div>
-        <div class="comments-grid" id="galleryCommentsGrid"></div>
-      </section>
     </section>
   </main>
 
   <footer>© 2026 Aliens Student Activity - Delta University.</footer>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/particles.js/2.0.0/particles.min.js"></script>
   <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
