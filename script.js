@@ -227,59 +227,45 @@ if (!isEmail(input)) {
   }
 
   async function signupAction(event) {
-    event.preventDefault();
-    const name = q('#signupName')?.value.trim() || '';
-    const username = normalizeUsername(q('#signupUsername')?.value);
-    const email = q('#signupEmail')?.value.trim() || '';
-    const password = q('#signupPassword')?.value || '';
-    const msg = q('#signupMsg');
 
-    if (!sb) return setMessage(msg, 'Supabase غير متصل.', 'error');
-    if (!name || !username || !email || !password) return setMessage(msg, 'املأ كل البيانات.', 'error');
-    if (username.includes(' ')) return setMessage(msg, 'اسم المستخدم لازم يكون بدون مسافات.', 'error');
-    if (!/^[a-zA-Z0-9_]+$/.test(username)) return setMessage(msg, 'اسم المستخدم: حروف إنجليزية / أرقام / underscore فقط.', 'error');
-    if (password.length < 6) return setMessage(msg, 'كلمة المرور لازم 6 أحرف على الأقل.', 'error');
+  event.preventDefault();
 
-    setMessage(msg, 'جاري إنشاء الحساب...', '');
+  const name = q('#signupName')?.value.trim() || '';
+  const username = normalizeUsername(q('#signupUsername')?.value);
+  const email = q('#signupEmail')?.value.trim() || '';
+  const password = q('#signupPassword')?.value || '';
+  const msg = q('#signupMsg');
 
-    if (error) return setMessage(msg, `خطأ: ${error.message}`, 'error');
+  setMessage(msg, 'جاري إنشاء الحساب...', '');
 
-    const userId = data?.user?.id;
-    if (userId) {
-      try {
-        await sb.from('profiles').upsert({
-          id: userId,
-          full_name: name,
-          username,
-          email,
-          role: 'member'
-        });
-const { data, error } = await sb.auth.signUp({
-  email,
-  password: pw
-});
-
-if (!error) {
-
-  await sb.from('profiles').insert([
-    {
-      id: data.user.id,
-      username: user.toLowerCase(),
-      full_name: name,
-      email: email,
-      role: 'member'
-    }
-  ]);
-}
-      } catch (err) {
-        console.warn('Profile upsert skipped:', err);
+  const { data, error } = await sb.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        full_name: name,
+        username
       }
     }
+  });
 
-    q('#signupForm')?.reset();
-    setMessage(msg, 'تم التسجيل بنجاح. راجع بريدك للتفعيل ثم سجّل الدخول.', 'success');
-    switchTab('login');
+  if (error)
+    return setMessage(msg, error.message, 'error');
+
+  const userId = data?.user?.id;
+
+  if (userId) {
+    await sb.from('profiles').upsert({
+      id: userId,
+      full_name: name,
+      username,
+      email,
+      role: 'member'
+    });
   }
+
+  setMessage(msg, 'تم إنشاء الحساب بنجاح', 'success');
+}
 
   function setupAuth() {
     const loginForm = q('#loginForm');
