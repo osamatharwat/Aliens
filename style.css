@@ -946,3 +946,487 @@ footer{
   .gallery-fluid-item{min-height:200px}
   .auth-box,.join-panel,.memory-form-card,.admin-card,.event-card,.memory-card,.comment-card,.quick-link-card,.portal-card,.about-card,.stat-box{border-radius:18px}
 }
+
+
+/* ==========================================
+   ALIENS PREMIUM CYBER EDITION
+   ADD TO END OF FILE
+========================================== */
+
+/* SCROLLBAR */
+
+::-webkit-scrollbar{
+  width:12px;
+}
+
+::-webkit-scrollbar-track{
+  background:#05080f;
+}
+
+::-webkit-scrollbar-thumb{
+  background:linear-gradient(
+      180deg,
+      #39ff14,
+      #0ea5e9
+  );
+  border-radius:50px;
+}
+
+/* NAVBAR */
+
+header{
+  backdrop-filter:blur(24px);
+  background:rgba(5,8,15,.65);
+  border-bottom:1px solid rgba(57,255,20,.25);
+}
+
+.logo{
+  font-size:1.35rem;
+  letter-spacing:2px;
+}
+
+.logo:hover{
+  text-shadow:0 0 20px #39ff14;
+}
+
+/* HERO */
+
+.hero{
+  min-height:100vh;
+
+  background:
+  linear-gradient(
+      rgba(0,0,0,.45),
+      rgba(0,0,0,.75)
+  ),
+  url("familia.jpg");
+
+  background-size:cover;
+  background-position:center;
+  background-attachment:fixed;
+
+  border-radius:30px;
+}
+
+.hero-panel{
+  background:transparent;
+  backdrop-filter:none;
+  border:none;
+  box-shadow:none;
+}
+.hero-content h1{
+  text-shadow:
+  0 0 15px rgba(57,255,20,.4),
+  0 0 40px rgba(57,255,20,.15);
+}
+
+/* GLOBAL CARD EFFECT */
+
+.about-card,
+.quick-link-card,
+.portal-card,
+.event-card,
+.memory-card,
+.comment-card,
+.admin-card,
+.stat-box{
+
+  position:relative;
+
+  overflow:hidden;
+
+  transition:.4s ease;
+}
+
+.about-card::before,
+.quick-link-card::before,
+.portal-card::before,
+.event-card::before,
+.memory-card::before,
+.comment-card::before,
+.admin-card::before,
+.stat-box::before{
+
+  content:"";
+
+  position:absolute;
+
+  inset:-100%;
+
+  background:
+  linear-gradient(
+      120deg,
+      transparent,
+      rgba(57,255,20,.08),
+      transparent
+  );
+
+  transition:.7s;
+}
+
+.about-card:hover::before,
+.quick-link-card:hover::before,
+.portal-card:hover::before,
+.event-card:hover::before,
+.memory-card:hover::before,
+.comment-card:hover::before,
+.admin-card:hover::before,
+.stat-box:hover::before{
+
+  inset:100%;
+}
+
+.about-card:hover,
+.quick-link-card:hover,
+.portal-card:hover,
+.event-card:hover,
+.memory-card:hover,
+.comment-card:hover,
+.admin-card:hover,
+.stat-box:hover{
+
+  transform:
+  translateY(-12px);
+
+  border-color:
+  rgba(57,255,20,.5);
+
+  box-shadow:
+  0 0 30px rgba(57,255,20,.12),
+  0 25px 70px rgba(0,0,0,.55);
+}
+
+/* COMMITTEES */
+
+.flip-card{
+
+  perspective:1500px;
+}
+
+.flip-card-inner{
+
+  transition:.8s;
+}
+
+.flip-card-front{
+
+  background:
+  linear-gradient(
+      180deg,
+      rgba(11,18,33,.95),
+      rgba(5,8,15,.98)
+  );
+
+  border:1px solid rgba(57,255,20,.2);
+}
+
+.flip-card-front i{
+
+  font-size:3rem;
+
+  margin-bottom:15px;
+
+  color:#39ff14;
+
+  text-shadow:0 0 15px #39ff14;
+}
+
+.flip-card:hover{
+
+  transform:translateY(-8px);
+}
+
+.flip-card-back{
+
+  background:
+  linear-gradient(
+      180deg,
+      rgba(57,255,20,.15),
+      rgba(5,8,15,.98)
+  );
+}
+
+/* EVENTS */
+
+.event-card{
+
+  border-radius:24px;
+}
+
+.event-cover{
+
+  height:260px;
+}
+
+.event-card:hover .event-cover{
+
+  transform:scale(1.06);9:02 AM 6/5/20269:02 AM 6/5/2026}
+
+.event-cover{
+
+  transition:.5s;
+}
+
+/* MEMORIES */
+
+.memory-card{
+
+  border-left:4px solid #39ff14;
+}
+
+.memory-card::after{
+
+  content:"❝";
+
+  position:absolute;
+
+  top:15px;
+
+  left:15px;
+
+  font-size:4rem;
+
+  color:rgba(57,255,20,.12);
+}
+
+.memory-author{
+
+  font-size:1.1rem;
+}
+
+.memory-content{
+
+  font-size:1rem;
+}
+
+/* GALLERY */
+
+.gallery-fluid-item{
+
+  border-radius:22px;
+}
+
+.gallery-fluid-item::before{
+
+  content:"";
+
+  position:absolute;
+
+  inset:0;
+
+  background:
+  linear-gradient(
+      rgba(57,255,20,0),
+      rgba(57,255,20,.12)
+  );
+
+  opacity:0;
+
+  transition:.4s;
+}
+
+.gallery-fluid-item:hover::before{
+
+  opacity:1;
+}
+
+.gallery-fluid-item:hover{
+
+  box-shadow:
+  0 0 25px rgba(57,255,20,.15);
+}
+
+/* DASHBOARD */
+
+.admin-card{
+
+  backdrop-filter:blur(10px);
+}
+
+.admin-card h3{
+
+  color:#39ff14;
+}
+
+/* BUTTONS */
+
+.primary-btn{
+
+  position:relative;
+
+  overflow:hidden;
+}
+
+.primary-btn::before{
+
+  content:"";
+
+  position:absolute;
+
+  left:-100%;
+
+  top:0;
+
+  width:100%;
+
+  height:100%;
+
+  background:
+  linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,.2),
+      transparent
+  );
+
+  transition:.6s;
+}
+
+.primary-btn:hover::before{
+
+  left:100%;
+}
+
+/* SECTION TITLES */
+
+.section-title{
+
+  text-shadow:
+  0 0 20px rgba(57,255,20,.2);
+}
+
+/* FLOAT ANIMATION */
+
+@keyframes cyberFloat{
+
+  0%,100%{
+      transform:translateY(0);
+  }
+
+  50%{
+      transform:translateY(-6px);
+  }
+}
+
+.quick-link-card,
+.about-card,
+.portal-card{
+
+  animation:cyberFloat 5s ease-in-out infinite;
+}
+/* ===== NEW COMMITTEES DESIGN ===== */
+
+.committees-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:30px;
+}
+
+.committee-card{
+
+    position:relative;
+
+    padding:35px 25px;
+
+    text-align:center;
+
+    border-radius:26px;
+
+    overflow:hidden;
+
+    background:
+    linear-gradient(
+        180deg,
+        rgba(11,18,33,.95),
+        rgba(5,8,15,.98)
+    );
+
+    border:1px solid rgba(57,255,20,.18);
+
+    transition:.4s ease;
+}
+
+.committee-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+    left:0;
+
+    width:100%;
+    height:4px;
+
+    background:#39ff14;
+
+    transform:scaleX(0);
+
+    transition:.4s;
+}
+
+.committee-card:hover::before{
+
+    transform:scaleX(1);
+}
+
+.committee-card:hover{
+
+    transform:translateY(-12px);
+
+    border-color:#39ff14;
+
+    box-shadow:
+    0 0 25px rgba(57,255,20,.15),
+    0 25px 60px rgba(0,0,0,.6);
+}
+
+.committee-card i{
+
+    font-size:4rem;
+
+    color:#39ff14;
+
+    margin-bottom:20px;
+
+    text-shadow:
+    0 0 25px rgba(57,255,20,.7);
+}
+
+.committee-card h3{
+
+    margin-bottom:15px;
+
+    font-size:1.7rem;
+
+    color:white;
+}
+
+.committee-card p{
+
+    color:#cbd5e1;
+
+    line-height:1.9;
+
+    min-height:90px;
+}
+
+.committee-tag{
+
+    display:inline-block;
+
+    margin-top:15px;
+
+    padding:8px 14px;
+
+    border-radius:50px;
+
+    background:
+    rgba(57,255,20,.1);
+
+    color:#39ff14;
+
+    font-size:.85rem;
+
+    font-weight:700;
+}
