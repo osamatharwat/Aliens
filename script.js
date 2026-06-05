@@ -625,6 +625,38 @@ if (!error) {
             </div>
           </div>
         `).join('');
+        
+        const memoriesList = q("#memoriesManagementList");
+
+if (memoriesList) {
+
+  const { data: memories } = await sb
+    .from("memories")
+    .select("*")
+    .order("id", { ascending: false });
+
+  memoriesList.innerHTML = "";
+
+  memories.forEach(mem => {
+
+    memoriesList.innerHTML += `
+      <div class="management-item">
+        <div class="meta">
+          <strong>${mem.author_name}</strong>
+          <span>${mem.memory_text}</span>
+        </div>
+
+        <div class="controls">
+          <button
+            class="cta-btn danger"
+            onclick="deleteMemory(${mem.id})">
+            Delete
+          </button>
+        </div>
+      </div>
+    `;
+  });
+}
 
         qa('.delete-event-btn', eventsList).forEach((button) => {
           button.addEventListener('click', async () => {
