@@ -676,63 +676,6 @@ if (memoriesList) {
 
     await renderProfilesManagement();
   }
-
-  async function loadMemoriesManagement() {
-
-  const memoriesList = q("#memoriesManagementList");
-
-  if (!memoriesList) return;
-
-  const { data: memories, error } = await sb
-    .from("memories")
-    .select("*")
-    .order("id", { ascending: false });
-
-  if (error) {
-    console.error(error);
-    return;
-  }
-
-  memoriesList.innerHTML = "";
-
-  memories.forEach(mem => {
-
-    memoriesList.innerHTML += `
-      <div class="management-item">
-        <div class="meta">
-          <strong>${mem.author_name}</strong>
-          <span>${mem.memory_text}</span>
-        </div>
-
-        <div class="controls">
-          <button
-            class="cta-btn danger"
-            onclick="deleteMemory(${mem.id})">
-            حذف
-          </button>
-        </div>
-      </div>
-    `;
-  });
-}
-
-window.deleteMemory = async function(id) {
-
-  if (!confirm("حذف الذكرى؟"))
-    return;
-
-  const { error } = await sb
-    .from("memories")
-    .delete()
-    .eq("id", id);
-
-  if (error) {
-    alert(error.message);
-    return;
-  }
-
-  await loadMemoriesManagement();
-};
   
   async function setupAdmin(ctx) {
     if (ctx.role !== 'head') {
@@ -966,4 +909,61 @@ if(memoriesList){
   window.signupAction = signupAction;
 
   window.addEventListener('DOMContentLoaded', initPage);
+
+  async function loadMemoriesManagement() {
+
+  const memoriesList = q("#memoriesManagementList");
+
+  if (!memoriesList) return;
+
+  const { data: memories, error } = await sb
+    .from("memories")
+    .select("*")
+    .order("id", { ascending: false });
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  memoriesList.innerHTML = "";
+
+  memories.forEach(mem => {
+
+    memoriesList.innerHTML += `
+      <div class="management-item">
+        <div class="meta">
+          <strong>${mem.author_name}</strong>
+          <span>${mem.memory_text}</span>
+        </div>
+
+        <div class="controls">
+          <button
+            class="cta-btn danger"
+            onclick="deleteMemory(${mem.id})">
+            حذف
+          </button>
+        </div>
+      </div>
+    `;
+  });
+}
+
+window.deleteMemory = async function(id) {
+
+  if (!confirm("حذف الذكرى؟"))
+    return;
+
+  const { error } = await sb
+    .from("memories")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  await loadMemoriesManagement();
+};
 })();
