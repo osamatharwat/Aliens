@@ -69,48 +69,38 @@
   // ==========================================
   // 4. نظام الدخول والتسجيل المحسن 🔐
   // ==========================================
-  function setupAuth() {
-    const loginForm = q("#loginForm");
-    const signupForm = q("#signupForm");
+ // دالة الدخول الذكية
+  window.loginAction = async (e) => {
+    e.preventDefault();
+    const email = document.querySelector("#loginId").value;
+    const pass = document.querySelector("#loginPassword").value;
+    const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+    if (error) return alert("خطأ: " + error.message);
+    
+    // التحقق من الرتبة بعد الدخول
+    const { data: prof } = await sb.from("profiles").select("role").eq("id", data.user.id).single();
+    window.location.href = prof?.role === 'head' ? "admin.html" : "index.html";
+  };
 
-    if (loginForm) {
-      loginForm.addEventListener("submit", async (e) => {
-        e.preventDefault(); 
-        const msg = q("#loginMsg");
-        const loginId = q("#loginId").value.trim();
-        const pw = q("#loginPassword").value;
-        let email = loginId;
+  // دالة تحميل الذكريات (تظهر للكل بعد التعديل في SQL)
+  async function loadMemories() {
+    const grid = document.querySelector("#memoriesGrid");
+    if (!grid) return;
+    const { data } = await sb.from("memories").select("*").order("id", { ascending: false });
+    grid.innerHTML = (data || []).map(m => `
+      <div class="memory-card">
+        <h3>${m.author_name}</h3>
+        <p>${m.memory_text}</p>
+        ${m.image_url ? `<img src="${m.image_url}" style="width:100%; border-radius:10px;">` : ''}
+      </div>
+    `).join('');
+  }
 
-        setMessage(msg, "جاري التحقق...", ""); 
-        
-        if (!loginId.includes("@")) {
-          const { data, error } = await sb.rpc("get_email_by_username", { p_username: loginId.toLowerCase() });
-          if (error || !data) {
-              return setMessage(msg, "اسم المستخدم غير موجود.", "error"); 
-          }
-          email = data;
-        }
-
-        const { data: authData, error: authError } = await sb.auth.signInWithPassword({ email, password: pw });
-        
-        if (authError) {
-            const errMsg = authError.message.includes("Email not confirmed") ? "لازم تفعّل الحساب من الإيميل أولًا." : "بيانات الدخول غير صحيحة.";
-            return setMessage(msg, errMsg, "error");
-        }
-
-        setMessage(msg, "تم الدخول بنجاح 🛸", "success"); 
-
-        // التوجيه الفوري والمباشر
-        CACHE.session = authData.session;
-        const { data: prof } = await sb.from("profiles").select("*").eq("id", authData.user.id).single();
-        CACHE.profile = prof;
-        CACHE.role = prof?.role || "member";
-
-        setTimeout(() => { 
-            window.location.href = CACHE.role === 'head' ? "admin.html" : "index.html"; 
-        }, 600);
-      });
-    }
+  window.addEventListener("DOMContentLoaded", () => {
+    loadMemories();
+    document.querySelector("#loginForm")?.addEventListener("submit", window.loginAction);
+  });
+})();
 
     if (signupForm) {
       signupForm.addEventListener("submit", async (e) => {
