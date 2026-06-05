@@ -201,13 +201,21 @@
     setMessage(msg, 'جاري تسجيل الدخول...', '');
 
     let email = input;
-    if (!isEmail(input)) {
-      const { data, error } = await sb.from('profiles').select('email, username').eq('username', input).limit(1);
-      if (error) return setMessage(msg, `خطأ: ${error.message}`, 'error');
-      email = data?.[0]?.email || '';
-      if (!email) return setMessage(msg, 'لا يمكن تسجيل الدخول باسم المستخدم إلا إذا كان البريد محفوظًا داخل profiles.', 'error');
-    }
 
+if (!isEmail(input)) {
+
+  const { data: profile, error } = await sb
+    .from('profiles')
+    .select('email')
+    .ilike('username', input)
+    .single();
+
+  if (error || !profile) {
+    return setMessage(msg, 'اسم المستخدم غير موجود', 'error');
+  }
+
+  email = profile.email;
+}
     const { data, error } = await sb.auth.signInWithPassword({ email, password });
     if (error) return setMessage(msg, `خطأ: ${error.message}`, 'error');
 
@@ -687,6 +695,52 @@
       } finally {
         setBusy(btn, false, '', 'نشر الإيفنت 🚀');
       }
+      const memoriesList =
+document.querySelector("#memoriesManagementList");
+
+if(memoriesList){
+
+  const { data: memories } =
+  await sb.from("memories")
+  .select("*")
+  .order("id",{ascending:false});
+
+  memoriesList.innerHTML="";
+
+  memories.forEach(mem=>{
+
+    memoriesList.innerHTML += `
+      <div class="management-item">
+        <div class="meta">
+          <strong>${mem.author_name}</strong>
+          <span>${mem.memory_text}</span>
+        </div>
+
+        <div class="controls">
+          <button
+            class="cta-btn danger"
+            onclick="deleteMemory(${mem.id})">
+            Delete
+          </button>
+        </div>
+      </div>
+    `;
+
+  });
+
+}
+      window.deleteMemory = async(id)=>{
+
+  if(!confirm("حذف الذكرى نهائياً؟"))
+    return;
+
+  await sb
+    .from("memories")
+    .delete()
+    .eq("id",id);
+
+  location.reload();
+};
     });
 
     addGalleryForm?.addEventListener('submit', async (event) => {
