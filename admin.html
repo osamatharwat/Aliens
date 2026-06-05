@@ -6,12 +6,10 @@
   <title>Aliens Space | لوحة القيادة</title>
   <link rel="icon" type="image/png" href="icon.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css">
   <link rel="stylesheet" href="style.css">
 </head>
 <body data-page="admin" class="page-shell">
   <div id="particles-js"></div>
-
   <header>
     <div class="nav-container">
       <a href="index.html" class="logo"><span class="ufo-icon">🛸</span> ALIENS</a>
@@ -21,90 +19,65 @@
   </header>
 
   <div id="adminLoader" class="admin-loader">
-    <div class="loader-box">
-      <h2><i class="fa-solid fa-circle-notch fa-spin"></i> جاري التحقق من الصلاحيات الأمنية...</h2>
-    </div>
+    <div class="loader-box"><h2><i class="fa-solid fa-circle-notch fa-spin"></i> جاري التحقق من الصلاحيات...</h2></div>
   </div>
 
   <main id="adminContent" class="admin-container hidden">
     <section class="admin-header">
       <h1 class="section-title">لوحة تحكم <span>القائد (Head)</span></h1>
-      <p class="page-intro-text">من هنا تدير الإعدادات، الفعاليات، الذكريات، والرتب.</p>
     </section>
 
     <div class="admin-grid">
-      <div class="admin-card" data-aos="fade-up">
+      <div class="admin-card">
         <h3><i class="fa-solid fa-sliders"></i> إعدادات المركبة</h3>
         <form id="settingsForm" class="table-like">
-          <div class="admin-form-group">
-            <label>حالة التقديم للتيم</label>
-            <select id="recruitmentStatus">
-              <option value="open">مفتوح الآن 🟢</option>
-              <option value="close">مغلق 🔴</option>
-            </select>
-          </div>
-          <div class="admin-form-group">
-            <label>رابط جوجل فورم (استمارة التقديم)</label>
-            <input type="url" id="recruitmentLink" placeholder="https://forms.gle/...">
-          </div>
-          <div class="admin-form-group">
-            <label>رقم PR Head (واتساب)</label>
-            <input type="text" id="prHeadPhone" placeholder="201000000000">
-          </div>
-          <div class="admin-form-group">
-            <label>رقم PR Sub-Head (واتساب)</label>
-            <input type="text" id="prSubPhone" placeholder="201000000000">
-          </div>
+          <div class="admin-form-group"><label>حالة التقديم</label><select id="recruitmentStatus"><option value="open">مفتوح 🟢</option><option value="close">مغلق 🔴</option></select></div>
+          <div class="admin-form-group"><label>رابط التقديم</label><input type="url" id="recruitmentLink"></div>
+          <div class="admin-form-group"><label>PR Head (واتساب)</label><input type="text" id="prHeadPhone"></div>
+          <div class="admin-form-group"><label>PR Sub-Head (واتساب)</label><input type="text" id="prSubPhone"></div>
           <button type="submit" class="cta-btn primary-btn">حفظ الإعدادات 💾</button>
           <p id="settingsMsg" class="auth-msg"></p>
         </form>
       </div>
 
-      <div class="admin-card" data-aos="fade-up" data-aos-delay="100">
+      <div class="admin-card">
         <h3><i class="fa-solid fa-calendar-plus"></i> إطلاق فعالية جديدة</h3>
         <form id="addEventForm" class="table-like">
+          <div class="admin-form-group"><label>اسم الإيفنت</label><input type="text" id="eventTitle" required></div>
+          <div class="admin-form-group"><label>الوصف</label><input type="text" id="eventDesc" required></div>
           <div class="admin-form-group">
-            <label>اسم الإيفنت</label>
-            <input type="text" id="eventTitle" required placeholder="مثال: Job Fair 2026">
+            <label>صورة البوستر (من الجهاز)</label>
+            <input type="file" id="eventImgFile" accept="image/*" class="file-input" required>
           </div>
-          <div class="admin-form-group">
-            <label>وصف مختصر</label>
-            <input type="text" id="eventDesc" required placeholder="تفاصيل الإيفنت في سطرين...">
-          </div>
-          <div class="admin-form-group">
-            <label>رابط صورة البوستر</label>
-            <input type="url" id="eventImg" required placeholder="https://...">
-          </div>
-          <div class="admin-form-group">
-            <label>رابط الانضمام</label>
-            <input type="url" id="eventLink" required placeholder="https://...">
-          </div>
-          <button type="submit" class="cta-btn primary-btn">نشر الإيفنت 🚀</button>
+          <div class="admin-form-group"><label>رابط الانضمام</label><input type="url" id="eventLink"></div>
+          <button type="submit" class="cta-btn primary-btn" id="eventSubmitBtn">نشر الإيفنت 🚀</button>
           <p id="eventMsg" class="auth-msg"></p>
         </form>
       </div>
 
-      <div class="admin-card" data-aos="fade-up" data-aos-delay="200" style="grid-column: 1 / -1;">
-        <h3><i class="fa-solid fa-shield-halved"></i> الذكريات قيد المراجعة</h3>
-        <div id="pendingMemoriesContainer" class="management-list"></div>
+      <div class="admin-card" style="grid-column: 1 / -1;">
+        <h3><i class="fa-solid fa-images"></i> إضافة صورة لمعرض الفعاليات</h3>
+        <form id="addGalleryImageForm" class="table-like" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+          <div class="admin-form-group">
+            <label>اسم السكشن (مثال: Job Fair 2026)</label>
+            <input type="text" id="gallerySectionName" required placeholder="اسم القسم أو الإيفنت">
+          </div>
+          <div class="admin-form-group">
+            <label>اختر الصورة (من الجهاز)</label>
+            <input type="file" id="galleryImgFile" accept="image/*" class="file-input" required>
+          </div>
+          <button type="submit" class="cta-btn primary-btn" id="gallerySubmitBtn" style="grid-column: 1 / -1;">رفع الصورة للمعرض 🖼️</button>
+          <p id="galleryMsg" class="auth-msg" style="grid-column: 1 / -1;"></p>
+        </form>
       </div>
 
-      <div class="admin-card" data-aos="fade-up" data-aos-delay="320" style="grid-column: 1 / -1;">
-        <h3><i class="fa-solid fa-people-group"></i> إدارة المستخدمين والرتب</h3>
-        <div id="profilesManagementList" class="table-like"></div>
-      </div>
-
-      <div class="admin-card" data-aos="fade-up" data-aos-delay="380" style="grid-column: 1 / -1;">
+      <div class="admin-card" style="grid-column: 1 / -1;">
         <h3><i class="fa-solid fa-calendar-days"></i> الفعاليات الحالية</h3>
         <div id="eventsManagementList" class="management-list"></div>
       </div>
     </div>
   </main>
-
-  <footer>© 2026 Aliens Student Activity - Delta University.</footer>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/particles.js/2.0.0/particles.min.js"></script>
-  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

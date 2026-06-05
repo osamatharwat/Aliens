@@ -6,12 +6,10 @@
   <title>Aliens Space | معرض الفعاليات</title>
   <link rel="icon" type="image/png" href="icon.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css">
   <link rel="stylesheet" href="style.css">
 </head>
 <body data-page="gallery" class="page-shell">
   <div id="particles-js"></div>
-
   <header>
     <div class="nav-container">
       <a href="index.html" class="logo"><span class="ufo-icon">🛸</span> ALIENS</a>
@@ -19,22 +17,15 @@
       <div class="nav-links" id="siteNavActions"></div>
     </div>
   </header>
-
   <main>
     <section class="page-hero-section">
-      <h1 class="section-title" data-aos="fade-down">سجل فعاليات <span>الأليانز</span></h1>
-      <p class="page-intro-text">معرض مرئي لفعالياتنا. اضغط على ❤️ لتوثيق إعجابك بأي صورة!</p>
+      <h1 class="section-title">سجل فعاليات <span>الأليانز</span></h1>
+      <p class="page-intro-text">معرض مرئي لفعالياتنا. اضغط على ❤️ لتوثيق إعجابك!</p>
     </section>
-
-    <section class="main-gallery-container">
-      <div id="galleryStatic"></div>
-    </section>
+    <section class="main-gallery-container" id="dynamicGalleryContainer">
+      </section>
   </main>
-
-  <footer>© 2026 Aliens Student Activity - Delta University.</footer>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/particles.js/2.0.0/particles.min.js"></script>
-  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
