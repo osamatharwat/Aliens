@@ -242,17 +242,6 @@ if (!isEmail(input)) {
 
     setMessage(msg, 'جاري إنشاء الحساب...', '');
 
-    const { data, error } = await sb.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: name,
-          username
-        }
-      }
-    });
-
     if (error) return setMessage(msg, `خطأ: ${error.message}`, 'error');
 
     const userId = data?.user?.id;
@@ -673,7 +662,7 @@ if (memoriesList) {
         });
       }
     }
-
+    await loadMemoriesManagement();
     await renderProfilesManagement();
   }
   
