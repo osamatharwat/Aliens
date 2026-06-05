@@ -1,76 +1,74 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Aliens Space Gallery | معرض الفعاليات</title>
-    <link rel="icon" type="image/png" href="icon.png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aliens Space | معرض الفعاليات</title>
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css">
+  <link rel="stylesheet" href="style.css">
+  
 </head>
-<body class="sub-page">
+<body data-page="gallery" class="page-shell">
+  <div id="particles-js"></div>
 
-    <div id="particles-js"></div>
+<header>
+  <div class="nav-container">
+    <a href="index.html" class="logo"><span class="ufo-icon">🛸</span> ALIENS</a>
+    <nav class="nav-links" id="siteNavLinks"></nav>
+    <div class="nav-links" id="siteNavActions"></div>
+  </div>
+</header>
 
-    <header>
-        <div class="nav-container">
-            <a href="index.html" class="logo"><span class="ufo-icon">🛸</span> ALIENS</a>
-            <div class="nav-links">
-                <a href="index.html" class="back-home-btn"><i class="fa-solid fa-house"></i> الرئيسية</a>
-                <a href="committees.html" class="back-home-btn"><i class="fa-solid fa-users"></i> لجان التيم</a>
-            </div>
-        </div>
-    </header>
-
+  <main>
     <section class="page-hero-section">
-        <h1 class="section-title" data-aos="fade-down">سجل فعاليات <span>الأليانز</span></h1>
-        <p class="page-intro-text">توثيق مرئي مبهر لجميع محطات تيم Aliens في الفضاء الفعلي.</p>
+      <h1 class="section-title" data-aos="fade-down">سجل فعاليات <span>الأليانز</span></h1>
+      <p class="page-intro-text">معرض مرئي للفعاليات والأنشطة الرئيسية، مع إمكانية إضافة تعليقات مرتبطة بكل صورة.</p>
     </section>
 
     <section class="main-gallery-container">
-        
-        <!-- JobFair -->
-        <h3 class="gallery-subtitle" data-aos="fade-right"><i class="fa-solid fa-briefcase"></i> الملتقى التوظيفي (Job Fair)</h3>
-        <div class="gallery-fluid-grid">
-            <!-- تم تعديل الامتدادات لـ .jpg.jpg لتطابق ملفاتك -->
-            <div class="gallery-fluid-item" data-aos="zoom-in"><img src="job_fair_1.jpg.jpg" alt="Job Fair 1"><div class="img-caption">ملتقى التوظيف - نسختنا المتميزة</div></div>
-            <div class="gallery-fluid-item" data-aos="zoom-in"><img src="job_fair_2.jpg.jpg" alt="Job Fair 2"><div class="img-caption">ملتقى التوظيف - فعاليات كبرى</div></div>
-        </div>
+      <div id="galleryStatic"></div>
 
-        <!-- دار الايتام -->
-        <h3 class="gallery-subtitle" data-aos="fade-right"><i class="fa-solid fa-heart"></i> زيارات دار الأيتام</h3>
-        <div class="gallery-fluid-grid">
-            <div class="gallery-fluid-item" data-aos="zoom-in"><img src="orphanage_1.jpg.jpg" alt="دار الايتام 1"><div class="img-caption">زيارة دار الأيتام - رسم الابتسامة 1</div></div>
-            <div class="gallery-fluid-item" data-aos="zoom-in"><img src="orphanage_2.jpg.jpg" alt="دار الايتام 2"><div class="img-caption">زيارة دار الأيتام - رسم الابتسامة 2</div></div>
+      <section class="comments-section">
+        <h2 class="section-title" data-aos="fade-down">تعليقات <span>المعرض</span></h2>
+        <div class="comment-form" data-aos="fade-up">
+          <form id="galleryCommentForm">
+            <div class="row">
+              <select id="galleryImageName"></select>
+              <select id="galleryCommentFilter">
+                <option value="">كل الصور</option>
+                <option value="Job Fair 1">Job Fair 1</option>
+                <option value="Job Fair 2">Job Fair 2</option>
+                <option value="Orphanage 1">Orphanage 1</option>
+                <option value="Orphanage 2">Orphanage 2</option>
+                <option value="Welcome 1">Welcome 1</option>
+                <option value="Welcome 2">Welcome 2</option>
+                <option value="Awareness 1">Awareness 1</option>
+                <option value="Awareness 2">Awareness 2</option>
+                <option value="Awareness 3">Awareness 3</option>
+                <option value="Awareness 4">Awareness 4</option>
+                <option value="Awareness 5">Awareness 5</option>
+                <option value="Awareness 6">Awareness 6</option>
+                <option value="Awareness 7">Awareness 7</option>
+              </select>
+            </div>
+            <textarea id="galleryCommentText" placeholder="اكتب تعليقك على الصورة..." required></textarea>
+            <button type="submit" class="cta-btn primary-btn" id="submitGalleryCommentBtn">نشر التعليق 💬</button>
+            <p id="galleryCommentMsg" class="auth-msg"></p>
+            <p id="galleryAccessNote" class="helper-text"></p>
+          </form>
         </div>
-
-        <!-- Welcome Day -->
-        <h3 class="gallery-subtitle" data-aos="fade-right"><i class="fa-solid fa-bullhorn"></i> حفل الاستقبال (Welcome Day)</h3>
-        <div class="gallery-fluid-grid">
-            <div class="gallery-fluid-item" data-aos="zoom-in"><img src="welcome_1.jpg.jpg" alt="Welcome 1"><div class="img-caption">يوم الاستقبال والترحيب بالفاميليا 1</div></div>
-            <div class="gallery-fluid-item" data-aos="zoom-in"><img src="welcome_2.jpg.jpg" alt="Welcome 2"><div class="img-caption">يوم الاستقبال والترحيب بالفاميليا 2</div></div>
-        </div>
-
-        <!-- حملات التوعية -->
-        <h3 class="gallery-subtitle" data-aos="fade-right"><i class="fa-solid fa-kit-medical"></i> حملات التوعية (Awareness Campaigns)</h3>
-        <div class="gallery-fluid-grid awareness-fluid-grid">
-            <div class="gallery-fluid-item" data-aos="zoom-in"><img src="awareness_1.jpg.jpg" alt="توعية 1"><div class="img-caption">حملة التوعية - محطة 1</div></div>
-            <div class="gallery-fluid-item" data-aos="zoom-in"><img src="awareness_2.jpg.jpg" alt="توعية 2"><div class="img-caption">حملة التوعية - محطة 2</div></div>
-            <div class="gallery-fluid-item" data-aos="zoom-in"><img src="awareness_3.jpg.jpg" alt="توعية 3"><div class="img-caption">حملة التوعية - محطة 3</div></div>
-            <div class="gallery-fluid-item" data-aos="zoom-in"><img src="awareness_4.jpg.jpg" alt="توعية 4"><div class="img-caption">حملة التوعية - محطة 4</div></div>
-            <div class="gallery-fluid-item" data-aos="zoom-in"><img src="awareness_5.jpg.jpg" alt="توعية 5"><div class="img-caption">حملة التوعية - محطة 5</div></div>
-            <div class="gallery-fluid-item" data-aos="zoom-in"><img src="awareness_6.jpg.jpg" alt="توعية 6"><div class="img-caption">حملة التوعية - محطة 6</div></div>
-            <div class="gallery-fluid-item" data-aos="zoom-in"><img src="awareness_7.jpg.jpg" alt="توعية 7"><div class="img-caption">حملة التوعية - محطة 7</div></div>
-        </div>
+        <div class="comments-grid" id="galleryCommentsGrid"></div>
+      </section>
     </section>
+  </main>
 
-    <footer>
-        <p>© 2026 Aliens Student Activity - Delta University. Designed with 💚 for the Familia.</p>
-    </footer>
+  <footer>© 2026 Aliens Student Activity - Delta University.</footer>
 
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-    <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/particles.js/2.0.0/particles.min.js"></script>
+  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>

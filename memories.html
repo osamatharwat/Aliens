@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aliens Space | حائط الذكريات</title>
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css">
+  <link rel="stylesheet" href="style.css">
+  
+</head>
+<body data-page="memories" class="page-shell">
+  <div id="particles-js"></div>
+
+<header>
+  <div class="nav-container">
+    <a href="index.html" class="logo"><span class="ufo-icon">🛸</span> ALIENS</a>
+    <nav class="nav-links" id="siteNavLinks"></nav>
+    <div class="nav-links" id="siteNavActions"></div>
+  </div>
+</header>
+
+  <main>
+    <section class="page-hero-section">
+      <h1 class="section-title">حائط <span>الذكريات</span></h1>
+      <p class="page-intro-text">اكتب ذكرى أو لحظة مميزة وسيتم إرسالها للمراجعة قبل النشر في الحائط العام.</p>
+    </section>
+
+    <section class="add-memory-section">
+      <div class="memory-form-card" data-aos="fade-up">
+        <h3><i class="fa-solid fa-pen-nib"></i> وثق لحظتك</h3>
+        <form id="memoryForm">
+          <textarea id="memoryText" placeholder="اكتب رسالتك للذكرى هنا..." rows="4" required></textarea>
+          <button type="submit" class="cta-btn primary-btn" id="submitMemoryBtn">إرسال للتوثيق 🚀</button>
+          <p id="memoryMsg" class="auth-msg"></p>
+          <p id="memoryAccessNote" class="helper-text"></p>
+        </form>
+      </div>
+    </section>
+
+    <section class="memories-container">
+      <div class="memories-grid" id="memoriesGrid"></div>
+    </section>
+  </main>
+
+  <footer>© 2026 Aliens Student Activity - Delta University.</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/particles.js/2.0.0/particles.min.js"></script>
+  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

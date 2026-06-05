@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aliens Student Activity | Delta University</title>
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css">
+  <link rel="stylesheet" href="style.css">
+  
+</head>
+<body data-page="home">
+  <div id="roleGateway" class="gateway-overlay">
+    <div class="gateway-box">
+      <h2>🛸 تحديد الهوية الفضائية</h2>
+      <p>مرحبًا بك في Aliens. اختر طريقة الدخول المناسبة:</p>
+      <div class="gateway-options">
+        <button class="role-btn admin-role" onclick="selectRole('admin')"><i class="fa-solid fa-crown"></i> مسؤول (Head)</button>
+        <button class="role-btn member-role" onclick="selectRole('member')"><i class="fa-solid fa-user-astronaut"></i> عضو (Member)</button>
+        <button class="role-btn guest-role" onclick="selectRole('guest')"><i class="fa-solid fa-eye"></i> زائر (Guest)</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="particles-js"></div>
+
+<header>
+  <div class="nav-container">
+    <a href="index.html" class="logo"><span class="ufo-icon">🛸</span> ALIENS</a>
+    <nav class="nav-links" id="siteNavLinks"></nav>
+    <div class="nav-links" id="siteNavActions"></div>
+  </div>
+</header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-panel" data-aos="fade-up">
+        <div class="hero-content">
+          <h1>WELCOME TO THE <span>MOTHERSHIP</span></h1>
+          <p>نحن نشاط طلابي رسمي بكلية الصيدلة - جامعة الدلتا، بنبني مهارات، خبرات، وبيئة حقيقية تربط الدراسة بسوق العمل.</p>
+          <div class="hero-buttons">
+            <a href="#join" class="cta-btn primary-btn" id="heroActionBtn">Join The Crew</a>
+            <a href="committees.html" class="cta-btn secondary-btn">استكشف اللجان</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="about">
+      <h2 class="section-title" data-aos="fade-down">استكشف <span>مدارنا</span></h2>
+      <div class="about-grid">
+        <div class="about-card" data-aos="zoom-in">
+          <i class="fa-solid fa-user-astronaut"></i>
+          <h3>من نحن؟</h3>
+          <p>تأسس فريق Aliens عام 2019 داخل كلية الصيدلة - جامعة الدلتا، ويعمل على دعم الطلاب بخبرة عملية وتواصل مهني فعّال.</p>
+        </div>
+        <div class="about-card" data-aos="zoom-in" data-aos-delay="120">
+          <i class="fa-solid fa-shuttle-space"></i>
+          <h3>رؤيتنا</h3>
+          <p>أن نكون النشاط الطلابي الرائد في تمكين طلاب الصيدلة بالمهارات الحديثة التي يحتاجها سوق العمل الحقيقي.</p>
+        </div>
+        <div class="about-card" data-aos="zoom-in" data-aos-delay="240">
+          <i class="fa-solid fa-bullseye"></i>
+          <h3>رسالتنا</h3>
+          <p>تقديم فرص تدريب، وفعاليات تعليمية ومهنية، وشراكات حقيقية مع خبراء المجال والمؤسسات داخل وخارج الجامعة.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="achievements">
+      <h2 class="section-title" data-aos="fade-down">إنجازات حققناها في <span>الفضاء</span></h2>
+      <div class="stats-grid">
+        <div class="stat-box" data-aos="zoom-in"><h2>+4</h2><p>Job Fair Events</p></div>
+        <div class="stat-box" data-aos="zoom-in" data-aos-delay="120"><h2>+1000</h2><p>مستفيد من الحملات التوعوية</p></div>
+        <div class="stat-box" data-aos="zoom-in" data-aos-delay="240"><h2>+150</h2><p>عضو داخل الطاقم</p></div>
+        <div class="stat-box" data-aos="zoom-in" data-aos-delay="360"><h2>Annual</h2><p>مشاركة سنوية متميزة</p></div>
+      </div>
+    </section>
+
+    <section id="quick-access">
+      <h2 class="section-title" data-aos="fade-down">روابط <span>سريعة</span></h2>
+      <div class="quick-links-grid">
+        <a class="quick-link-card" href="events.html" data-aos="fade-up">
+          <div class="icon"><i class="fa-solid fa-calendar-days"></i></div>
+          <h3>الفعاليات</h3>
+          <p>تابع آخر الإيفنتات والتسجيلات والأنشطة الجارية.</p>
+        </a>
+        <a class="quick-link-card" href="memories.html" data-aos="fade-up" data-aos-delay="120">
+          <div class="icon"><i class="fa-solid fa-pen-nib"></i></div>
+          <h3>حائط الذكريات</h3>
+          <p>شارك رسالتك وذكرياتك بعد تسجيل الدخول.</p>
+        </a>
+        <a class="quick-link-card" href="gallery.html" data-aos="fade-up" data-aos-delay="240">
+          <div class="icon"><i class="fa-solid fa-images"></i></div>
+          <h3>المعرض</h3>
+          <p>استعرض صور الفعاليات وأضف تعليقاتك عليها.</p>
+        </a>
+        <a class="quick-link-card" href="committees.html" data-aos="fade-up" data-aos-delay="360">
+          <div class="icon"><i class="fa-solid fa-users-gear"></i></div>
+          <h3>اللجان</h3>
+          <p>تعرف على فرق العمل داخل التيم ودور كل لجنة.</p>
+        </a>
+      </div>
+    </section>
+
+    <section id="join" class="join-section">
+      <div class="join-panel" data-aos="fade-up">
+        <h2 class="section-title">انضم إلى <span>كوكبنا</span> الآن</h2>
+        <p class="page-intro-text">سواء كنت طالبًا تبحث عن شغفك، أو شركة أو رائد أعمال يبحث عن شريك حقيقي؛ Aliens ترحب بك.</p>
+        <div class="portal-grid">
+          <div class="portal-card">
+            <h3>بوابة الطلاب والفضائيين</h3>
+            <p>سجّل معنا لتطوير مهاراتك والنزول لسوق العمل بثقة وقوة.</p>
+            <button id="joinTeamBtn" class="cta-btn primary-btn" onclick="openApplicationForm()">Join Our Crew 🛸</button>
+            <div id="recruitmentStatusMsg" class="recruitment-status-text"></div>
+            <p id="memoryAccessNote" class="portal-note hidden"></p>
+          </div>
+          <div class="portal-card">
+            <h3>بوابة الشركات والرعاة</h3>
+            <p>تواصل معنا عبر القنوات الرسمية لبحث فرص التعاون والشراكات المستدامة.</p>
+            <div class="partner-contact-links">
+              <a class="partner-link-btn whatsapp-btn" id="headWhatsAppBtn" href="#" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp"></i> PR Head WhatsApp</a>
+              <a class="partner-link-btn whatsapp-btn" id="subWhatsAppBtn" href="#" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp"></i> PR Sub-Head WhatsApp</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>© 2026 Aliens Student Activity - Delta University. Designed with 💚 for the Familia.</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/particles.js/2.0.0/particles.min.js"></script>
+  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
