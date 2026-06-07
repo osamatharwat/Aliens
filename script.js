@@ -2136,163 +2136,79 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function renderApplicationsManagement(ctx) {
     const list = q('#applicationsManagementList');
-    const statsContainer = q('#irStats');
     if (!list || !sb) return;
 
-    // تحديد صلاحيات الشخص اللي فاتح الموقع
+    // تحديد صلاحيات الشخص
     const isOG = ctx.role === 'OG';
     const isHead = ctx.role === 'head' || ctx.profile?.position === 'Head';
     const isIRHead = ctx.profile?.committee === 'ir' && ctx.profile?.position === 'Head';
     const isIRMember = ctx.profile?.committee === 'ir';
     const myCommittee = ctx.profile?.committee;
 
-    // جلب أعضاء الـ IR لتعيين الطلبات لهم
+    // جلب أعضاء الـ IR
     let irMembers = [];
     if (isOG || isHead || isIRHead) {
       const { data: profiles } = await sb.from('profiles').select('id, full_name, committee');
       if (profiles) irMembers = profiles.filter(p => p.committee === 'ir');
     }
 
-    let query = sb.from('applications').select('*').order('created_at', { ascending: false });
-    const { data: apps, error } = await query;
+    const { data: apps, error } = await sb.from('applications').select('*').order('created_at', { ascending: false });
 
     if (error) {
-      list.innerHTML = '<div class="empty-state error">تعذر تحميل طلبات التقديم.</div>';
+      list.innerHTML = '<div class="empty-state error">تعذر تحميل الطلبات.</div>';
       return;
     }
 
-    if (!apps.length) {
+    if (!apps || !apps.length) {
       list.innerHTML = '<div class="empty-state">لا توجد طلبات تقديم حالياً.</div>';
       return;
     }
 
-    function buildAppsHtml(filterCommittee) {
-      let filtered = filterCommittee === 'all' ? apps : apps.filter(a => a.committee_key === filterCommittee);
-      
-      // حجب الرؤية حسب الصلاحية
-      if (isIRMember && !isIRHead && !isOG && !isHead) {
-        // الـ IR العادي بيشوف الطلبات المتوزعة عليه فقط
-        filtered = filtered.filter(a => a.assigned_to === ctx.session.user.id);
-      } else if (!isIRMember && !isOG && !isHead) {
-        // رئيس لجنة تانية بيشوف طلبات لجنته بس
-        filtered = filtered.filter(a => a.committee_key === myCommittee);
-      }
+    // منطق الفلترة
+    let filtered = apps;
+    if (isIRMember && !isIRHead && !isOG && !isHead) {
+      filtered = filtered.filter(a => a.assigned_to === ctx.session.user.id);
+    } else if (!isIRMember && !isOG && !isHead) {
+      filtered = filtered.filter(a => a.committee_key === myCommittee);
+    }
 
-      if (!filtered.length) {
-        list.innerHTML = '<div class="empty-state">لا توجد طلبات متاحة لك حالياً.</div>';
-        return;
-      }
+    list.innerHTML = filtered.map((app) => {
+      const assignmentSelect = (isOG || isHead || isIRHead) ? `
+        <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.05);">
+          <label style="font-size:0.85rem; color:var(--muted);">توزيع لـ IR:</label>
+          <select class="assign-ir-select" data-app-id="${app.id}" style="padding: 4px 8px; border-radius:8px; margin-right:8px; background:rgba(0,0,0,0.5);">
+            <option value="">-- لم يتم التوزيع --</option>
+            ${irMembers.map(ir => `<option value="${ir.id}" ${app.assigned_to === ir.id ? 'selected' : ''}>${escapeHtml(ir.full_name)}</option>`).join('')}
+          </select>
+        </div>` : '';
 
-      list.innerHTML = filtered.map((app) => {
-        // زرار التعيين لـ IR (يظهر للهيدز فقط)
-        let assignmentSelect = '';
-        if (isOG || isHead || isIRHead) {
-          assignmentSelect = `
-            <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.05);">
-              <label style="font-size:0.85rem; color:var(--muted);">توزيع الطلب على IR:</label>
-              <select class="assign-ir-select" data-app-id="${app.id}" style="padding: 4px 8px; border-radius:8px; margin-right:8px; background:rgba(0,0,0,0.5);">
-                <option value="">-- لم يتم التوزيع --</option>
-                ${irMembers.map(ir => `<option value="${ir.id}" ${app.assigned_to === ir.id ? 'selected' : ''}>${escapeHtml(ir.full_name)}</option>`).join('')}
-              </select>
-            </div>
-          `;
-        }
-
-        // صلاحيات التعديل في القوائم المنسدلة
-        const canEditIR = isIRMember || isOG || isHead;
-        const canEditCommittee = (isHead || isOG || (ctx.profile?.position === 'Head' && app.committee_key === myCommittee));
-
-        return `
-          <div class="table-row" data-app-id="${app.id}" style="flex-direction: column; align-items: flex-start; gap: 10px; padding: 18px; border-radius: 16px; border: 1px solid var(--line);">
-            
-            <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; flex-wrap: wrap; gap: 10px;">
-              <div>
-                <strong style="font-size: 1.15rem; color: var(--text);">${escapeHtml(app.applicant_name)}</strong>
-                <span class="badge" style="background: rgba(57, 255, 20, 0.1); color: var(--accent); margin-right: 8px;">${escapeHtml(app.committee_name)}</span>
-                <span style="font-size: 0.85rem; color: var(--muted); margin-right: 8px;">(${escapeHtml(app.faculty_level)})</span>
-              </div>
-              <a href="https://wa.me/${app.phone}" class="cta-btn primary-btn" target="_blank" style="padding: 6px 14px; font-size: 0.85rem; background: #25D366; border-color: #25D366; color: black;">
-                <i class="fa-brands fa-whatsapp"></i> تواصل
-              </a>
-            </div>
-            
-            <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 12px; width: 100%; margin-top: 6px;">
-              <span style="font-size: 0.85rem; color: var(--accent); font-weight: bold; display: block; margin-bottom: 6px;">لماذا هذه اللجنة؟</span>
-              <p style="margin: 0; font-size: 0.95rem; color: var(--muted); line-height: 1.5;">${escapeHtml(app.answers?.reason || 'لا توجد إجابة.')}</p>
-            </div>
-
-            <div style="display: flex; gap: 16px; width: 100%; margin-top: 8px; flex-wrap: wrap;">
-              <div style="flex: 1; min-width: 200px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 12px; border: 1px dashed rgba(57, 255, 20, 0.2);">
-                <label style="font-size:0.85rem; color:var(--text); font-weight:bold; display:block; margin-bottom:6px;">قرار الـ IR (المقابلة)</label>
-                <select class="ir-status-select" data-app-id="${app.id}" style="width:100%; padding: 6px; border-radius: 8px;" ${canEditIR ? '' : 'disabled'}>
-                  <option value="pending" ${app.ir_status === 'pending' ? 'selected' : ''}>⏳ قيد الانتظار</option>
-                  <option value="accepted" ${app.ir_status === 'accepted' ? 'selected' : ''}>✅ مقبول (مبدئياً)</option>
-                  <option value="rejected" ${app.ir_status === 'rejected' ? 'selected' : ''}>❌ مرفوض</option>
-                </select>
-              </div>
-
-              <div style="flex: 1; min-width: 200px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 12px; border: 1px dashed rgba(71, 199, 255, 0.2);">
-                <label style="font-size:0.85rem; color:var(--text); font-weight:bold; display:block; margin-bottom:6px;">قرار رئيس اللجنة (${app.committee_name})</label>
-                <select class="committee-status-select" data-app-id="${app.id}" style="width:100%; padding: 6px; border-radius: 8px;" ${canEditCommittee ? '' : 'disabled'}>
-                  <option value="pending" ${app.committee_status === 'pending' ? 'selected' : ''}>⏳ قيد الانتظار</option>
-                  <option value="accepted" ${app.committee_status === 'accepted' ? 'selected' : ''}>✅ مقبول نهائياً</option>
-                  <option value="rejected" ${app.committee_status === 'rejected' ? 'selected' : ''}>❌ مرفوض</option>
-                </select>
-              </div>
-            </div>
-
-            ${assignmentSelect}
+      return `
+        <div class="table-row" data-app-id="${app.id}" style="padding: 18px; border: 1px solid var(--line); border-radius: 16px; margin-bottom: 10px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <strong>${escapeHtml(app.applicant_name)}</strong>
+            <a href="https://wa.me/${app.phone}" target="_blank" class="cta-btn primary-btn" style="padding: 4px 10px; font-size: 0.8rem; background: #25D366; border: none;">واتساب</a>
           </div>
-        `;
-      }).join('');
+          <p>${escapeHtml(app.answers?.reason || '')}</p>
+          ${assignmentSelect}
+        </div>
+      `;
+    }).join('');
 
-      // تفعيل تغيير حالة الـ IR
-      qa('.ir-status-select', list).forEach(sel => {
-        sel.addEventListener('change', async () => {
-          await sb.from('applications').update({ ir_status: sel.value }).eq('id', sel.dataset.appId);
-          showToast('تم تحديث تقييم الـ IR.', 'success');
-        });
+    // تفعيل التوزيع
+    qa('.assign-ir-select', list).forEach(sel => {
+      sel.addEventListener('change', async (e) => {
+        sel.disabled = true;
+        try {
+          await sb.from('applications').update({ assigned_to: e.target.value || null }).eq('id', e.target.dataset.appId);
+          showToast('تم التوزيع بنجاح 🛸', 'success');
+          await renderApplicationsManagement(ctx);
+        } catch (err) {
+          showToast('خطأ: ' + err.message, 'error');
+          sel.disabled = false;
+        }
       });
+    });
 
-      // تفعيل تغيير حالة الكوميتي
-      qa('.committee-status-select', list).forEach(sel => {
-        sel.addEventListener('change', async () => {
-          await sb.from('applications').update({ committee_status: sel.value }).eq('id', sel.dataset.appId);
-          showToast('تم تحديث قرار رئيس اللجنة.', 'success');
-        });
-      });
-
-  // تفعيل التوزيع (للهيدز)
-qa('.assign-ir-select', list).forEach(sel => {
-  sel.addEventListener('change', async (e) => {
-    const appId = e.target.dataset.appId;
-    const assignedTo = e.target.value || null;
-
-    // إظهار حالة جاري المعالجة
-    sel.disabled = true;
-    showToast('جاري توزيع الطلب...', 'info');
-
-    try {
-      const { error } = await sb
-        .from('applications')
-        .update({ assigned_to: assignedTo }) // تحديث العمود في الداتابيز
-        .eq('id', appId);
-
-      if (error) throw error;
-
-      showToast('تم توزيع الطلب بنجاح 🛸', 'success');
-      
-      // اختيارياً: إعادة تحميل القائمة عشان التغييرات تبان
-      await renderApplicationsManagement(ctx); 
-      
-    } catch (err) {
-      showToast('خطأ: ' + err.message, 'error');
-    } finally {
-      sel.disabled = false;
-    }
-  });
-});
-    }
 }
 window.getContext = getContext;
 window.renderApplicationsManagement = renderApplicationsManagement;
