@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aliens Space | Pro CV Builder</title>
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    /* ==========================================
+       🎨 UI Styles for the Builder (Dark Mode)
+       ========================================== */
+    .cv-layout { display: flex; flex-direction: column; gap: 30px; width: min(1400px, 98%); margin: 0 auto; padding-bottom: 50px; }
+    @media(min-width: 1100px) { .cv-layout { flex-direction: row; align-items: flex-start; } }
+    
+    .builder-panel { width: 100%; max-width: 600px; background: linear-gradient(145deg, rgba(11,18,33,0.95), rgba(5,8,15,0.98)); border: 1px solid rgba(57,255,20,0.3); border-radius: 20px; padding: 25px; max-height: 90vh; overflow-y: auto; }
+    
+    .builder-block { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 15px; margin-bottom: 15px; transition: 0.3s; }
+    .builder-block:hover { border-color: rgba(57,255,20,0.5); }
+    
+    .block-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px; }
+    .block-header h4 { margin: 0; color: var(--accent); font-size: 1rem; }
+    .block-actions button { background: rgba(255,255,255,0.1); border: none; color: white; width: 30px; height: 30px; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+    .block-actions button:hover { background: var(--accent); color: black; }
+
+    .input-row { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+    .input-row input[type="text"], .input-row textarea { flex: 1; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; color: white; }
+    .input-row input[type="number"] { width: 70px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; color: var(--accent); text-align: center; }
+    .input-row label { font-size: 0.8rem; color: #888; width: 40px; text-align: center; }
+
+    /* ==========================================
+       📄 The CV Paper (Strictly Black & White)
+       ========================================== */
+    .paper-container { flex: 1; display: flex; justify-content: center; overflow-x: auto; padding: 10px; }
+    .cv-paper { 
+      background: white; color: black; width: 210mm; min-height: 297mm; /* A4 Dimensions */
+      box-shadow: 0 0 40px rgba(0,0,0,0.5); direction: ltr; text-align: left;
+      font-family: 'Arial', 'Helvetica', sans-serif; padding: 40px; box-sizing: border-box;
+    }
+    
+    /* Header (Name & Contact) */
+    .cv-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid black; padding-bottom: 20px; margin-bottom: 20px; }
+    .cv-header-info { flex: 1; }
+    .cv-photo-container { display: none; margin-left: 20px; margin-right: 20px; }
+    .cv-photo { width: 120px; height: 120px; object-fit: cover; border: 2px solid black; border-radius: 4px; }
+    
+    .cv-name { margin: 0; font-weight: bold; text-transform: uppercase; line-height: 1.1; }
+    .cv-job { margin: 5px 0 15px 0; font-weight: normal; color: #333; }
+    .cv-contact { font-size: 10pt; color: #444; line-height: 1.6; }
+    
+    /* Sections */
+    .cv-section { margin-bottom: 20px; display: flex; flex-direction: column; }
+    .cv-section-title { margin: 0 0 10px 0; text-transform: uppercase; border-bottom: 1px solid #aaa; padding-bottom: 5px; font-weight: bold; }
+    .cv-section-content { margin: 0; white-space: pre-wrap; line-height: 1.6; color: #222; }
+
+    /* Utilities */
+    .photo-left .cv-header { flex-direction: row-reverse; }
+    .photo-right .cv-header { flex-direction: row; }
+    .photo-hidden .cv-photo-container { display: none !important; }
+    .photo-visible .cv-photo-container { display: block; }
+  </style>
+</head>
+<body data-page="cv" class="page-shell">
+  <div id="particles-js"></div>
+  <header>
+    <div class="nav-container">
+      <a href="index.html" class="logo"><span class="ufo-icon">🛸</span> ALIENS</a>
+      <nav class="nav-links" id="siteNavLinks"></nav>
+      <div class="nav-links" id="siteNavActions"></div>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero-section" style="padding-top: 30px; padding-bottom: 10px;">
+      <h1 class="section-title">صانع السيرة الذاتية <span>الاحترافي</span> (B&W)</h1>
+      <p class="page-intro-text">رتب أقسامك، تحكم في حجم الخط لكل عنصر، واللون رسمي (أبيض وأسود) لضمان القبول في الشركات.</p>
+    </section>
+
+    <section class="cv-layout">
+      
+      <!-- ==========================================
+           🛠️ لوحة التحكم (Builder Panel)
+           ========================================== -->
+      <div class="builder-panel">
+        
+        <!-- إعدادات عامة والصورة -->
+        <div class="builder-block">
+          <div class="block-header"><h4><i class="fa-solid fa-gear"></i> إعدادات الصورة والرأس</h4></div>
+          <div class="input-row">
+            <input type="file" id="cvImageInput" accept="image/*" style="flex:1; background:transparent; color:white;">
+            <select id="photoPosition" style="background:rgba(0,0,0,0.5); color:white; border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:10px;">
+              <option value="hidden">بدون صورة</option>
+              <option value="right">الصورة يمين</option>
+              <option value="left">الصورة يسار</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- حاوية السكاشن القابلة للترتيب -->
+        <div id="sortableSections">
+
+          <!-- 1. البيانات الشخصية -->
+          <div class="builder-block" data-sync="cv-header-section">
+            <div class="block-header">
+              <h4><i class="fa-solid fa-user"></i> البيانات الأساسية</h4>
+            </div>
+            <div class="input-row">
+              <input type="text" class="live-input" data-target="cvName" placeholder="Full Name">
+              <label>حجم</label><input type="number" class="live-font" data-target="cvName" value="28">
+            </div>
+            <div class="input-row">
+              <input type="text" class="live-input" data-target="cvJob" placeholder="Job Title">
+              <label>حجم</label><input type="number" class="live-font" data-target="cvJob" value="16">
+            </div>
+            <div class="input-row">
+              <textarea class="live-input" data-target="cvContact" rows="3" placeholder="Contact Info (Email, Phone, LinkedIn...)"></textarea>
+              <label>حجم</label><input type="number" class="live-font" data-target="cvContact" value="10">
+            </div>
+          </div>
+
+          <!-- 2. نبذة شخصية (Profile) -->
+          <div class="builder-block" data-sync="sec-profile">
+            <div class="block-header">
+              <h4><i class="fa-solid fa-address-card"></i> Profile (نبذة)</h4>
+              <div class="block-actions">
+                <button type="button" onclick="moveBlockUp(this)"><i class="fa-solid fa-arrow-up"></i></button>
+                <button type="button" onclick="moveBlockDown(this)"><i class="fa-solid fa-arrow-down"></i></button>
+              </div>
+            </div>
+            <div class="input-row">
+              <input type="text" class="live-input" data-target="title-profile" value="Professional Profile">
+              <label>حجم</label><input type="number" class="live-font" data-target="title-profile" value="14">
+            </div>
+            <div class="input-row">
+              <textarea class="live-input" data-target="content-profile" rows="3" placeholder="Write your profile here..."></textarea>
+              <label>حجم</label><input type="number" class="live-font" data-target="content-profile" value="11">
+            </div>
+          </div>
+
+          <!-- 3. الخبرات (Experience) -->
+          <div class="builder-block" data-sync="sec-exp">
+            <div class="block-header">
+              <h4><i class="fa-solid fa-briefcase"></i> Experience (الخبرات)</h4>
+              <div class="block-actions">
+                <button type="button" onclick="moveBlockUp(this)"><i class="fa-solid fa-arrow-up"></i></button>
+                <button type="button" onclick="moveBlockDown(this)"><i class="fa-solid fa-arrow-down"></i></button>
+              </div>
+            </div>
+            <div class="input-row">
+              <input type="text" class="live-input" data-target="title-exp" value="Experience">
+              <label>حجم</label><input type="number" class="live-font" data-target="title-exp" value="14">
+            </div>
+            <div class="input-row">
+              <textarea class="live-input" data-target="content-exp" rows="4" placeholder="• Job Title - Company (Date)&#10;Description..."></textarea>
+              <label>حجم</label><input type="number" class="live-font" data-target="content-exp" value="11">
+            </div>
+          </div>
+
+          <!-- 4. التعليم (Education) -->
+          <div class="builder-block" data-sync="sec-edu">
+            <div class="block-header">
+              <h4><i class="fa-solid fa-graduation-cap"></i> Education (التعليم)</h4>
+              <div class="block-actions">
+                <button type="button" onclick="moveBlockUp(this)"><i class="fa-solid fa-arrow-up"></i></button>
+                <button type="button" onclick="moveBlockDown(this)"><i class="fa-solid fa-arrow-down"></i></button>
+              </div>
+            </div>
+            <div class="input-row">
+              <input type="text" class="live-input" data-target="title-edu" value="Education">
+              <label>حجم</label><input type="number" class="live-font" data-target="title-edu" value="14">
+            </div>
+            <div class="input-row">
+              <textarea class="live-input" data-target="content-edu" rows="3" placeholder="• Bachelor of Pharmacy - Delta University"></textarea>
+              <label>حجم</label><input type="number" class="live-font" data-target="content-edu" value="11">
+            </div>
+          </div>
+
+          <div class="builder-block" data-sync="sec-skills">
+            <div class="block-header">
+              <h4><i class="fa-solid fa-screwdriver-wrench"></i> Skills</h4>
+              <div class="block-actions">
+                <button type="button" onclick="moveBlockUp(this)"><i class="fa-solid fa-arrow-up"></i></button>
+                <button type="button" onclick="moveBlockDown(this)"><i class="fa-solid fa-arrow-down"></i></button>
+              </div>
+            </div>
+            <div class="input-row">
+              <input type="text" class="live-input" data-target="title-skills" value="Skills">
+              <label>حجم</label><input type="number" class="live-font" data-target="title-skills" value="14">
+            </div>
+            <div class="input-row">
+              <textarea class="live-input" data-target="content-skills" rows="4" placeholder="Skill 1 • Skill 2 • Skill 3"></textarea>
+              <label>حجم</label><input type="number" class="live-font" data-target="content-skills" value="11">
+            </div>
+          </div>
+
+        </div> <!-- End Sortable -->
+
+        <!-- أزرار الإضافة والتحليل -->
+        <button type="button" onclick="addCustomSection()" class="cta-btn secondary-btn" style="width: 100%; margin-bottom: 12px;">
+          <i class="fa-solid fa-plus"></i> إضافة قسم جديد (مهارات، كورسات...)
+        </button>
+        <div id="cvScoreBox"></div>
+        <div class="cv-tools">
+          <button type="button" id="analyzeCvBtn" class="cta-btn secondary-btn">تحليل ATS محلي</button>
+          <button type="button" id="saveCvDraftBtn" class="cta-btn secondary-btn">حفظ المسودة</button>
+          <button type="button" id="clearCvDraftBtn" class="cta-btn secondary-btn">مسح المسودة</button>
+          <button type="button" id="downloadPdfBtn" class="cta-btn primary-btn" style="padding: 15px; font-size: 1.1rem;">
+            <i class="fa-solid fa-file-pdf"></i> تحميل السيرة الذاتية (PDF)
+          </button>
+        </div>
+
+      </div>
+
+      <!-- ==========================================
+           📄 المعاينة (Live CV Paper)
+           ========================================== -->
+      <div class="paper-container">
+        <div class="cv-paper photo-hidden photo-right" id="cvPaper">
+          
+          <!-- الهيدر ثابت في الأعلى -->
+          <div class="cv-header" id="cv-header-section">
+            <div class="cv-header-info">
+              <h1 class="cv-name" id="cvName" style="font-size: 28pt;">YOUR FULL NAME</h1>
+              <h2 class="cv-job" id="cvJob" style="font-size: 16pt;">Professional Title</h2>
+              <div class="cv-contact" id="cvContact" style="font-size: 10pt;">email@domain.com | +20 100 000 0000 | LinkedIn.com/in/username</div>
+            </div>
+            <div class="cv-photo-container">
+              <img src="https://via.placeholder.com/120" id="cvPhoto" class="cv-photo">
+            </div>
+          </div>
+
+          <!-- حاوية السكاشن القابلة للترتيب في الورقة -->
+          <div id="paperSectionsArea">
+            
+            <div class="cv-section" id="sec-profile">
+              <h3 class="cv-section-title" id="title-profile" style="font-size: 14pt;">Professional Profile</h3>
+              <p class="cv-section-content" id="content-profile" style="font-size: 11pt;">Highly motivated professional dedicated to...</p>
+            </div>
+
+            <div class="cv-section" id="sec-exp">
+              <h3 class="cv-section-title" id="title-exp" style="font-size: 14pt;">Experience</h3>
+              <p class="cv-section-content" id="content-exp" style="font-size: 11pt;">• PR Head - Aliens Activity (2025 - Present)&#10;Organized major events and negotiated partnerships.</p>
+            </div>
+
+            <div class="cv-section" id="sec-edu">
+              <h3 class="cv-section-title" id="title-edu" style="font-size: 14pt;">Education</h3>
+              <p class="cv-section-content" id="content-edu" style="font-size: 11pt;">• Bachelor of Pharmacy - Delta University (2026)</p>
+            </div>
+
+            <div class="cv-section" id="sec-skills">
+              <h3 class="cv-section-title" id="title-skills" style="font-size: 14pt;">Skills</h3>
+              <p class="cv-section-content" id="content-skills" style="font-size: 11pt;">Leadership • Teamwork • Communication • Clinical Thinking</p>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="script.js"></script>
+  <script src="enhancements.js"></script>
+  <script>
+    // 1. تحديث النصوص لايف
+    document.addEventListener('input', (e) => {
+      if (e.target.classList.contains('live-input')) {
+        const targetEl = document.getElementById(e.target.dataset.target);
+        if (targetEl) targetEl.textContent = e.target.value;
+      }
+      
+      // 2. تحديث حجم الخط لايف
+      if (e.target.classList.contains('live-font')) {
+        const targetEl = document.getElementById(e.target.dataset.target);
+        if (targetEl) targetEl.style.fontSize = e.target.value + 'pt';
+      }
+    });
+
+    // 3. التحكم في الصورة الشخصية (Base64 + الموضع)
+    const photoInput = document.getElementById('cvImageInput');
+    const photoPosition = document.getElementById('photoPosition');
+    const paper = document.getElementById('cvPaper');
+    const photoImg = document.getElementById('cvPhoto');
+
+    photoInput.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) { 
+          photoImg.src = e.target.result; 
+          if(photoPosition.value === 'hidden') photoPosition.value = 'right'; // إظهار تلقائي لو اختار صورة
+          updatePhotoLayout();
+        }
+        reader.readAsDataURL(file);
+      }
+    });
+
+    photoPosition.addEventListener('change', updatePhotoLayout);
+
+    function updatePhotoLayout() {
+      paper.classList.remove('photo-hidden', 'photo-right', 'photo-left', 'photo-visible');
+      if (photoPosition.value === 'hidden') {
+        paper.classList.add('photo-hidden');
+      } else {
+        paper.classList.add('photo-visible', `photo-${photoPosition.value}`);
+      }
+    }
+
+    // 4. نظام إعادة الترتيب (Drag & Move Simulation)
+    window.moveBlockUp = function(btn) {
+      const formBlock = btn.closest('.builder-block');
+      const targetId = formBlock.dataset.sync;
+      const paperBlock = document.getElementById(targetId);
+
+      if (formBlock.previousElementSibling) {
+        // تحريك في لوحة التحكم
+        formBlock.parentNode.insertBefore(formBlock, formBlock.previousElementSibling);
+        // تحريك في ورقة الـ CV
+        paperBlock.parentNode.insertBefore(paperBlock, paperBlock.previousElementSibling);
+      }
+    };
+
+    window.moveBlockDown = function(btn) {
+      const formBlock = btn.closest('.builder-block');
+      const targetId = formBlock.dataset.sync;
+      const paperBlock = document.getElementById(targetId);
+
+      if (formBlock.nextElementSibling) {
+        formBlock.parentNode.insertBefore(formBlock.nextElementSibling, formBlock);
+        paperBlock.parentNode.insertBefore(paperBlock.nextElementSibling, paperBlock);
+      }
+    };
+
+    // 5. إضافة قسم جديد ديناميكياً
+    let customCount = 0;
+    window.addCustomSection = function() {
+      customCount++;
+      const id = 'sec-custom-' + customCount;
+      
+      // إضافة في الفورم
+      const formHtml = `
+        <div class="builder-block" data-sync="${id}">
+          <div class="block-header">
+            <h4><i class="fa-solid fa-star"></i> قسم إضافي</h4>
+            <div class="block-actions">
+              <button type="button" onclick="moveBlockUp(this)"><i class="fa-solid fa-arrow-up"></i></button>
+              <button type="button" onclick="moveBlockDown(this)"><i class="fa-solid fa-arrow-down"></i></button>
+            </div>
+          </div>
+          <div class="input-row">
+            <input type="text" class="live-input" data-target="title-${id}" value="New Section">
+            <label>حجم</label><input type="number" class="live-font" data-target="title-${id}" value="14">
+          </div>
+          <div class="input-row">
+            <textarea class="live-input" data-target="content-${id}" rows="3" placeholder="Content..."></textarea>
+            <label>حجم</label><input type="number" class="live-font" data-target="content-${id}" value="11">
+          </div>
+        </div>`;
+      document.getElementById('sortableSections').insertAdjacentHTML('beforeend', formHtml);
+
+      // إضافة في الورقة
+      const paperHtml = `
+        <div class="cv-section" id="${id}">
+          <h3 class="cv-section-title" id="title-${id}" style="font-size: 14pt;">New Section</h3>
+          <p class="cv-section-content" id="content-${id}" style="font-size: 11pt;"></p>
+        </div>`;
+      document.getElementById('paperSectionsArea').insertAdjacentHTML('beforeend', paperHtml);
+    };
+
+    // 6. استخراج الـ PDF
+    document.getElementById('downloadPdfBtn').addEventListener('click', () => {
+      const element = document.getElementById('cvPaper');
+      const opt = {
+        margin:       [0, 0, 0, 0], // حواف صفرية لضمان استخدام كامل المساحة
+        filename:     'Professional_CV.pdf',
+        image:        { type: 'jpeg', quality: 1 },
+        html2canvas:  { scale: 3, useCORS: true, letterRendering: true }, 
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+      // رسالة توضيحية لليوزر إن التحميل شغال
+      const btn = document.getElementById('downloadPdfBtn');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري تجهيز الملف...';
+      
+      html2pdf().set(opt).from(element).save().then(() => {
+        btn.innerHTML = originalText;
+      });
+    });
+  </script>
+</body>
+</html>

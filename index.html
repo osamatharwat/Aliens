@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Aliens Student Activity | Delta University</title>
-  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css">
   <link rel="stylesheet" href="style.css">
@@ -29,7 +29,7 @@
           <h1>WELCOME TO THE <span>MOTHERSHIP</span></h1>
           <p>نحن نشاط طلابي رسمي بكلية الصيدلة - جامعة الدلتا، بنبني مهارات، خبرات، وبيئة حقيقية تربط الدراسة بسوق العمل.</p>
           <div class="hero-buttons">
-            <a href="#join" class="cta-btn primary-btn" id="heroActionBtn">Join The Crew</a>
+            <button id="joinTeamBtn" class="cta-btn primary-btn">Join Our Crew </button>
             <a href="committees.html" class="cta-btn secondary-btn">استكشف اللجان</a>
           </div>
         </div>
@@ -98,23 +98,25 @@
         <h2 class="section-title">انضم إلى <span>كوكبنا</span> الآن</h2>
         <p class="page-intro-text">سواء كنت طالبًا تبحث عن شغفك، أو شركة أو رائد أعمال يبحث عن شريك حقيقي؛ Aliens ترحب بك.</p>
         <div class="portal-grid">
-          <div class="portal-card">
-            <h3>بوابة الطلاب والفضائيين</h3>
-            <p>سجّل معنا لتطوير مهاراتك والنزول لسوق العمل بثقة وقوة.</p>
-            <button id="joinTeamBtn" class="cta-btn primary-btn" onclick="openApplicationForm()">Join Our Crew 🛸</button>
-            <div id="recruitmentStatusMsg" class="recruitment-status-text"></div>
-            <p id="memoryAccessNote" class="portal-note hidden"></p>
-          </div>
-          <div class="portal-card">
-            <h3>بوابة الشركات والرعاة</h3>
-            <p>تواصل معنا عبر القنوات الرسمية لبحث فرص التعاون والشراكات المستدامة.</p>
-            <div class="partner-contact-links">
-              <a class="partner-link-btn whatsapp-btn" id="headWhatsAppBtn" href="#" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp"></i> PR Head WhatsApp</a>
-              <a class="partner-link-btn whatsapp-btn" id="subWhatsAppBtn" href="#" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp"></i> PR Sub-Head WhatsApp</a>
-            </div>
-          </div>
-        </div>
-      </div>
+  <div class="portal-card">
+    <h3>بوابة الطلاب والفضائيين</h3>
+    <p>سجّل معنا لتطوير مهاراتك والنزول لسوق العمل بثقة وقوة.</p>
+    <button id="joinTeamBtn" class="cta-btn primary-btn">Join Our Crew 🛸</button>
+  </div>
+
+  <div class="portal-card">
+    <h3>بوابة الشركات والرعاة</h3>
+    <p>تواصل معنا عبر القنوات الرسمية لبحث فرص التعاون والشراكات المستدامة.</p>
+    <div class="hero-buttons" style="justify-content: flex-start;">
+      <a id="headWhatsAppBtn" href="#" class="cta-btn secondary-btn" style="background: #25D366; color: #000; border: none;">
+        <i class="fa-brands fa-whatsapp"></i> PR Head
+      </a>
+      <a id="subWhatsAppBtn" href="#" class="cta-btn secondary-btn" style="background: #25D366; color: #000; border: none;">
+        <i class="fa-brands fa-whatsapp"></i> PR Sub-Head
+      </a>
+    </div>
+  </div>
+</div>
     </section>
 
 
@@ -134,5 +136,6 @@
   <script src="https://cdn.jsdelivr.net/npm/particles.js/2.0.0/particles.min.js"></script>
   <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
   <script src="script.js"></script>
+  <script src="enhancements.js"></script>
 </body>
 </html>

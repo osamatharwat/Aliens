@@ -4,81 +4,597 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Aliens Space | تسجيل الدخول</title>
-  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css">
   <link rel="stylesheet" href="style.css">
-  
+  <style>
+    /* ==================== الخلفية والمسرح ==================== */
+    .auth-hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      background: linear-gradient(135deg, rgba(57, 255, 20, 0.08), rgba(71, 199, 255, 0.05));
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 20% 50%, rgba(57, 255, 20, 0.1), transparent 50%),
+                  radial-gradient(circle at 80% 80%, rgba(71, 199, 255, 0.1), transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .auth-wrapper {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    /* ==================== رأس الصفحة ==================== */
+    .auth-header {
+      text-align: center;
+      margin-bottom: 40px;
+      animation: slideDown 0.6s ease;
+    }
+
+    .auth-header .logo-large {
+      font-size: 4rem;
+      margin-bottom: 12px;
+      display: inline-block;
+      animation: float 3s ease-in-out infinite;
+      filter: drop-shadow(0 0 20px rgba(57, 255, 20, 0.3));
+    }
+
+    .auth-header h1 {
+      font-size: 2.2rem;
+      margin-bottom: 8px;
+      color: var(--text-strong);
+      font-weight: 900;
+    }
+
+    .auth-header p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      letter-spacing: 0.5px;
+    }
+
+    /* ==================== صندوق النموذج ==================== */
+    .auth-box {
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: linear-gradient(180deg, rgba(14, 22, 37, 0.85), rgba(6, 10, 17, 0.95));
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      padding: 36px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4),
+                  0 0 40px rgba(57, 255, 20, 0.05);
+      animation: slideUp 0.6s ease;
+      position: relative;
+    }
+
+    .auth-box::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 28px;
+      background: radial-gradient(circle at 0% 0%, rgba(57, 255, 20, 0.05), transparent 70%);
+      pointer-events: none;
+    }
+
+    /* ==================== التبويبات ==================== */
+    .auth-tabs {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1px solid transparent;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--muted);
+      font-weight: 700;
+      cursor: pointer;
+      transition: all var(--transition);
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .tab-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      transform: translateY(-1px);
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, rgba(57, 255, 20, 0.2), rgba(71, 199, 255, 0.12));
+      border: 1px solid var(--line-strong);
+      color: var(--accent);
+      box-shadow: 0 8px 24px rgba(57, 255, 20, 0.12);
+    }
+
+    /* ==================== الفورم ==================== */
+    .auth-form {
+      display: none;
+      animation: fadeIn 0.4s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    .auth-form.active-form {
+      display: block;
+    }
+
+    .auth-form h2 {
+      font-size: 1.6rem;
+      margin-bottom: 28px;
+      color: var(--text-strong);
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    /* ==================== مجموعات الإدخال ==================== */
+    .input-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding: 14px 16px;
+      border: 1.5px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.02);
+      transition: all var(--transition);
+    }
+
+    .input-group:focus-within {
+      border-color: var(--accent);
+      background: rgba(57, 255, 20, 0.06);
+      box-shadow: 0 0 20px rgba(57, 255, 20, 0.12),
+                  inset 0 0 0 1px rgba(57, 255, 20, 0.1);
+      padding-right: 16px;
+    }
+
+    .input-group i {
+      color: var(--accent);
+      font-size: 1.15rem;
+      min-width: 20px;
+      text-align: center;
+      transition: transform var(--transition);
+    }
+
+    .input-group:focus-within i {
+      transform: scale(1.1);
+    }
+
+    .input-group input,
+    .input-group .file-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-size: 0.95rem;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .input-group input::placeholder {
+      color: var(--muted-2);
+    }
+
+    /* استخراج الملفات المحسّنة */
+    .input-group input[type="file"]::file-selector-button {
+      background: linear-gradient(135deg, rgba(57, 255, 20, 0.15), rgba(71, 199, 255, 0.1));
+      border: 1px solid var(--line-strong);
+      color: var(--accent);
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.85rem;
+      transition: all var(--transition);
+    }
+
+    .input-group input[type="file"]::file-selector-button:hover {
+      background: linear-gradient(135deg, rgba(57, 255, 20, 0.25), rgba(71, 199, 255, 0.15));
+      transform: scale(1.02);
+    }
+
+    /* ==================== عرض/إخفاء كلمة المرور ==================== */
+    .password-toggle {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 4px 8px;
+      font-size: 1rem;
+      transition: all var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .password-toggle:hover {
+      color: var(--accent);
+      transform: scale(1.1);
+    }
+
+    /* ==================== زر الإرسال ==================== */
+    .auth-submit {
+      width: 100%;
+      padding: 14px;
+      margin-top: 8px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #000;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-submit::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.6s;
+    }
+
+    .auth-submit:hover::before {
+      transform: translateX(100%);
+    }
+
+    .auth-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(57, 255, 20, 0.4);
+    }
+
+    .auth-submit:active {
+      transform: translateY(0);
+    }
+
+    .auth-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    /* ==================== رسائل الحالة ==================== */
+    .auth-msg {
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      text-align: center;
+      display: none;
+      animation: slideUp 0.3s ease;
+      border-left: 4px solid;
+    }
+
+    .auth-msg.show {
+      display: block;
+    }
+
+    .auth-msg.error {
+      background: rgba(239, 68, 68, 0.15);
+      color: #fca5a5;
+      border-color: rgba(239, 68, 68, 0.5);
+    }
+
+    .auth-msg.success {
+      background: rgba(34, 197, 94, 0.15);
+      color: #86efac;
+      border-color: rgba(34, 197, 94, 0.5);
+    }
+
+    .auth-msg.warning {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fcd34d;
+      border-color: rgba(245, 158, 11, 0.5);
+    }
+
+    /* ==================== الفاصل ==================== */
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 28px 0;
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .auth-divider::before,
+    .auth-divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
+
+    /* ==================== التذييل ==================== */
+    .auth-footer {
+      text-align: center;
+      margin-top: 20px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .auth-footer button {
+      margin-top: 12px;
+    }
+
+    .auth-footer a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 700;
+      transition: all var(--transition);
+    }
+
+    .auth-footer a:hover {
+      color: var(--accent-2);
+      text-decoration: underline;
+    }
+
+    /* ==================== الرسوميات والحركات ==================== */
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    /* ==================== الاستجابية ==================== */
+    @media (max-width: 560px) {
+      .auth-hero {
+        padding: 30px 16px;
+      }
+
+      .auth-wrapper {
+        max-width: 100%;
+      }
+
+      .auth-box {
+        padding: 24px;
+        border-radius: 20px;
+      }
+
+      .auth-header {
+        margin-bottom: 32px;
+      }
+
+      .auth-header .logo-large {
+        font-size: 3rem;
+      }
+
+      .auth-header h1 {
+        font-size: 1.6rem;
+      }
+
+      .auth-tabs {
+        gap: 8px;
+        margin-bottom: 24px;
+      }
+
+      .tab-btn {
+        padding: 10px 12px;
+        font-size: 0.85rem;
+        border-radius: 12px;
+      }
+
+      .tab-btn i {
+        display: none;
+      }
+
+      .input-group {
+        padding: 12px 14px;
+        margin-bottom: 14px;
+      }
+
+      .auth-form h2 {
+        font-size: 1.3rem;
+        margin-bottom: 20px;
+      }
+
+      .auth-submit {
+        padding: 12px;
+        font-size: 0.95rem;
+      }
+
+      .auth-divider {
+        margin: 20px 0;
+      }
+    }
+  </style>
 </head>
 <body data-page="auth">
   <div id="particles-js"></div>
 
-<header>
-  <div class="nav-container">
-    <a href="index.html" class="logo"><span class="ufo-icon">🛸</span> ALIENS</a>
-    <nav class="nav-links" id="siteNavLinks"></nav>
-    <div class="nav-links" id="siteNavActions"></div>
-  </div>
-</header>
+  <header>
+    <div class="nav-container">
+      <a href="index.html" class="logo"><span class="ufo-icon">🛸</span> ALIENS</a>
+      <nav class="nav-links" id="siteNavLinks"></nav>
+      <div class="nav-links" id="siteNavActions"></div>
+    </div>
+  </header>
 
-  <main class="auth-container">
-    <div class="auth-box" data-aos="zoom-in">
-      <div class="auth-tabs">
-        <button class="tab-btn active" type="button" id="loginTabBtn">تسجيل الدخول</button>
-        <button class="tab-btn" type="button" id="signupTabBtn">حساب جديد</button>
+  <main class="auth-hero">
+    <div class="auth-wrapper">
+      <div class="auth-header" data-aos="fade-down">
+        <div class="logo-large">👽</div>
+        <h1>مرحباً </h1>
+        <p>كن جزء من عائلة ALIENS</p>
       </div>
 
-      <form id="loginForm" class="auth-form active-form">
-        <h2>أهلاً بك في المركبة 👽</h2>
-        <div class="input-group">
-          <i class="fa-solid fa-user-astronaut"></i>
-          <input type="text" id="loginId" placeholder="البريد الإلكتروني أو اسم المستخدم" autocomplete="username" required>
+      <div class="auth-box" data-aos="zoom-in" data-aos-delay="100">
+        <div class="auth-tabs">
+          <button class="tab-btn active" type="button" id="loginTabBtn" onclick="window.switchTab('login')">
+            <i class="fa-solid fa-sign-in-alt"></i> دخول
+          </button>
+          <button class="tab-btn" type="button" id="signupTabBtn" onclick="window.switchTab('signup')">
+            <i class="fa-solid fa-user-plus"></i> إنشاء حساب
+          </button>
         </div>
-        <div class="input-group">
-          <i class="fa-solid fa-lock"></i>
-          <input type="password" id="loginPassword" placeholder="كلمة المرور" autocomplete="current-password" required>
-        </div>
-        <button type="submit" class="cta-btn primary-btn auth-submit">انطلاق 🚀</button>
-        <p class="auth-msg" id="loginMsg"></p>
-      </form>
 
-      <form id="signupForm" class="auth-form">
-        <h2>انضم للفاميليا 💚</h2>
-        <div class="input-group">
-          <i class="fa-solid fa-id-card"></i>
-          <input type="text" id="signupName" placeholder="الاسم بالكامل" autocomplete="name" required>
-        </div>
-        <div class="input-group">
-          <i class="fa-solid fa-at"></i>
-          <input type="text" id="signupUsername" placeholder="اسم المستخدم" pattern="[a-zA-Z0-9_]+" title="حروف إنجليزية وأرقام فقط بدون مسافات" autocomplete="username" required>
-        </div>
-        <div class="input-group">
-          <i class="fa-solid fa-envelope"></i>
-          <input type="email" id="signupEmail" placeholder="البريد الإلكتروني" autocomplete="email" required>
-        </div>
-        <div class="input-group">
-          <i class="fa-solid fa-lock"></i>
-          <input type="password" id="signupPassword" placeholder="كلمة المرور (6 أحرف على الأقل)" autocomplete="new-password" minlength="6" required>
-        </div>
-<div class="input-group">
-          <i class="fa-solid fa-image"></i>
-          <input type="file" id="signupAvatar" accept="image/*" class="file-input" style="padding-right: 16px;">
-        </div>
-        <div class="input-group">
-          <i class="fa-solid fa-key"></i>
-          <input type="text" id="signupPromo" placeholder="كود الترقية السري (اختياري)">
-        </div>
-        <button type="submit" class="cta-btn primary-btn auth-submit">تسجيل البيانات 📝</button>
-        <p class="auth-msg" id="signupMsg"></p>
-      </form>
+        <!-- ==================== فورم تسجيل الدخول ==================== -->
+        <form id="loginForm" class="auth-form active-form">
+          <h2><i class="fa-solid fa-rocket"></i> أهلاً بك</h2>
+          
+          <div class="input-group">
+            <i class="fa-solid fa-envelope"></i>
+            <input type="text" id="loginId" placeholder="البريد الإلكتروني أو اسم المستخدم" autocomplete="username" required>
+          </div>
+
+          <div class="input-group">
+            <i class="fa-solid fa-lock"></i>
+            <input type="password" id="loginPassword" placeholder="كلمة المرور" autocomplete="current-password" required>
+            <button type="button" class="password-toggle" onclick="window.togglePasswordVisibility('loginPassword')" title="إظهار/إخفاء كلمة المرور">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+
+          <button type="submit" class="cta-btn primary-btn auth-submit">
+            <i class="fa-solid fa-arrow-right"></i> انطلاق للمركبة 🚀
+          </button>
+
+          <p class="auth-msg" id="loginMsg"></p>
+
+          <div class="auth-divider">جديد هنا؟</div>
+          <div class="auth-footer">
+            <button type="button" class="nav-link" onclick="window.switchTab('signup')" style="width: 100%; border: 1px solid var(--line-strong);">
+              <i class="fa-solid fa-user-plus"></i> أنشئ حساب جديد
+            </button>
+          </div>
+        </form>
+
+        <!-- ==================== فورم إنشاء الحساب ==================== -->
+        <form id="signupForm" class="auth-form">
+          <h2><i class="fa-solid fa-star"></i> انضم للفاميليا</h2>
+          
+          <div class="input-group">
+            <i class="fa-solid fa-user"></i>
+            <input type="text" id="signupName" placeholder="الاسم الرباعي" autocomplete="name" required>
+          </div>
+
+          <div class="input-group">
+            <i class="fa-solid fa-at"></i>
+            <input type="text" id="signupUsername" placeholder="اسم المستخدم (حروف وأرقام فقط)" pattern="[a-zA-Z0-9_]+" title="حروف إنجليزية وأرقام فقط بدون مسافات" autocomplete="username" required>
+          </div>
+
+          <div class="input-group">
+            <i class="fa-solid fa-envelope"></i>
+            <input type="email" id="signupEmail" placeholder="البريد الإلكتروني" autocomplete="email" required>
+          </div>
+
+          <div class="input-group">
+            <i class="fa-solid fa-lock"></i>
+            <input type="password" id="signupPassword" placeholder="كلمة المرور (6+ أحرف)" autocomplete="new-password" minlength="6" required>
+            <button type="button" class="password-toggle" onclick="window.togglePasswordVisibility('signupPassword')" title="إظهار/إخفاء كلمة المرور">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+
+          <div class="input-group">
+            <i class="fa-solid fa-image"></i>
+            <input type="file" id="signupAvatar" accept="image/*" class="file-input" title="اختر صورة ملف الشخصي">
+          </div>
+
+          <div class="input-group">
+            <i class="fa-solid fa-gift"></i>
+            <input type="text" id="signupPromo" placeholder="كود الترقية (اختياري)" title="إذا كان لديك كود ترقية، ضعه هنا">
+          </div>
+
+          <button type="submit" class="cta-btn primary-btn auth-submit">
+            <i class="fa-solid fa-check"></i> إنشاء الحساب 📝
+          </button>
+
+          <p class="auth-msg" id="signupMsg"></p>
+
+          <div class="auth-divider">لديك حساب بالفعل؟</div>
+          <div class="auth-footer">
+            <button type="button" class="nav-link" onclick="window.switchTab('login')" style="width: 100%; border: 1px solid var(--line-strong);">
+              <i class="fa-solid fa-sign-in-alt"></i> تسجيل الدخول
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="auth-footer" style="margin-top: 40px;">
+        <p style="color: var(--muted); font-size: 0.85rem;">© 2026 Aliens Student Activity - Delta University</p>
+      </div>
     </div>
   </main>
-
-  <footer>© 2026 Aliens Student Activity - Delta University.</footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/particles.js/2.0.0/particles.min.js"></script>
   <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
   <script src="script.js"></script>
+  <script src="enhancements.js"></script>
+  <script>
+    // دالة إظهار/إخفاء كلمة المرور
+    window.togglePasswordVisibility = function(inputId) {
+      const input = document.getElementById(inputId);
+      const btn = event.target.closest('button');
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.innerHTML = '<i class="fa-solid fa-eye-slash"></i>';
+      } else {
+        input.type = 'password';
+        btn.innerHTML = '<i class="fa-solid fa-eye"></i>';
+      }
+    };
+  </script>
 </body>
 </html>

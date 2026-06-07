@@ -3,8 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#05080f">
+  <meta name="description" content="لوحة إدارة Aliens Space لإدارة الأعضاء، الفعاليات، المعرض، المجتمع الثقافي، التدريب، والمشاريع.">
   <title>Aliens Space | لوحة القيادة</title>
-  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -25,6 +27,7 @@
   <main id="adminContent" class="admin-container hidden">
     <section class="admin-header">
       <h1 class="section-title">لوحة تحكم <span>القائد (Head)</span></h1>
+      <p class="page-intro-text">كل أدوات الإدارة، التحديث، والمراجعة في مكان واحد.</p>
     </section>
 
     <div class="admin-grid">
@@ -32,9 +35,9 @@
         <h3><i class="fa-solid fa-sliders"></i> إعدادات المركبة</h3>
         <form id="settingsForm" class="table-like">
           <div class="admin-form-group"><label>حالة التقديم</label><select id="recruitmentStatus"><option value="open">مفتوح 🟢</option><option value="close">مغلق 🔴</option></select></div>
-          <div class="admin-form-group"><label>رابط التقديم</label><input type="url" id="recruitmentLink"></div>
-          <div class="admin-form-group"><label>PR Head (واتساب)</label><input type="text" id="prHeadPhone"></div>
-          <div class="admin-form-group"><label>PR Sub-Head (واتساب)</label><input type="text" id="prSubPhone"></div>
+          <div class="admin-form-group"><label>رابط التقديم</label><input type="url" id="recruitmentLink" placeholder="https://..."></div>
+          <div class="admin-form-group"><label>PR Head (واتساب)</label><input type="text" id="prHeadPhone" placeholder="01xxxxxxxxx"></div>
+          <div class="admin-form-group"><label>PR Sub-Head (واتساب)</label><input type="text" id="prSubPhone" placeholder="01xxxxxxxxx"></div>
           <button type="submit" class="cta-btn primary-btn">حفظ الإعدادات 💾</button>
           <p id="settingsMsg" class="auth-msg"></p>
         </form>
@@ -50,10 +53,7 @@
         <form id="addEventForm" class="table-like">
           <div class="admin-form-group"><label>اسم الإيفنت</label><input type="text" id="eventTitle" required></div>
           <div class="admin-form-group"><label>الوصف</label><input type="text" id="eventDesc" required></div>
-          <div class="admin-form-group">
-            <label>صورة البوستر (من الجهاز)</label>
-            <input type="file" id="eventImgFile" accept="image/*" class="file-input" multiple required>
-          </div>
+          <div class="admin-form-group"><label>صور البوستر</label><input type="file" id="eventImgFile" accept="image/*" class="file-input" multiple required></div>
           <div class="admin-form-group"><label>رابط الانضمام</label><input type="url" id="eventLink"></div>
           <button type="submit" class="cta-btn primary-btn" id="eventSubmitBtn">نشر الإيفنت 🚀</button>
           <p id="eventMsg" class="auth-msg"></p>
@@ -62,74 +62,77 @@
 
       <div class="admin-card" style="grid-column: 1 / -1;">
         <h3><i class="fa-solid fa-images"></i> إضافة صورة لمعرض الفعاليات</h3>
-        <form id="addGalleryImageForm" class="table-like" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-          <div class="admin-form-group">
-            <label>اسم السكشن (مثال: Job Fair 2026)</label>
-            <input type="text" id="gallerySectionName" required placeholder="اسم القسم أو الإيفنت">
+        <form id="addGalleryImageForm" class="table-like">
+          <div class="form-grid">
+            <div class="admin-form-group">
+              <label>اسم السكشن</label>
+              <input list="gallerySectionsList" type="text" id="gallerySectionName" required placeholder="اختر قسم موجود أو اكتب اسم جديد...">
+              <datalist id="gallerySectionsList"></datalist>
+            </div>
+            <div class="admin-form-group">
+              <label>صور المعرض</label>
+              <input type="file" id="galleryImgFile" accept="image/*" class="file-input" multiple required>
+            </div>
           </div>
-          <div class="admin-form-group">
-            <label>اسم السكشن</label>
-            <input list="gallerySectionsList" type="text" id="gallerySectionName" required placeholder="اختر قسم موجود أو اكتب اسم جديد...">
-            <datalist id="gallerySectionsList"></datalist>
-          </div>
+          <button type="submit" class="cta-btn primary-btn" id="gallerySubmitBtn">رفع الصورة للمعرض 🖼️</button>
+          <p id="galleryMsg" class="auth-msg"></p>
+        </form>
+        <div id="galleryManagementList" class="management-list" style="margin-top:16px;"></div>
+      </div>
 
-      <div class="admin-card" style="grid-column: 1 / -1;">
-        <h3><i class="fa-solid fa-calendar-days"></i> الفعاليات الحالية</h3>
+      <div class="admin-card">
+        <h3><i class="fa-solid fa-book-open"></i> إضافة مصدر ثقافي</h3>
+        <form id="addCulturalForm" class="table-like">
+          <div class="admin-form-group"><label>اسم السكشن</label><input list="cultSectionsList" type="text" id="cultSection" required></div>
+          <datalist id="cultSectionsList"></datalist>
+          <div class="admin-form-group"><label>عنوان المصدر</label><input type="text" id="cultTitle" required></div>
+          <div class="admin-form-group"><label>الرابط</label><input type="url" id="cultLink" required></div>
+          <div class="admin-form-group"><label>محتوى مميز؟</label><select id="cultPremium"><option value="false">Public</option><option value="true">Premium</option></select></div>
+          <button type="submit" class="cta-btn primary-btn" id="cultSubmitBtn">إضافة المصدر 📚</button>
+          <p id="cultMsg" class="auth-msg"></p>
+        </form>
+        <div id="culturalManagementList" class="management-list" style="margin-top:16px;"></div>
+      </div>
+
+      <div class="admin-card">
+        <h3><i class="fa-solid fa-briefcase"></i> إضافة فرصة تدريب</h3>
+        <form id="addInternshipForm" class="table-like">
+          <div class="admin-form-group"><label>اسم الشركة</label><input type="text" id="intCompany" required></div>
+          <div class="admin-form-group"><label>عنوان الفرصة</label><input type="text" id="intTitle" required></div>
+          <div class="admin-form-group"><label>الوصف</label><textarea id="intDesc" rows="4" required></textarea></div>
+          <div class="admin-form-group"><label>رابط التقديم</label><input type="url" id="intLink" required></div>
+          <div class="admin-form-group"><label>صورة</label><input type="file" id="intImgFile" accept="image/*" class="file-input"></div>
+          <button type="submit" class="cta-btn primary-btn" id="intSubmitBtn">إضافة الفرصة 🌟</button>
+          <p id="intMsg" class="auth-msg"></p>
+        </form>
+        <div id="internshipsManagementList" class="management-list" style="margin-top:16px;"></div>
+      </div>
+
+      <div class="admin-card">
+        <h3><i class="fa-solid fa-diagram-project"></i> إضافة مشروع عضو</h3>
+        <form id="addProjectForm" class="table-like">
+          <div class="admin-form-group"><label>عنوان المشروع</label><input type="text" id="projTitle" required></div>
+          <div class="admin-form-group"><label>الوصف</label><textarea id="projDesc" rows="4" required></textarea></div>
+          <div class="admin-form-group"><label>رقم التواصل</label><input type="text" id="projPhone"></div>
+          <div class="admin-form-group"><label>رابط السوشيال</label><input type="url" id="projSocial"></div>
+          <div class="admin-form-group"><label>رابط المشروع</label><input type="url" id="projLink"></div>
+          <div class="admin-form-group"><label>صور المشروع</label><input type="file" id="projImgFile" accept="image/*" class="file-input" multiple></div>
+          <button type="submit" class="cta-btn primary-btn" id="projSubmitBtn">إضافة المشروع 💡</button>
+          <p id="projMsg" class="auth-msg"></p>
+        </form>
+        <div id="projectsManagementList" class="management-list" style="margin-top:16px;"></div>
+      </div>
+
+      <div class="admin-card" style="grid-column:1 / -1;">
+        <h3><i class="fa-solid fa-clock-rotate-left"></i> مراجعة الذكريات</h3>
+        <div id="memoriesManagementList" class="management-list"></div>
+      </div>
+
+      <div class="admin-card" style="grid-column:1 / -1;">
+        <h3><i class="fa-solid fa-list-check"></i> مراجعة الفعاليات</h3>
         <div id="eventsManagementList" class="management-list"></div>
       </div>
-    <<div class="admin-card" style="grid-column: 1 / -1;">
-        <h3><i class="fa-solid fa-trash-can"></i> إدارة وحذف صور المعرض</h3>
-        <div id="galleryManagementList" class="management-list" style="max-height: 250px; overflow-y: auto;"></div>
-      </div>
-      <div class="admin-card">
-        <h3><i class="fa-solid fa-book-medical"></i> إضافة للمجتمع الثقافي</h3>
-        <form id="addCulturalForm" class="table-like">
-        <div class="admin-form-group">
-            <label>القسم</label>
-            <input list="cultSectionsList" type="text" id="cultSection" placeholder="اختر قسم (مثال: OTC) أو اكتب جديد..." required>
-            <datalist id="cultSectionsList"></datalist>
-          </div>
-          <div class="admin-form-group"><select id="cultPremium"><option value="false">متاح للكل</option><option value="true">للمميزين فقط 🌟</option></select></div>
-          <button type="submit" class="cta-btn primary-btn">إضافة المصدر 📚</button>
-        </form>
-      </div>
-      <div class="admin-card">
-     <div class="admin-card">
-        <h3><i class="fa-solid fa-briefcase"></i> فرصة إنترنشيب جديدة</h3>
-        <form id="addInternshipForm" class="table-like">
-          <div class="admin-form-group"><input type="text" id="intCompany" placeholder="اسم الشركة" required></div>
-          <div class="admin-form-group"><input type="text" id="intTitle" placeholder="المسمى الوظيفي" required></div>
-          <div class="admin-form-group"><input type="text" id="intDesc" placeholder="التفاصيل المختصرة" required></div>
-          <div class="admin-form-group"><input type="url" id="intLink" placeholder="رابط التقديم" required></div>
-          <div class="admin-form-group"><label style="color:var(--accent);">صورة الشركة/الفرصة</label><input type="file" id="intImgFile" accept="image/*" class="file-input"></div>
-          <button type="submit" class="cta-btn primary-btn" style="background:var(--warning); color:#000;">نشر الفرصة 🌟</button>
-        </form>
-      </div>
-      <div class="admin-card">
-        <h3><i class="fa-solid fa-lightbulb"></i> إضافة مشروع/منتج لعضو</h3>
-        <form id="addProjectForm" class="table-like">
-          <div class="admin-form-group"><input type="text" id="projTitle" placeholder="اسم المشروع/المنتج" required></div>
-          <div class="admin-form-group"><input type="text" id="projDesc" placeholder="وصف المشروع" required></div>
-          <div class="admin-form-group"><input type="text" id="projPhone" placeholder="رقم واتساب للتواصل (اختياري)"></div>
-          <div class="admin-form-group"><input type="url" id="projSocial" placeholder="لينك السوشيال ميديا (اختياري)"></div>
-          <div class="admin-form-group"><input type="url" id="projLink" placeholder="رابط المشروع الخارجي (اختياري)"></div>
-          <div class="admin-form-group"><label style="color:var(--accent);">صور المشروع (يمكنك تحديد أكثر من صورة)</label><input type="file" id="projImgFile" accept="image/*" class="file-input" multiple></div>
-          <button type="submit" class="cta-btn primary-btn">إضافة المشروع 💡</button>
-        </form>
-      </div>
-
-      <div class="admin-card">
-  <h3>
-    <i class="fa-solid fa-trash"></i>
-    إدارة الذكريات
-  </h3>
-
-  <div
-    id="memoriesManagementList"
-    class="management-list">
-  </div>
-</div>
-    
+    </div>
   </main>
 
   <footer>© 2026 Aliens Student Activity - Delta University.</footer>
@@ -137,5 +140,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/particles.js/2.0.0/particles.min.js"></script>
   <script src="script.js"></script>
+  <script src="enhancements.js"></script>
 </body>
 </html>
