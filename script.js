@@ -1210,19 +1210,26 @@ async function renderProfilesManagement() {
     if (!list || !sb) return;
 
     // بنسحب الداتا الجديدة بما فيها committee و position
-    const profiles = await fetchTable('profiles', 'id, full_name, username, email, role, avatar_url, committee, position', 'full_name', true).catch((err) => {
-      console.error(err);
-      list.innerHTML = '<div class="empty-state error">تعذر تحميل المستخدمين.</div>';
-      return [];
-    });
+    // 1. جلب البيانات مباشرة من Supabase لتجنب أي تعقيد في fetchTable
+    const { data: profiles, error } = await window.sb
+      .from('profiles')
+      .select('id, full_name, username, email, role, avatar_url, committee, position')
+      .order('full_name', { ascending: true });
 
-    if (!profiles.length) {
+    // 2. معالجة الخطأ
+    if (error) {
+      console.error("خطأ Supabase:", error);
+      list.innerHTML = `<div class="empty-state error">تعذر تحميل الأعضاء: ${error.message}</div>`;
+      return;
+    }
+
+    // 3. التحقق من وجود البيانات
+    if (!profiles || profiles.length === 0) {
       list.innerHTML = '<div class="empty-state">لا توجد بيانات مستخدمين.</div>';
       return;
     }
 
     const currentUserRole = state.role;
-
     list.innerHTML = profiles.map((user) => {
       const avatar = user.avatar_url
         ? `<img src="${escapeHtml(user.avatar_url)}" alt="avatar" style="width:45px;height:45px;border-radius:50%;object-fit:cover;border:2px solid var(--accent);">`
