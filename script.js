@@ -223,29 +223,36 @@
     return urls;
   }
 
-  async function getContext() {
-    if (state.session) return state;
-    if (!sb) return state;
+ async function getContext() {
+    // 1. استخدام window._cachedContext لضمان الوصول إليه من أي مكان
+    if (window._cachedContext && window._cachedContext.session) {
+      return window._cachedContext;
+    }
 
-    const { data: sessionData, error: sessionError } = await sb.auth.getSession();
-    if (sessionError || !sessionData?.session) return state;
+    if (!sb) return { session: null, profile: null, role: 'guest' };
 
-    const session = sessionData.session;
-    state.session = session;
+    const { data: { session }, error: sessionError } = await sb.auth.getSession();
+    if (sessionError || !session) return { session: null, profile: null, role: 'guest' };
 
     try {
       const { data: profile } = await sb
         .from('profiles')
-        .select('*')
+        .select('role, committee, position, full_name, avatar_url')
         .eq('id', session.user.id)
         .maybeSingle();
       
-      state.profile = profile;
-      state.role = profile?.role || 'member';
+      // 2. تخزين النتائج في window عشان تبقى "عالمية" ومتاحة لكل السكربتات
+      window._cachedContext = {
+        session: session,
+        profile: profile || {},
+        role: profile?.role || 'member'
+      };
+      
+      return window._cachedContext;
     } catch (err) {
-      console.warn('Profile load failed:', err);
+      console.error('فشل تحميل البروفايل:', err);
+      return { session: session, profile: null, role: 'member' };
     }
-    return state;
   }
 
   async function recordAnalytics(eventName, meta = {}) {
@@ -310,8 +317,9 @@
     return fields.map((field) => String(item?.[field] ?? '')).join(' ').toLowerCase();
   }
   function selectRole(role) {
-    if (role === 'guest') {
-      localStorage.setItem(GUEST_ROLE_KEY, 'guest');
+if (!localStorage.getItem(GUEST_ROLE_KEY)) {
+    localStorage.setItem(GUEST_ROLE_KEY, 'guest');
+
       const gateway = q('#roleGateway');
       if (gateway) gateway.style.display = 'none';
       return;
