@@ -170,7 +170,6 @@
       background: rgba(57, 255, 20, 0.06);
       box-shadow: 0 0 20px rgba(57, 255, 20, 0.12),
                   inset 0 0 0 1px rgba(57, 255, 20, 0.1);
-      padding-right: 16px;
     }
 
     .input-group i {
@@ -200,7 +199,6 @@
       color: var(--muted-2);
     }
 
-    /* استخراج الملفات المحسّنة */
     .input-group input[type="file"]::file-selector-button {
       background: linear-gradient(135deg, rgba(57, 255, 20, 0.15), rgba(71, 199, 255, 0.1));
       border: 1px solid var(--line-strong);
@@ -218,7 +216,6 @@
       transform: scale(1.02);
     }
 
-    /* ==================== عرض/إخفاء كلمة المرور ==================== */
     .password-toggle {
       background: none;
       border: none;
@@ -237,7 +234,6 @@
       transform: scale(1.1);
     }
 
-    /* ==================== زر الإرسال ==================== */
     .auth-submit {
       width: 100%;
       padding: 14px;
@@ -258,34 +254,11 @@
       overflow: hidden;
     }
 
-    .auth-submit::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      transform: translateX(-100%);
-      transition: transform 0.6s;
-    }
-
-    .auth-submit:hover::before {
-      transform: translateX(100%);
-    }
-
     .auth-submit:hover {
       transform: translateY(-2px);
       box-shadow: 0 12px 32px rgba(57, 255, 20, 0.4);
     }
 
-    .auth-submit:active {
-      transform: translateY(0);
-    }
-
-    .auth-submit:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    /* ==================== رسائل الحالة ==================== */
     .auth-msg {
       margin-top: 16px;
       padding: 14px 16px;
@@ -302,25 +275,10 @@
       display: block;
     }
 
-    .auth-msg.error {
-      background: rgba(239, 68, 68, 0.15);
-      color: #fca5a5;
-      border-color: rgba(239, 68, 68, 0.5);
-    }
+    .auth-msg.error { background: rgba(239, 68, 68, 0.15); color: #fca5a5; border-color: rgba(239, 68, 68, 0.5); }
+    .auth-msg.success { background: rgba(34, 197, 94, 0.15); color: #86efac; border-color: rgba(34, 197, 94, 0.5); }
+    .auth-msg.warning { background: rgba(245, 158, 11, 0.15); color: #fcd34d; border-color: rgba(245, 158, 11, 0.5); }
 
-    .auth-msg.success {
-      background: rgba(34, 197, 94, 0.15);
-      color: #86efac;
-      border-color: rgba(34, 197, 94, 0.5);
-    }
-
-    .auth-msg.warning {
-      background: rgba(245, 158, 11, 0.15);
-      color: #fcd34d;
-      border-color: rgba(245, 158, 11, 0.5);
-    }
-
-    /* ==================== الفاصل ==================== */
     .auth-divider {
       display: flex;
       align-items: center;
@@ -331,131 +289,23 @@
       font-weight: 600;
     }
 
-    .auth-divider::before,
-    .auth-divider::after {
-      content: "";
-      flex: 1;
-      height: 1px;
-      background: var(--line);
-    }
+    .auth-divider::before, .auth-divider::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+    .auth-footer { text-align: center; margin-top: 20px; color: var(--muted); font-size: 0.9rem; }
+    .auth-footer a { color: var(--accent); text-decoration: none; font-weight: 700; }
 
-    /* ==================== التذييل ==================== */
-    .auth-footer {
-      text-align: center;
-      margin-top: 20px;
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
 
-    .auth-footer button {
-      margin-top: 12px;
-    }
-
-    .auth-footer a {
-      color: var(--accent);
-      text-decoration: none;
-      font-weight: 700;
-      transition: all var(--transition);
-    }
-
-    .auth-footer a:hover {
-      color: var(--accent-2);
-      text-decoration: underline;
-    }
-
-    /* ==================== الرسوميات والحركات ==================== */
-    @keyframes slideDown {
-      from {
-        opacity: 0;
-        transform: translateY(-30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-12px); }
-    }
-
-    /* ==================== الاستجابية ==================== */
     @media (max-width: 560px) {
-      .auth-hero {
-        padding: 30px 16px;
-      }
-
-      .auth-wrapper {
-        max-width: 100%;
-      }
-
-      .auth-box {
-        padding: 24px;
-        border-radius: 20px;
-      }
-
-      .auth-header {
-        margin-bottom: 32px;
-      }
-
-      .auth-header .logo-large {
-        font-size: 3rem;
-      }
-
-      .auth-header h1 {
-        font-size: 1.6rem;
-      }
-
-      .auth-tabs {
-        gap: 8px;
-        margin-bottom: 24px;
-      }
-
-      .tab-btn {
-        padding: 10px 12px;
-        font-size: 0.85rem;
-        border-radius: 12px;
-      }
-
-      .tab-btn i {
-        display: none;
-      }
-
-      .input-group {
-        padding: 12px 14px;
-        margin-bottom: 14px;
-      }
-
-      .auth-form h2 {
-        font-size: 1.3rem;
-        margin-bottom: 20px;
-      }
-
-      .auth-submit {
-        padding: 12px;
-        font-size: 0.95rem;
-      }
-
-      .auth-divider {
-        margin: 20px 0;
-      }
+      .auth-hero { padding: 30px 16px; }
+      .auth-box { padding: 24px; border-radius: 20px; }
+      .auth-header .logo-large { font-size: 3rem; }
+      .auth-header h1 { font-size: 1.6rem; }
+      .tab-btn { padding: 10px 12px; font-size: 0.85rem; border-radius: 12px; }
+      .tab-btn i { display: none; }
+      .auth-form h2 { font-size: 1.3rem; margin-bottom: 20px; }
     }
   </style>
 </head>
@@ -488,8 +338,7 @@
           </button>
         </div>
 
-        <!-- ==================== فورم تسجيل الدخول ==================== -->
-        <form id="loginForm" class="auth-form active-form">
+        <form id="loginForm" class="auth-form active-form" onsubmit="window.loginAction(event)">
           <h2><i class="fa-solid fa-rocket"></i> أهلاً بك</h2>
           
           <div class="input-group">
@@ -505,6 +354,10 @@
             </button>
           </div>
 
+          <div style="text-align: left; margin: -6px 0 16px 5px;">
+            <a href="javascript:void(0)" onclick="window.resetPasswordAction()" style="color: var(--accent); font-size: 0.85rem; font-weight: bold; text-decoration: none;">نسيت كلمة المرور؟</a>
+          </div>
+
           <button type="submit" class="cta-btn primary-btn auth-submit">
             <i class="fa-solid fa-arrow-right"></i> انطلاق للمركبة 🚀
           </button>
@@ -513,13 +366,12 @@
 
           <div class="auth-divider">جديد هنا؟</div>
           <div class="auth-footer">
-            <button type="button" class="nav-link" onclick="window.switchTab('signup')" style="width: 100%; border: 1px solid var(--line-strong);">
+            <button type="button" class="nav-link" onclick="window.switchTab('signup')" style="width: 100%; border: 1px solid var(--line-strong); background: rgba(255,255,255,0.02); justify-content: center;">
               <i class="fa-solid fa-user-plus"></i> أنشئ حساب جديد
             </button>
           </div>
         </form>
 
-        <!-- ==================== فورم إنشاء الحساب ==================== -->
         <form id="signupForm" class="auth-form">
           <h2><i class="fa-solid fa-star"></i> انضم للفاميليا</h2>
           
@@ -562,9 +414,9 @@
 
           <p class="auth-msg" id="signupMsg"></p>
 
-          <div class="auth-divider">لديك حساب بالفعل؟</div>
+          <div class="auth-divider">لديك حساب بالفعل?</div>
           <div class="auth-footer">
-            <button type="button" class="nav-link" onclick="window.switchTab('login')" style="width: 100%; border: 1px solid var(--line-strong);">
+            <button type="button" class="nav-link" onclick="window.switchTab('login')" style="width: 100%; border: 1px solid var(--line-strong); background: rgba(255,255,255,0.02); justify-content: center;">
               <i class="fa-solid fa-sign-in-alt"></i> تسجيل الدخول
             </button>
           </div>
@@ -580,9 +432,36 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/particles.js/2.0.0/particles.min.js"></script>
   <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-  <script src="script.js"></script>
+  <script src="core.js"></script>
   <script src="enhancements.js"></script>
+  <script src="app.js"></script>
   <script>
+    AOS.init({
+      duration: 700,
+      once: true,
+      offset: 80
+    });
+
+    // دالة التبديل الآمنة والمباشرة بين التبويبات
+    window.switchTab = function(tab) {
+      const loginForm = document.getElementById('loginForm');
+      const signupForm = document.getElementById('signupForm');
+      const loginTab = document.getElementById('loginTabBtn');
+      const signupTab = document.getElementById('signupTabBtn');
+      
+      if (tab === 'login') {
+        loginForm.classList.add('active-form');
+        signupForm.classList.remove('active-form');
+        loginTab.classList.add('active');
+        signupTab.classList.remove('active');
+      } else {
+        signupForm.classList.add('active-form');
+        loginForm.classList.remove('active-form');
+        signupTab.classList.add('active');
+        loginTab.classList.remove('active');
+      }
+    };
+
     // دالة إظهار/إخفاء كلمة المرور
     window.togglePasswordVisibility = function(inputId) {
       const input = document.getElementById(inputId);
@@ -593,6 +472,22 @@
       } else {
         input.type = 'password';
         btn.innerHTML = '<i class="fa-solid fa-eye"></i>';
+      }
+    };
+
+    // دالة إعادة تعيين كلمة المرور المباشرة عبر Supabase
+    window.resetPasswordAction = async function() {
+      const email = prompt('أدخل بريدك الإلكتروني لإرسال رابط إعادة تعيين كلمة المرور:');
+      if (!email || !email.trim()) return;
+      
+      try {
+        const { error } = await window.sb.auth.resetPasswordForEmail(email.trim(), {
+          redirectTo: window.location.origin + '/auth.html',
+        });
+        if (error) alert('خطأ: ' + error.message);
+        else alert('تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك بنجاح! تفقد صندوق الرسائل.');
+      } catch (e) {
+        alert('حدث خطأ أثناء إرسال الطلب، تأكد من اتصالك بالإنترنت.');
       }
     };
   </script>

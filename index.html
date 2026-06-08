@@ -8,28 +8,91 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css">
   <link rel="stylesheet" href="style.css">
-  
+  <style>
+    /* تحسينات سريعة لضمان ظهور الهيدر بشكل سليم قبل تحميل الـ JS */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(5, 8, 15, 0.9);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 5%;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .logo {
+      font-weight: 800;
+      font-size: 1.5rem;
+      color: var(--accent);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    #siteNavLinks, #siteNavActions {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+    .hero {
+      min-height: 80vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 100px 5%;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-panel {
+      text-align: center;
+      max-width: 800px;
+      z-index: 1;
+    }
+    .hero h1 {
+      font-size: clamp(2.5rem, 8vw, 4.5rem);
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+    .hero h1 span {
+      color: var(--accent);
+      text-shadow: 0 0 20px rgba(57, 255, 20, 0.3);
+    }
+    .hero-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+    /* إخفاء العناصر التي يتم بناؤها بواسطة JS لمنع الـ Layout Shift */
+    .hidden { display: none !important; }
+  </style>
 </head>
 <body data-page="home">
  
   <div id="particles-js"></div>
 
-<header>
-  <div class="nav-container">
-    <a href="index.html" class="logo"><span class="ufo-icon">🛸</span> ALIENS</a>
-    <nav class="nav-links" id="siteNavLinks"></nav>
-    <div class="nav-links" id="siteNavActions"></div>
-  </div>
-</header>
+  <header>
+    <div class="nav-container">
+      <a href="index.html" class="logo"><span class="ufo-icon">🛸</span> ALIENS</a>
+      <nav id="siteNavLinks"></nav>
+      <div id="siteNavActions"></div>
+    </div>
+  </header>
 
   <main>
     <section class="hero">
       <div class="hero-panel" data-aos="fade-up">
         <div class="hero-content">
-          <h1>WELCOME TO THE <span>MOTHERSHIP</span></h1>
-          <p>نحن نشاط طلابي رسمي بكلية الصيدلة - جامعة الدلتا، بنبني مهارات، خبرات، وبيئة حقيقية تربط الدراسة بسوق العمل.</p>
+          <h1 id="heroTitle">WELCOME TO THE <span>MOTHERSHIP</span></h1>
+          <p id="heroDesc">نحن نشاط طلابي رسمي بكلية الصيدلة - جامعة الدلتا، بنبني مهارات، خبرات، وبيئة حقيقية تربط الدراسة بسوق العمل.</p>
           <div class="hero-buttons">
-            <button id="joinTeamBtn" class="cta-btn primary-btn">Join Our Crew </button>
+            <button class="cta-btn primary-btn join-crew-btn">Join Our Crew 🛸</button>
             <a href="committees.html" class="cta-btn secondary-btn">استكشف اللجان</a>
           </div>
         </div>
@@ -98,29 +161,28 @@
         <h2 class="section-title">انضم إلى <span>كوكبنا</span> الآن</h2>
         <p class="page-intro-text">سواء كنت طالبًا تبحث عن شغفك، أو شركة أو رائد أعمال يبحث عن شريك حقيقي؛ Aliens ترحب بك.</p>
         <div class="portal-grid">
-  <div class="portal-card">
-    <h3>بوابة الطلاب والفضائيين</h3>
-    <p>سجّل معنا لتطوير مهاراتك والنزول لسوق العمل بثقة وقوة.</p>
-    <button id="joinTeamBtn" class="cta-btn primary-btn">Join Our Crew 🛸</button>
-  </div>
-
-  <div class="portal-card">
-    <h3>بوابة الشركات والرعاة</h3>
-    <p>تواصل معنا عبر القنوات الرسمية لبحث فرص التعاون والشراكات المستدامة.</p>
-    <div class="hero-buttons" style="justify-content: flex-start;">
-      <a id="headWhatsAppBtn" href="#" class="cta-btn secondary-btn" style="background: #25D366; color: #000; border: none;">
-        <i class="fa-brands fa-whatsapp"></i> PR Head
-      </a>
-      <a id="subWhatsAppBtn" href="#" class="cta-btn secondary-btn" style="background: #25D366; color: #000; border: none;">
-        <i class="fa-brands fa-whatsapp"></i> PR Sub-Head
-      </a>
-    </div>
-  </div>
-</div>
+          <div class="portal-card">
+            <h3>بوابة الطلاب والفضائيين</h3>
+            <p>سجّل معنا لتطوير مهاراتك والنزول لسوق العمل بثقة وقوة.</p>
+           <button class="cta-btn primary-btn join-crew-btn">Join Our Crew 🛸</button>
+          </div>
+          <div class="portal-card">
+            <h3>بوابة الشركات والرعاة</h3>
+            <p>تواصل معنا عبر القنوات الرسمية لبحث فرص التعاون والشراكات المستدامة.</p>
+            <div class="hero-buttons" style="justify-content: flex-start;">
+              <a id="headWhatsAppBtn" href="#" class="cta-btn secondary-btn" style="background: #25D366; color: #000; border: none;">
+                <i class="fa-brands fa-whatsapp"></i> PR Head
+              </a>
+              <a id="subWhatsAppBtn" href="#" class="cta-btn secondary-btn" style="background: #25D366; color: #000; border: none;">
+                <i class="fa-brands fa-whatsapp"></i> PR Sub-Head
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
-
-<section id="social-links" style="text-align: center; padding: 40px 20px;">
+    <section id="social-links" style="text-align: center; padding: 40px 20px;">
       <h2 class="section-title">تابعنا عبر <span>المجرات</span></h2>
       <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
         <a href="https://www.facebook.com/Aliens.delta" class="quick-link-card" style="min-width: 150px; text-align: center; color: #1877F2;"><i class="fa-brands fa-facebook" style="font-size: 3rem; margin-bottom: 10px;"></i><h3>Facebook</h3></a>
@@ -132,10 +194,22 @@
 
   <footer>© 2026 Aliens Student Activity - Delta University. Designed with 💚 for the Familia.</footer>
 
+  <!-- ترتيب الملفات مهم جداً -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/particles.js/2.0.0/particles.min.js"></script>
   <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-  <script src="script.js"></script>
+<script>
+  AOS.init({
+    duration: 700,
+    once: true,
+    offset: 80
+  });
+</script>
+  
+  <!-- استدعاء النسخ المصححة -->
+<script src="core.js"></script>
+  <script src="admin.js"></script>
+  <script src="app.js"></script>
   <script src="enhancements.js"></script>
 </body>
 </html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>ملفي الشخصي | Aliens Space</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="page-shell" data-page="profile">
+
+  <header>
+    <div class="nav-container">
+      <a href="index.html" class="logo"><span class="ufo-icon">🛸</span> ALIENS</a>
+      <nav id="siteNavLinks"></nav>
+      <div id="siteNavActions"></div>
+    </div>
+  </header>
+
+  <main class="admin-container">
+    <section class="admin-header">
+      <h1 class="section-title">أهلاً بك يا <span id="userNameDisplay">...</span></h1>
+      <p>هنا تقدر تتابع بياناتك وتقييماتك.</p>
+    </section>
+
+    <div class="admin-grid">
+      <div class="admin-card">
+        <h3><i class="fa-solid fa-user-circle"></i> معلومات العضوية</h3>
+        <div id="profileDetails" class="table-like">
+          <p><strong>اللجنة:</strong> <span id="userCommittee">...</span></p>
+          <p><strong>المنصب:</strong> <span id="userPosition">...</span></p>
+        </div>
+      </div>
+
+      <div class="admin-card">
+        <h3><i class="fa-solid fa-user-pen"></i> تعديل بياناتي</h3>
+        <form id="editProfileForm" class="table-like">
+          <div class="admin-form-group"><label>الاسم الكامل</label><input type="text" id="editFullName"></div>
+          <div class="admin-form-group"><label>اسم المستخدم (Username)</label><input type="text" id="editUsername"></div>
+          <div class="admin-form-group"><label>كلمة المرور الجديدة</label><input type="password" id="editPassword" placeholder="اتركها فارغة لعدم التغيير"></div>
+          <div class="admin-form-group"><label>الصورة الشخصية</label><input type="file" id="editAvatar" accept="image/*"></div>
+          <button type="submit" class="cta-btn primary-btn" id="saveProfileBtn">حفظ التعديلات 💾</button>
+        </form>
+      </div>
+
+      <div class="admin-card" style="grid-column: 1 / -1;">
+        <h3><i class="fa-solid fa-star"></i> سجل التقييمات الشهرية</h3>
+        <div id="userEvaluationsList" class="management-list"></div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="core.js"></script>
+  <script src="enhancements.js"></script>
+  <script src="profile.js"></script>
+</body>
+</html>

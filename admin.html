@@ -30,12 +30,19 @@
       <p class="page-intro-text">كل أدوات الإدارة، التحديث، والمراجعة في مكان واحد.</p>
     </section>
 
-    <div class="admin-grid">
-<div class="admin-card" style="grid-column: 1 / -1;">
-  <h3><i class="fa-solid fa-file-signature"></i> طلبات الانضمام (IR Portal)</h3>
-  <div id="applicationsManagementList" class="management-list"></div>
+<div class="admin-card ir-only-card" id="card-ir-dashboard" style="grid-column: 1 / -1; display: none;">
+        <h3><i class="fa-solid fa-clipboard-user"></i> مقابلاتي (IR Dashboard)</h3>
+        <p class="page-intro-text">المتقدمين الموزعين عليك لعمل الانترفيو وتقييمهم.</p>
+        <div id="irInterviewsList" class="management-list"></div>
+      </div>
+
+<div class="admin-card ir-only-card" id="card-performance" style="grid-column: 1 / -1; display: none;">
+  <h3><i class="fa-solid fa-chart-line"></i> التقييم الشهري للأعضاء (Performance)</h3>
+  <p class="page-intro-text">تقييم أعضاء اللجان الموزعين عليك شهرياً وتصدير التقرير.</p>
+  <div id="performanceManagementList" class="management-list"></div>
 </div>
 
+    <div class="admin-grid">
       <div class="admin-card">
         <h3><i class="fa-solid fa-sliders"></i> إعدادات المركبة</h3>
         <form id="settingsForm" class="table-like">
@@ -47,13 +54,22 @@
           <p id="settingsMsg" class="auth-msg"></p>
         </form>
       </div>
-
-      <div class="admin-card">
-        <h3><i class="fa-solid fa-users-gear"></i> إدارة الأعضاء</h3>
-        <div id="profilesManagementList" class="management-list"></div>
+    <div class="admin-card">
+        <h3><i class="fa-solid fa-diagram-project"></i> إضافة مشروع عضو</h3>
+        <form id="addProjectForm" class="table-like">
+          <div class="admin-form-group"><label>عنوان المشروع</label><input type="text" id="projTitle" required></div>
+          <div class="admin-form-group"><label>الوصف</label><textarea id="projDesc" rows="4" required></textarea></div>
+          <div class="admin-form-group"><label>رقم التواصل</label><input type="text" id="projPhone"></div>
+          <div class="admin-form-group"><label>رابط السوشيال</label><input type="url" id="projSocial"></div>
+          <div class="admin-form-group"><label>رابط المشروع</label><input type="url" id="projLink"></div>
+          <div class="admin-form-group"><label>صور المشروع</label><input type="file" id="projImgFile" accept="image/*" class="file-input" multiple></div>
+          <button type="submit" class="cta-btn primary-btn" id="projSubmitBtn">إضافة المشروع 💡</button>
+          <p id="projMsg" class="auth-msg"></p>
+        </form>
+        <div id="projectsManagementList" class="management-list" style="margin-top:16px;"></div>
       </div>
 
-      <div class="admin-card">
+<div class="admin-card">
         <h3><i class="fa-solid fa-calendar-plus"></i> إطلاق فعالية جديدة</h3>
         <form id="addEventForm" class="table-like">
           <div class="admin-form-group"><label>اسم الإيفنت</label><input type="text" id="eventTitle" required></div>
@@ -65,27 +81,9 @@
         </form>
       </div>
 
-      <div class="admin-card" style="grid-column: 1 / -1;">
-        <h3><i class="fa-solid fa-images"></i> إضافة صورة لمعرض الفعاليات</h3>
-        <form id="addGalleryImageForm" class="table-like">
-          <div class="form-grid">
-            <div class="admin-form-group">
-              <label>اسم السكشن</label>
-              <input list="gallerySectionsList" type="text" id="gallerySectionName" required placeholder="اختر قسم موجود أو اكتب اسم جديد...">
-              <datalist id="gallerySectionsList"></datalist>
-            </div>
-            <div class="admin-form-group">
-              <label>صور المعرض</label>
-              <input type="file" id="galleryImgFile" accept="image/*" class="file-input" multiple required>
-            </div>
-          </div>
-          <button type="submit" class="cta-btn primary-btn" id="gallerySubmitBtn">رفع الصورة للمعرض 🖼️</button>
-          <p id="galleryMsg" class="auth-msg"></p>
-        </form>
-        <div id="galleryManagementList" class="management-list" style="margin-top:16px;"></div>
-      </div>
 
-      <div class="admin-card">
+
+<div class="admin-card">
         <h3><i class="fa-solid fa-book-open"></i> إضافة مصدر ثقافي</h3>
         <form id="addCulturalForm" class="table-like">
           <div class="admin-form-group"><label>اسم السكشن</label><input list="cultSectionsList" type="text" id="cultSection" required></div>
@@ -113,20 +111,87 @@
         <div id="internshipsManagementList" class="management-list" style="margin-top:16px;"></div>
       </div>
 
-      <div class="admin-card">
-        <h3><i class="fa-solid fa-diagram-project"></i> إضافة مشروع عضو</h3>
-        <form id="addProjectForm" class="table-like">
-          <div class="admin-form-group"><label>عنوان المشروع</label><input type="text" id="projTitle" required></div>
-          <div class="admin-form-group"><label>الوصف</label><textarea id="projDesc" rows="4" required></textarea></div>
-          <div class="admin-form-group"><label>رقم التواصل</label><input type="text" id="projPhone"></div>
-          <div class="admin-form-group"><label>رابط السوشيال</label><input type="url" id="projSocial"></div>
-          <div class="admin-form-group"><label>رابط المشروع</label><input type="url" id="projLink"></div>
-          <div class="admin-form-group"><label>صور المشروع</label><input type="file" id="projImgFile" accept="image/*" class="file-input" multiple></div>
-          <button type="submit" class="cta-btn primary-btn" id="projSubmitBtn">إضافة المشروع 💡</button>
-          <p id="projMsg" class="auth-msg"></p>
+<div class="admin-card">
+        <h3><i class="fa-solid fa-clipboard-question"></i> إدارة أسئلة اللجان (Dynamic Questions)</h3>
+        <form id="addQuestionForm" class="table-like">
+          <div class="admin-form-group">
+            <label>اللجنة</label>
+            <select id="questionCommittee" required>
+              <option value="" disabled selected>-- اختر اللجنة --</option>
+              <option value="pr">PR</option>
+              <option value="ir">IR</option>
+              <option value="media">Media</option>
+              <option value="marketing">Marketing</option>
+              <option value="magic_hand">Magic Hand</option>
+              <option value="event_planning">Event Planning</option>
+            </select>
+          </div>
+          <div class="admin-form-group">
+            <label>نص السؤال</label>
+            <input type="text" id="questionText" required placeholder="مثال: ليه حابب تنضم للجنة دي؟">
+          </div>
+          <button type="submit" class="cta-btn primary-btn" id="questionSubmitBtn">إضافة السؤال ➕</button>
+          <p id="questionMsg" class="auth-msg"></p>
         </form>
-        <div id="projectsManagementList" class="management-list" style="margin-top:16px;"></div>
+        <div id="questionsManagementList" class="management-list" style="margin-top:16px;"></div>
       </div>
+
+
+<div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; justify-content:center; align-items:center;">
+    <div style="background:#1a1f28; padding:20px; border-radius:10px; width:300px; color:white;">
+        <h3>تعديل بيانات العضو</h3>
+        <label>اللجنة:</label>
+        <select id="editCommittee" style="width:100%; margin-bottom:15px; padding:8px;">
+            <option value="PR">PR</option>
+            <option value="IR">IR</option>
+            <option value="Marketing">Marketing</option>
+        </select>
+        <label>المنصب:</label>
+        <select id="editPosition" style="width:100%; margin-bottom:15px; padding:8px;">
+            <option value="Member">Member</option>
+            <option value="Head">Head</option>
+            <option value="OG">OG</option>
+        </select>
+        <button id="saveEditBtn" style="width:100%; padding:10px; background:var(--accent); border:none; cursor:pointer;">حفظ</button>
+        <button onclick="q('#editModal').style.display='none'" style="width:100%; margin-top:10px; padding:10px; background:transparent; border:1px solid #555; color:white; cursor:pointer;">إلغاء</button>
+    </div>
+</div>
+
+
+     <div class="admin-card" id="card-members">
+  <h3><i class="fa-solid fa-users-gear"></i> إدارة الأعضاء</h3>
+  <div id="profilesManagementList" class="management-list"></div>
+</div>
+
+<div class="admin-card" id="card-applications" style="grid-column: 1 / -1;">
+  <h3><i class="fa-solid fa-file-signature"></i> طلبات الانضمام (IR Portal)</h3>
+  <div id="applicationsManagementList" class="management-list"></div>
+</div>
+
+      
+
+      <div class="admin-card" style="grid-column: 1 / -1;">
+        <h3><i class="fa-solid fa-images"></i> إضافة صورة لمعرض الفعاليات</h3>
+        <form id="addGalleryImageForm" class="table-like">
+          <div class="form-grid">
+            <div class="admin-form-group">
+              <label>اسم السكشن</label>
+              <input list="gallerySectionsList" type="text" id="gallerySectionName" required placeholder="اختر قسم موجود أو اكتب اسم جديد...">
+              <datalist id="gallerySectionsList"></datalist>
+            </div>
+            <div class="admin-form-group">
+              <label>صور المعرض</label>
+              <input type="file" id="galleryImgFile" accept="image/*" class="file-input" multiple required>
+            </div>
+          </div>
+          <button type="submit" class="cta-btn primary-btn" id="gallerySubmitBtn">رفع الصورة للمعرض 🖼️</button>
+          <p id="galleryMsg" class="auth-msg"></p>
+        </form>
+        <div id="galleryManagementList" class="management-list" style="margin-top:16px;"></div>
+      </div>
+
+
+  
 
       <div class="admin-card" style="grid-column:1 / -1;">
         <h3><i class="fa-solid fa-clock-rotate-left"></i> مراجعة الذكريات</h3>
@@ -144,7 +209,9 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/particles.js/2.0.0/particles.min.js"></script>
-  <script src="script.js"></script>
+ <script src="core.js"></script>
+  <script src="admin.js"></script>
+  <script src="app.js"></script>
   <script src="enhancements.js"></script>
 </body>
 </html>

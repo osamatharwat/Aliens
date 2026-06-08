@@ -1,7 +1,6 @@
-
 /* =========================================================
-   ALIENS SPACE — Unified Design System
-   Clean, premium, RTL-friendly, and mobile-first.
+   ALIENS SPACE — MODERNIZED UI SYSTEM
+   Full replacement stylesheet focused on premium admin/dashboard UX.
    ========================================================= */
 
 :root {
@@ -180,7 +179,7 @@ footer {
 }
 
 /* =========================================================
-   Shell / Header / Navigation
+   Header / Navigation
    ========================================================= */
 
 header {
@@ -327,7 +326,6 @@ header {
   white-space: nowrap;
 }
 
-/* compact action buttons */
 .nav-icon-btn {
   position: relative;
   width: 44px;
@@ -405,7 +403,7 @@ header {
 }
 
 /* =========================================================
-   Layout / Typography
+   Layout / Hero / Sections
    ========================================================= */
 
 .hero,
@@ -476,27 +474,6 @@ header {
   font-size: clamp(1rem, 2vw, 1.16rem);
 }
 
-.hero-buttons,
-.form-actions,
-.card-actions,
-.event-actions,
-.management-actions,
-.admin-row-actions,
-.store-actions,
-.store-prompt-actions,
-.memory-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.hero-buttons,
-.form-actions,
-.card-actions,
-.store-prompt-actions {
-  justify-content: center;
-}
-
 .section-title {
   margin: 0 0 18px;
   text-align: center;
@@ -523,6 +500,27 @@ header {
   padding-block: 52px 14px;
 }
 
+.hero-buttons,
+.form-actions,
+.card-actions,
+.event-actions,
+.management-actions,
+.admin-row-actions,
+.store-actions,
+.store-prompt-actions,
+.memory-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.hero-buttons,
+.form-actions,
+.card-actions,
+.store-prompt-actions {
+  justify-content: center;
+}
+
 /* =========================================================
    Grids
    ========================================================= */
@@ -536,7 +534,8 @@ header {
 .comments-grid,
 .admin-grid,
 .committees-grid,
-.gallery-fluid-grid {
+.gallery-fluid-grid,
+.dashboard-stats-grid {
   display: grid;
   gap: 20px;
 }
@@ -570,12 +569,13 @@ header {
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
-.gallery-fluid-grid {
+.gallery-fluid-grid,
+.dashboard-stats-grid {
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
 /* =========================================================
-   Surface Cards / Common Blocks
+   Shared Surface / Cards
    ========================================================= */
 
 .about-card,
@@ -599,7 +599,12 @@ header {
 .aliens-sidebar,
 .store-prompt-card,
 .golden-frame,
-.page-toolbar {
+.page-toolbar,
+.dashboard-panel,
+.table-shell,
+.metric-card,
+.info-card,
+.kpi-card {
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   background: linear-gradient(180deg, rgba(12, 18, 31, 0.94), rgba(6, 10, 17, 0.96));
@@ -616,7 +621,12 @@ header {
 .quick-link-card,
 .memory-card,
 .comment-card,
-.store-card {
+.store-card,
+.dashboard-panel,
+.metric-card,
+.info-card,
+.kpi-card,
+.table-shell {
   padding: 24px;
 }
 
@@ -638,7 +648,10 @@ header {
 .memory-form-card h3,
 .store-topline h3,
 .modal-card h3,
-.auth-form h2 {
+.auth-form h2,
+.metric-card h3,
+.info-card h3,
+.kpi-card h3 {
   margin: 0 0 10px;
   font-size: 1.18rem;
 }
@@ -653,7 +666,10 @@ header {
 .page-tag,
 .store-meta,
 .notif-item p,
-.store-prompt-card p {
+.store-prompt-card p,
+.metric-card p,
+.info-card p,
+.kpi-card p {
   color: var(--muted);
   line-height: 1.75;
 }
@@ -683,7 +699,12 @@ header {
 .comment-card:hover,
 .admin-card:hover,
 .committee-card:hover,
-.store-card:hover {
+.store-card:hover,
+.dashboard-panel:hover,
+.metric-card:hover,
+.info-card:hover,
+.kpi-card:hover,
+.table-shell:hover {
   transform: translateY(-4px);
   border-color: var(--line-strong);
   box-shadow: 0 18px 42px rgba(0, 0, 0, 0.44);
@@ -777,7 +798,7 @@ header {
 }
 
 /* =========================================================
-   Forms / Inputs
+   Forms
    ========================================================= */
 
 .auth-container {
@@ -965,7 +986,7 @@ textarea:focus,
 }
 
 /* =========================================================
-   Page Toolbar / Search
+   Toolbar / Stats / Badges
    ========================================================= */
 
 .page-toolbar {
@@ -996,7 +1017,8 @@ textarea:focus,
 .committee-tag,
 .store-chip,
 .store-badge,
-.store-kicker {
+.store-kicker,
+.metric-chip {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -1034,6 +1056,45 @@ textarea:focus,
 
 .page-tag {
   color: var(--text);
+}
+
+.dashboard-stats-grid {
+  margin-bottom: 24px;
+}
+
+.metric-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.metric-card::after {
+  content: "";
+  position: absolute;
+  inset: auto -20% -35% auto;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(57,255,20,0.14), transparent 70%);
+  pointer-events: none;
+}
+
+.metric-value {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.metric-value strong {
+  font-size: 2.2rem;
+  line-height: 1;
+  font-weight: 1000;
+  color: var(--accent);
+}
+
+.metric-value span {
+  color: var(--muted);
+  font-weight: 800;
 }
 
 /* =========================================================
@@ -1373,7 +1434,9 @@ textarea:focus,
 .card-meta,
 .event-meta,
 .memory-meta,
-.comment-meta {
+.comment-meta,
+.store-stats,
+.meta-row {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -1574,7 +1637,7 @@ textarea:focus,
 }
 
 /* =========================================================
-   Admin / Loaders / Lists / Tables
+   Dashboard / Tables / Admin
    ========================================================= */
 
 .admin-header {
@@ -1582,18 +1645,41 @@ textarea:focus,
 }
 
 .admin-grid {
-  align-items: start;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.members-table {
+  display: table;
+  width: 100%;
+  font-size: 0.9rem;
+}
+
+.members-table div {
+  display: table-row;
+}
+
+.members-table span,
+.members-table select {
+  display: table-cell;
+  padding: 8px;
+  border-bottom: 1px solid #2a2e35;
 }
 
 .admin-card {
-  display: grid;
-  gap: 14px;
+  display: flex;
+  flex-direction: column;
 }
 
 .admin-card h3 {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+#card-members {
+  grid-column: span 2;
 }
 
 .admin-loader {
@@ -1616,7 +1702,9 @@ textarea:focus,
 }
 
 .management-list,
-.permission-grid {
+.permission-grid,
+.kpi-grid,
+.table-grid {
   display: grid;
   gap: 12px;
 }
@@ -1669,7 +1757,8 @@ textarea:focus,
 .card-meta,
 .memory-meta,
 .comment-meta,
-.page-toolbar {
+.page-toolbar,
+.dashboard-topline {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1728,6 +1817,72 @@ textarea:focus,
 }
 
 /* =========================================================
+   Table/Row Improvements for Admin Lists
+   ========================================================= */
+
+.table-shell {
+  overflow: hidden;
+}
+
+.table-row,
+.list-row,
+.admin-list-item {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.03);
+  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition), background var(--transition);
+}
+
+.table-row:hover,
+.list-row:hover,
+.admin-list-item:hover {
+  transform: translateY(-2px);
+  border-color: var(--line-strong);
+  background: rgba(255,255,255,0.045);
+}
+
+.row-head,
+.row-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.row-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.row-title strong {
+  color: var(--text-strong);
+  font-size: 1rem;
+}
+
+.row-subtitle {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.row-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.row-actions .cta-btn,
+.row-actions button,
+.row-actions a {
+  min-height: 42px;
+}
+
+/* =========================================================
    Modal / Toast
    ========================================================= */
 
@@ -1743,15 +1898,12 @@ textarea:focus,
   background: rgba(1, 3, 7, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  
-  /* 👇 سر الاختفاء هنا 👇 */
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
   transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-/* حالة الظهور (لما الكود يضيف كلمة show) */
 .modal-overlay.show,
 .store-prompt-modal.show {
   opacity: 1;
@@ -1783,10 +1935,9 @@ textarea:focus,
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  /* 👇 الإضافات الجديدة اللي هتجبر الزرار يشتغل 👇 */
   cursor: pointer;
   position: relative;
-  z-index: 9999; 
+  z-index: 9999;
   pointer-events: auto;
 }
 
@@ -2077,12 +2228,6 @@ textarea:focus,
   margin: 0;
 }
 
-.store-stats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
 .store-chip {
   color: var(--accent);
   border-color: rgba(57,255,20,0.22);
@@ -2113,6 +2258,74 @@ textarea:focus,
   background: rgba(255,255,255,0.04);
   color: var(--text);
   font-weight: 900;
+}
+
+/* =========================================================
+   Role / Status Chips for Applications
+   ========================================================= */
+
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  font-weight: 900;
+  line-height: 1;
+}
+
+.status-chip.pending {
+  color: #facc15;
+  border-color: rgba(250, 204, 21, 0.25);
+  background: rgba(250, 204, 21, 0.08);
+}
+
+.status-chip.accepted {
+  color: var(--success);
+  border-color: rgba(34, 197, 94, 0.22);
+  background: rgba(34, 197, 94, 0.08);
+}
+
+.status-chip.rejected {
+  color: #fecaca;
+  border-color: rgba(239, 68, 68, 0.24);
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.status-chip.neutral {
+  color: var(--muted);
+  background: rgba(255,255,255,0.03);
+}
+
+/* =========================================================
+   Accordion / Collapsible Admin Cards
+   ========================================================= */
+
+.admin-card h3 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.admin-card h3 .toggle-icon {
+  transition: transform var(--transition), color var(--transition);
+}
+
+.card-content-wrapper {
+  margin-top: 15px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.admin-card.is-open h3 {
+  color: var(--accent);
+}
+
+.admin-card.is-open h3 .toggle-icon {
+  transform: rotate(180deg);
 }
 
 /* =========================================================
@@ -2227,6 +2440,10 @@ textarea:focus,
     min-width: 210mm;
     padding: 28px;
   }
+
+  #card-members {
+    grid-column: auto;
+  }
 }
 
 @media (max-width: 560px) {
@@ -2285,7 +2502,12 @@ textarea:focus,
   .comment-form,
   .modal-card,
   .builder-panel,
-  .loader-box {
+  .loader-box,
+  .dashboard-panel,
+  .metric-card,
+  .info-card,
+  .kpi-card,
+  .table-shell {
     padding: 20px;
     border-radius: 22px;
   }
@@ -2330,12 +2552,14 @@ textarea:focus,
   }
 }
 
+/* =========================================================
+   RTL / LTR Sidebar Direction Handling
+   ========================================================= */
 
 body.sidebar-open {
   overflow: hidden;
 }
 
-/* في العربي: السايد بار يجي من اليمين */
 html[dir="rtl"] .aliens-sidebar {
   right: 0;
   left: auto;
@@ -2345,7 +2569,6 @@ html[dir="rtl"] .aliens-sidebar {
   box-shadow: -32px 0 80px rgba(0, 0, 0, 0.5);
 }
 
-/* في الإنجليزي: السايد بار يجي من الشمال */
 html[dir="ltr"] .aliens-sidebar {
   left: 0;
   right: auto;
@@ -2363,4 +2586,65 @@ html[dir="ltr"] .aliens-sidebar {
   .aliens-sidebar {
     width: min(92vw, 390px);
   }
+}
+
+/* =========================================================
+   Gallery like button
+   ========================================================= */
+
+.gallery-card {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #111;
+  border: 1px solid #222;
+}
+
+.gallery-card img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  display: block;
+}
+
+.like-btn-floating {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+.like-btn-floating:hover {
+  background: rgba(239, 68, 68, 0.6);
+  transform: scale(1.1);
+}
+
+.modal-overlay {
+  display: none;
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.8);
+  z-index: 9999;
+  justify-content: center; align-items: center;
+}
+.modal-overlay.show { display: flex; }
+
+
+.table-row select:disabled {
+  cursor: not-allowed;
+  filter: grayscale(1);
+}
+.table-row select:focus {
+  border-color: var(--accent);
+  outline: none;
 }
