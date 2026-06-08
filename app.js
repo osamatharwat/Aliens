@@ -257,6 +257,10 @@ window.toggleLike = async (imageId) => {
 
 async function initPage() {
   const ctx = await getContext(); const page = getPageKey();
+
+if (page === 'home' || page === 'index') {
+    await syncWhatsAppButtons();
+  }
   
   if (page === 'admin') await setupAdmin(ctx); // تشغيل لوحة التحكم
   q('#logoutBtn')?.addEventListener('click', window.handleLogout);
@@ -368,7 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (msg) {
         msg.className = 'auth-msg success show'; 
         msg.style.display = 'block';
-        msg.innerHTML = '<i class="fa-solid fa-check-circle"></i> تم إنشاء حسابك بنجاح! جاري تحويلك للمركبة... 🚀';
+        msg.innerHTML = '<i class="fa-solid fa-check-circle"></i> تم إنشاء حسابك بنجاح! يرجي التفعيل من خلال البريد الالكتروني ... 🚀';
         signupForm.reset();
         
         // توجيه المستخدم بعد ثانيتين
@@ -435,3 +439,30 @@ document.addEventListener('click', (e) => {
     }
   }
 });
+
+
+async function syncWhatsAppButtons() {
+  // 1. جلب الإعدادات من الداتابيز
+  const { data } = await window.sb.from('site_settings').select('*');
+  if (!data) return;
+
+  const settings = new Map(data.map(row => [row.setting_key, row.setting_value]));
+
+  // 2. جلب الأرقام
+  const headPhone = settings.get('pr_head_phone');
+  const subHeadPhone = settings.get('pr_sub_head_phone');
+
+  // 3. تحديث الأزرار في الصفحة index_3.html
+  const headBtn = q('#headWhatsAppBtn');
+  const subBtn = q('#subWhatsAppBtn');
+
+  if (headBtn && headPhone) {
+    headBtn.href = `https://wa.me/${headPhone.replace(/\D/g, '')}`;
+    headBtn.target = "_blank"; // إضافة هذا السطر لفتح الرابط في صفحة جديدة
+  }
+  
+  if (subBtn && subHeadPhone) {
+    subBtn.href = `https://wa.me/${subHeadPhone.replace(/\D/g, '')}`;
+    subBtn.target = "_blank"; // إضافة هذا السطر لفتح الرابط في صفحة جديدة
+  }
+}

@@ -420,22 +420,60 @@ header {
 }
 
 .hero {
-  min-height: calc(100vh - 88px);
-  padding-block: 84px 56px;
+  /* تأثير سينمائي: تدرج غامق من فوق لتحت يخلي الكلام يقرأ بوضوح */
+  background: linear-gradient(to bottom, rgba(5, 8, 15, 0.4), rgba(5, 8, 15, 0.95)), 
+              url('familia.jpg');
+  
+  /* الصورة تغطي الشاشة بالكامل */
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  
+  /* تأثير الفخامة: الصورة ثابتة أثناء السكرول (للاب توب فقط) */
+  background-attachment: fixed; 
+  
+  /* الأبعاد والتنسيق */
+  min-height: 100vh;
   display: flex;
   align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+}
+
+/* تنسيق عصري للنص عشان يبرز فوق الصورة */
+.hero h1 {
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); /* ظل للنص عشان يظهر بوضوح */
+  letter-spacing: 2px;
+}
+
+/* حل مشكلة الموبايل */
+@media (max-width: 768px) {
+  .hero {
+    background-attachment: scroll; /* بنلغي الـ fixed في الموبايل عشان الأداء */
+    background-position: center 20%; /* بنخلي التركيز في الموبايل أعلى شوية عشان وشوش الناس */
+    min-height: 80vh;
+  }
 }
 
 .hero-panel {
-  width: 100%;
-  position: relative;
-  overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: calc(var(--radius-xl) + 4px);
-  background: linear-gradient(180deg, rgba(14, 22, 37, 0.92), rgba(6, 10, 17, 0.95));
-  box-shadow: var(--shadow-lg);
+  background: transparent !important; /* شلنا الخلفية تماماً */
+  backdrop-filter: none !important;    /* شلنا البلور */
+  border: none !important;             /* شلنا البرواز */
+  padding: 0;                          /* بنشيل الـ padding عشان الكلام يبقى في مكانه براحته */
 }
 
+/* 2. بنضيف ظلال قوية للنص عشان يظهر بوضوح فوق الصورة من غير بوكس */
+.hero-panel h1 {
+  text-shadow: 0 4px 10px rgba(0,0,0,0.9); /* ظل قوي للنص */
+  color: #fff;
+}
+
+.hero-panel p {
+  text-shadow: 0 2px 5px rgba(0,0,0,0.9);
+  color: #fff;
+  font-weight: 500;
+}
 .hero-panel::before {
   content: "";
   position: absolute;
