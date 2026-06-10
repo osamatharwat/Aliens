@@ -9,12 +9,15 @@
 
   const normalizeUsername = (value) => String(value || '').trim().toLowerCase();
 
-  const roleLabel = (role) => {
-    if (role === 'head' || role === 'OG') return 'Admin';
-    if (role === 'moderator') return 'Moderator';
-    if (role === 'premium') return 'Premium';
-    if (role === 'member') return 'Member';
-    return 'Guest';
+const roleLabel = (role) => {
+    if (!role) return 'Guest';
+    const r = String(role).toLowerCase();
+    
+    if (['head', 'og'].includes(r)) return 'Admin';
+    if (['ir', 'hr'].includes(r)) return 'HR / IR';
+    if (r === 'guest') return 'Guest';
+    if (r === 'member') return 'Member';
+    return r.toUpperCase(); 
   };
 
   const initials = (name) => {
