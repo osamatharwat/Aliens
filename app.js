@@ -491,13 +491,17 @@ document.addEventListener('DOMContentLoaded', () => {
         codeIdToUpdate = codeData.id;
       }
 
-      const { data, error } = await window.sb.auth.signUp({
-        email,
-        password,
-        options: {
-          data: { full_name: name, username: username }
-        }
-      });
+     const { data, error } = await window.sb.auth.signUp({
+  email,
+  password,
+  options: {
+    data: { 
+      full_name: name, 
+      username: username,
+      role: 'member' // بنعرف السيرفر إن ده ميمبر جديد أوتوماتيك
+    }
+  }
+});
 
       if (error) throw error;
 
