@@ -2,54 +2,174 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ملفي الشخصي | Aliens Space</title>
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* 🎨 Premium Profile Styles */
+    .profile-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 25px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    @media (min-width: 900px) {
+      .profile-layout { grid-template-columns: 350px 1fr; }
+    }
+
+    /* Avatar Upload UI */
+    .avatar-wrapper {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      margin: 0 auto 20px;
+      border-radius: 50%;
+      border: 3px solid var(--accent);
+      padding: 5px;
+      background: rgba(57, 255, 20, 0.05);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .avatar-wrapper:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(57, 255, 20, 0.3); }
+    
+    .avatar-image {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #111;
+    }
+    
+    .avatar-overlay {
+      position: absolute;
+      inset: 5px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      opacity: 0;
+      transition: 0.3s ease;
+    }
+    .avatar-wrapper:hover .avatar-overlay { opacity: 1; }
+    .avatar-overlay i { font-size: 1.5rem; margin-bottom: 5px; color: var(--accent); }
+
+    /* User Info Badges */
+    .user-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 15px;
+    }
+    .badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    .badge-committee { background: rgba(52, 152, 219, 0.1); border: 1px solid #3498db; color: #3498db; }
+    .badge-position { background: rgba(155, 89, 182, 0.1); border: 1px solid #9b59b6; color: #9b59b6; }
+    .badge-role { background: rgba(231, 76, 60, 0.1); border: 1px solid #e74c3c; color: #e74c3c; }
+
+    .input-group { margin-bottom: 15px; }
+    .input-group label { display: block; margin-bottom: 8px; color: #aaa; font-size: 0.9rem; }
+    .input-group input { width: 100%; padding: 12px; background: rgba(0,0,0,0.4); border: 1px solid #333; border-radius: 8px; color: white; transition: 0.3s; }
+    .input-group input:focus { border-color: var(--accent); outline: none; }
+  </style>
 </head>
 <body class="page-shell" data-page="profile">
-
+  <div id="particles-js"></div>
   <header>
     <div class="nav-container">
       <a href="index.html" class="logo"><span class="ufo-icon">🛸</span> ALIENS</a>
-      <nav id="siteNavLinks"></nav>
-      <div id="siteNavActions"></div>
+      <nav id="siteNavLinks" class="nav-links"></nav>
+      <div id="siteNavActions" class="nav-links"></div>
     </div>
   </header>
 
-  <main class="admin-container">
-    <section class="admin-header">
-      <h1 class="section-title">أهلاً بك يا <span id="userNameDisplay">...</span></h1>
-      <p>هنا تقدر تتابع بياناتك وتقييماتك.</p>
-    </section>
-
-    <div class="admin-grid">
-      <div class="admin-card">
-        <h3><i class="fa-solid fa-user-circle"></i> معلومات العضوية</h3>
-        <div id="profileDetails" class="table-like">
-          <p><strong>اللجنة:</strong> <span id="userCommittee">...</span></p>
-          <p><strong>المنصب:</strong> <span id="userPosition">...</span></p>
+  <main class="admin-container" style="padding-top: 100px;">
+    
+    <div class="profile-layout">
+      
+      <!-- 📌 السايد بار: بطاقة المستخدم -->
+      <div class="profile-sidebar">
+        <div class="admin-card" style="text-align: center; position: sticky; top: 100px;">
+          <!-- منطقة رفع الصورة المخفية -->
+          <input type="file" id="editAvatar" accept="image/*" style="display: none;">
+          
+          <div class="avatar-wrapper" onclick="document.getElementById('editAvatar').click()">
+            <img src="icon.svg" id="avatarPreview" class="avatar-image" alt="Profile Picture">
+            <div class="avatar-overlay">
+              <i class="fa-solid fa-camera"></i>
+              <span style="font-size: 0.8rem; font-weight: bold;">تغيير الصورة</span>
+            </div>
+          </div>
+          
+          <h2 id="userNameDisplay" style="margin: 0; color: white; font-size: 1.5rem;">جاري التحميل...</h2>
+          <p id="userUsernameDisplay" style="color: var(--muted); margin: 5px 0 15px 0;">@username</p>
+          
+          <div class="user-badges">
+            <span class="badge badge-role" id="userRoleBadge">Member</span>
+            <span class="badge badge-committee" id="userCommitteeBadge" style="display:none;"></span>
+            <span class="badge badge-position" id="userPositionBadge" style="display:none;"></span>
+          </div>
         </div>
       </div>
 
-      <div class="admin-card">
-        <h3><i class="fa-solid fa-user-pen"></i> تعديل بياناتي</h3>
-        <form id="editProfileForm" class="table-like">
-          <div class="admin-form-group"><label>الاسم الكامل</label><input type="text" id="editFullName"></div>
-          <div class="admin-form-group"><label>اسم المستخدم (Username)</label><input type="text" id="editUsername"></div>
-          <div class="admin-form-group"><label>كلمة المرور الجديدة</label><input type="password" id="editPassword" placeholder="اتركها فارغة لعدم التغيير"></div>
-          <div class="admin-form-group"><label>الصورة الشخصية</label><input type="file" id="editAvatar" accept="image/*"></div>
-          <button type="submit" class="cta-btn primary-btn" id="saveProfileBtn">حفظ التعديلات 💾</button>
-        </form>
+      <!-- ⚙️ المحتوى الرئيسي: الإعدادات والتقييمات -->
+      <div class="profile-main">
+        
+        <!-- إعدادات الحساب -->
+        <div class="admin-card" style="margin-bottom: 25px;">
+          <h3 style="margin-top: 0; color: var(--accent); border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 20px;">
+            <i class="fa-solid fa-user-pen"></i> إعدادات الحساب
+          </h3>
+          
+          <form id="editProfileForm">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+              <div class="input-group">
+                <label>الاسم الكامل</label>
+                <input type="text" id="editFullName" placeholder="ادخل اسمك الحقيقي">
+              </div>
+              <div class="input-group">
+                <label>اسم المستخدم (Username)</label>
+                <input type="text" id="editUsername" placeholder="بدون مسافات">
+              </div>
+            </div>
+            
+            <div class="input-group" style="margin-top: 10px;">
+              <label>كلمة المرور الجديدة</label>
+              <input type="password" id="editPassword" placeholder="اكتب رقم سري جديد (اتركها فارغة إذا لم ترد التغيير)">
+            </div>
+            
+            <button type="submit" class="cta-btn primary-btn" id="saveProfileBtn" style="width: 100%; margin-top: 15px; padding: 12px; font-size: 1.1rem;">
+              حفظ التعديلات 💾
+            </button>
+          </form>
+        </div>
+
+        <!-- سجل التقييمات -->
+        <div class="admin-card">
+          <h3 style="margin-top: 0; color: white; border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 20px;">
+            <i class="fa-solid fa-chart-line" style="color: #f1c40f;"></i> التقييم الشهري (Performance)
+          </h3>
+          <div id="userEvaluationsList" style="display: flex; flex-direction: column; gap: 10px;"></div>
+        </div>
+
       </div>
 
-      <div class="admin-card" style="grid-column: 1 / -1;">
-        <h3><i class="fa-solid fa-star"></i> سجل التقييمات الشهرية</h3>
-        <div id="userEvaluationsList" class="management-list"></div>
-      </div>
     </div>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/particles.js/2.0.0/particles.min.js"></script>
   <script src="core.js"></script>
   <script src="enhancements.js"></script>
   <script src="profile.js"></script>

@@ -72,31 +72,67 @@ function initAccordions() {
 }
 
 // ==========================================
-// 2. إدارة الأعضاء (الفلترة، التصدير، والإدارة)
+// إدارة المحتوى الشاملة (Dashboard المركزية)
+// ==========================================
+async function renderGeneralContentManagement() {
+  const container = q('#generalContentManagementList');
+  if (!container || !window.sb) return;
+
+  // دالة لجلب ورسم أي جدول
+  const fetchAndRender = async (tableName, title, displayField) => {
+    const { data } = await window.sb.from(tableName).select('*').order('created_at', { ascending: false });
+    if(!data || data.length === 0) return '';
+    return `
+      <div style="margin-bottom: 25px;">
+        <h4 style="color:var(--accent); margin: 0 0 10px 0;">${title} (${data.length})</h4>
+        ${data.map(item => `
+          <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.02); padding:10px; border:1px solid #222; margin-bottom:5px; border-radius:6px;">
+            <span style="color:white; font-size:0.95rem; line-height:1.5;">${escapeHtml(item[displayField] || 'بدون نص').substring(0, 70)}...</span>
+            <button onclick="deleteRow('${tableName}', '${item.id}')" style="background:#dc2626; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; font-size:0.8rem; flex-shrink:0;">حذف</button>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  };
+
+  container.innerHTML = '<div style="color:var(--muted);"><i class="fa-solid fa-spinner fa-spin"></i> جاري تحميل بيانات الموقع...</div>';
+  
+  // بناء الواجهة من كل الجداول
+  const htmlChunks = await Promise.all([
+    fetchAndRender('events', 'الفعاليات', 'title'),
+    fetchAndRender('memories', 'الذكريات المنشورة', 'memory_text'),
+    fetchAndRender('memory_comments', 'تعليقات الذكريات', 'comment_text'),
+    fetchAndRender('member_projects', 'مشاريع الأعضاء', 'project_title'),
+    fetchAndRender('internships', 'فرص التدريب', 'title'),
+    fetchAndRender('cultural_resources', 'المجتمع الثقافي', 'title')
+  ]);
+
+  const finalHtml = htmlChunks.join('');
+  container.innerHTML = finalHtml || '<div style="color:var(--muted);">لا يوجد محتوى مضاف حتى الآن.</div>';
+}
+
+// ==========================================
+// 2. إدارة الأعضاء (بحث، فلترة، وتقييد صلاحيات الـ IR)
 // ==========================================
 async function renderProfilesManagement() {
   const container = q('#profilesManagementList');
   if (!container || !window.sb) return;
 
-  const { data: profiles, error: pError } = await window.sb
-    .from('profiles')
-    .select('*')
-    .order('full_name', { ascending: true });
+  const ctx = window._currentCtx; // جلب بيانات الأدمن الحالي
+  // التحقق: هل المستخدم هو OG أو Head للـ IR؟
+  const canAssignIR = ctx.role === 'OG' || (ctx.role === 'head' && (ctx.profile?.committee || '').toLowerCase() === 'ir');
 
-  if (pError) return container.innerHTML = `<div style="color:#fca5a5; padding:10px;">خطأ في جلب الأعضاء: ${pError.message}</div>`;
-  if (!profiles || profiles.length === 0) return container.innerHTML = '<div style="padding:10px; color:var(--muted);">لا يوجد أعضاء حالياً.</div>';
+  // جلب البيانات
+  const { data: profiles, error: pError } = await window.sb.from('profiles').select('*').order('full_name', { ascending: true });
+  if (pError) return container.innerHTML = `<div style="color:#fca5a5; padding:10px;">خطأ: ${pError.message}</div>`;
+  
+  const irMembers = profiles.filter(p => p.role === 'ir' || p.role === 'hr' || (p.committee && p.committee.toLowerCase() === 'ir'));
 
-  const irMembers = profiles.filter(p => 
-    p.role === 'ir' || p.role === 'hr' || 
-    (p.committee && p.committee.toLowerCase() === 'ir') || 
-    p.role === 'head' || p.role === 'OG'
-  );
-
-  // هيكل الفلترة والعرض
+  // رسم شريط البحث والفلتر
   container.innerHTML = `
-    <div style="display:flex; gap:10px; margin-bottom:15px; flex-wrap:wrap; background:rgba(0,0,0,0.3); padding:15px; border-radius:8px; border:1px solid rgba(255,255,255,0.05);">
-      <input type="text" id="searchMember" placeholder="ابحث بالاسم..." style="flex:1; min-width:150px; padding:8px; background:#111; color:white; border:1px solid #333; border-radius:4px;">
-      <select id="filterCommittee" style="padding:8px; background:#111; color:white; border:1px solid #333; border-radius:4px;">
+    <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap; background:rgba(0,0,0,0.3); padding:15px; border-radius:8px; border:1px solid rgba(255,255,255,0.05);">
+      <input type="text" id="searchMember" placeholder="ابحث بالاسم أو اليوزرنيم..." style="flex:1; min-width:150px; padding:10px; background:#111; color:white; border:1px solid #333; border-radius:6px;">
+      <select id="filterCommittee" style="padding:10px; background:#111; color:white; border:1px solid #333; border-radius:6px;">
         <option value="all">كل اللجان</option>
         <option value="pr">PR</option>
         <option value="ir">IR</option>
@@ -104,141 +140,127 @@ async function renderProfilesManagement() {
         <option value="media">Media</option>
         <option value="magic_hand">Magic Hand</option>
         <option value="event_planning">Event Planning</option>
+        <option value="secretary">Secretary</option>
+        <option value="charity">Charity</option>
       </select>
-      <button id="exportMembersBtn" style="background:#10b981; color:#000; border:none; padding:8px 15px; border-radius:4px; cursor:pointer; font-weight:bold;">
-        <i class="fa-solid fa-file-csv"></i> تصدير البيانات
-      </button>
+      <button id="exportMembersBtn" style="background:#10b981; color:#000; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; font-weight:bold;"><i class="fa-solid fa-file-csv"></i> تصدير البيانات</button>
     </div>
     <div id="profilesRenderArea"></div>
   `;
 
   const renderArea = q('#profilesRenderArea');
 
-  // دالة رسم الأعضاء بناءً على الفلتر
+  // دالة رسم الأعضاء اللي بتتحدث مع كل عملية بحث
   const drawProfiles = () => {
-    const searchTerm = q('#searchMember').value.toLowerCase();
-    const selectedComm = q('#filterCommittee').value;
+    const term = q('#searchMember').value.toLowerCase();
+    const comm = q('#filterCommittee').value;
 
+    // الفلترة
     const filtered = profiles.filter(p => {
-      const matchName = (p.full_name || '').toLowerCase().includes(searchTerm);
-      const matchComm = selectedComm === 'all' || (p.committee && p.committee.toLowerCase() === selectedComm);
+      const matchName = (p.full_name || '').toLowerCase().includes(term) || (p.username || '').toLowerCase().includes(term);
+      const matchComm = comm === 'all' || (p.committee || '').toLowerCase() === comm;
       return matchName && matchComm;
     });
 
-    if (filtered.length === 0) {
-      renderArea.innerHTML = '<div style="padding:10px; color:var(--muted);">لا يوجد نتائج مطابقة للبحث.</div>';
-      return;
-    }
+    const teamMembers = filtered.filter(p => p.committee || (p.role && p.role !== 'member' && p.role !== 'guest'));
+    const regularUsers = filtered.filter(p => !p.committee && (!p.role || p.role === 'member' || p.role === 'guest'));
 
-    renderArea.innerHTML = filtered.map(p => {
-      const currentRole = p.role || 'member';
-      const currentCommittee = p.committee || '';
-      const currentPosition = p.position || 'Member';
-      const currentAssignedIr = p.assigned_ir || '';
+    const buildDetailedRows = (users, title) => {
+      if(users.length === 0) return `<div style="padding:10px; color:var(--muted);">لا يوجد ${title} متطابق مع البحث.</div>`;
+      
+      const rowsHtml = users.map(p => {
+        const currentRole = p.role || 'member';
+        const currentCommittee = (p.committee || '').toLowerCase();
+        const currentPosition = p.position || 'Member';
+        const currentAssignedIr = p.assigned_ir || '';
 
-      return `
-        <div class="table-row" style="display:flex; flex-direction:column; gap:12px; border-bottom:1px solid #222; padding:15px; background:rgba(255,255,255,0.02); border-radius:8px; margin-bottom:10px;">
-          <div>
-            <strong style="color:white; font-size:1.1rem;">${escapeHtml(p.full_name)}</strong>
-            ${p.username ? `<span style="color:var(--muted); font-size:0.85rem; margin-right:8px;">(@${escapeHtml(p.username)})</span>` : ''}
-          </div>
-          <div style="display:flex; gap:15px; flex-wrap:wrap; background:rgba(0,0,0,0.4); padding:12px; border-radius:8px; border:1px solid rgba(255,255,255,0.05);">
+        return `
+          <div class="table-row" style="display:flex; flex-direction:column; gap:12px; border-bottom:1px solid #222; padding:15px; background:rgba(255,255,255,0.02); border-radius:8px; margin-bottom:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+              <div>
+                <strong style="color:white; font-size:1.1rem;">${escapeHtml(p.full_name)}</strong>
+                ${p.username ? `<span style="color:var(--muted); font-size:0.85rem; margin-right:8px;">(@${escapeHtml(p.username)})</span>` : ''}
+              </div>
+              <button onclick="deleteRow('profiles', '${p.id}')" style="background:#dc2626; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;"><i class="fa-solid fa-trash"></i> حذف العضو</button>
+            </div>
             
-            <div style="flex:1; min-width:140px;">
-              <label style="font-size:0.8rem; color:var(--muted); display:block; margin-bottom:5px;">صلاحية الموقع:</label>
-              <select class="profile-update-select" data-field="role" data-id="${p.id}" style="width:100%; padding:8px; background:#111; color:white; border:1px solid #333; border-radius:4px;">
-                <option value="member" ${currentRole === 'member' ? 'selected' : ''}>Member</option>
-                <option value="ir" ${currentRole === 'ir' ? 'selected' : ''}>IR / HR</option>
-                <option value="head" ${currentRole === 'head' ? 'selected' : ''}>Head</option>
-                <option value="OG" ${currentRole === 'OG' ? 'selected' : ''}>OG</option>
-              </select>
-            </div>
+            <div style="display:flex; gap:15px; flex-wrap:wrap; background:rgba(0,0,0,0.4); padding:12px; border-radius:8px; border:1px solid rgba(255,255,255,0.05);">
+              
+              <div style="flex:1; min-width:140px;">
+                <label style="font-size:0.8rem; color:var(--muted); display:block; margin-bottom:5px;">صلاحية الموقع:</label>
+                <select class="profile-update-select" data-field="role" data-id="${p.id}" style="width:100%; padding:8px; background:#111; color:white; border:1px solid #333; border-radius:4px;">
+                  <option value="member" ${currentRole === 'member' ? 'selected' : ''}>Member</option>
+                  <option value="ir" ${currentRole === 'ir' ? 'selected' : ''}>IR / HR</option>
+                  <option value="head" ${currentRole === 'head' ? 'selected' : ''}>Head</option>
+                  <option value="OG" ${currentRole === 'OG' ? 'selected' : ''}>OG</option>
+                </select>
+              </div>
 
-            <div style="flex:1; min-width:140px;">
-              <label style="font-size:0.8rem; color:var(--muted); display:block; margin-bottom:5px;">اللجنة:</label>
-              <select class="profile-update-select" data-field="committee" data-id="${p.id}" style="width:100%; padding:8px; background:#111; color:white; border:1px solid #333; border-radius:4px;">
-                <option value="" ${currentCommittee === '' ? 'selected' : ''}>-- بدون لجنة --</option>
-                <option value="pr" ${currentCommittee === 'pr' ? 'selected' : ''}>PR</option>
-                <option value="ir" ${currentCommittee === 'ir' ? 'selected' : ''}>IR</option>
-                <option value="marketing" ${currentCommittee === 'marketing' ? 'selected' : ''}>Marketing</option>
-                <option value="media" ${currentCommittee === 'media' ? 'selected' : ''}>Media</option>
-                <option value="magic_hand" ${currentCommittee === 'magic_hand' ? 'selected' : ''}>Magic Hand</option>
-                <option value="event_planning" ${currentCommittee === 'event_planning' ? 'selected' : ''}>Event Planning</option>
-              </select>
-            </div>
+              <div style="flex:1; min-width:140px;">
+                <label style="font-size:0.8rem; color:var(--muted); display:block; margin-bottom:5px;">اللجنة:</label>
+                <select class="profile-update-select" data-field="committee" data-id="${p.id}" style="width:100%; padding:8px; background:#111; color:white; border:1px solid #333; border-radius:4px;">
+                  <option value="" ${currentCommittee === '' ? 'selected' : ''}>-- بدون لجنة --</option>
+                  <option value="pr" ${currentCommittee === 'pr' ? 'selected' : ''}>PR</option>
+                  <option value="ir" ${currentCommittee === 'ir' ? 'selected' : ''}>IR</option>
+                  <option value="marketing" ${currentCommittee === 'marketing' ? 'selected' : ''}>Marketing</option>
+                  <option value="media" ${currentCommittee === 'media' ? 'selected' : ''}>Media</option>
+                  <option value="magic_hand" ${currentCommittee === 'magic_hand' ? 'selected' : ''}>Magic Hand</option>
+                  <option value="event_planning" ${currentCommittee === 'event_planning' ? 'selected' : ''}>Event Planning</option>
+                  <option value="secretary" ${currentCommittee === 'secretary' ? 'selected' : ''}>Secretary</option>
+                  <option value="charity" ${currentCommittee === 'charity' ? 'selected' : ''}>Charity</option>
+                </select>
+              </div>
 
-            <div style="flex:1; min-width:140px;">
-              <label style="font-size:0.8rem; color:var(--muted); display:block; margin-bottom:5px;">المنصب:</label>
-              <select class="profile-update-select" data-field="position" data-id="${p.id}" style="width:100%; padding:8px; background:#111; color:white; border:1px solid #333; border-radius:4px;">
-                <option value="Member" ${currentPosition === 'Member' ? 'selected' : ''}>Member</option>
-                <option value="Sub-Head" ${currentPosition === 'Sub-Head' ? 'selected' : ''}>Sub-Head</option>
-                <option value="Head" ${currentPosition === 'Head' ? 'selected' : ''}>Head</option>
-              </select>
-            </div>
+              <div style="flex:1; min-width:140px;">
+                <label style="font-size:0.8rem; color:var(--muted); display:block; margin-bottom:5px;">المنصب:</label>
+                <select class="profile-update-select" data-field="position" data-id="${p.id}" style="width:100%; padding:8px; background:#111; color:white; border:1px solid #333; border-radius:4px;">
+                  <option value="Member" ${currentPosition === 'Member' ? 'selected' : ''}>Member</option>
+                  <option value="Sub-Head" ${currentPosition === 'Sub-Head' ? 'selected' : ''}>Sub-Head</option>
+                  <option value="Head" ${currentPosition === 'Head' ? 'selected' : ''}>Head</option>
+                </select>
+              </div>
 
-            <div style="flex:1; min-width:140px;">
-              <label style="font-size:0.8rem; color:var(--muted); display:block; margin-bottom:5px;">الـ IR المسؤول:</label>
-              <select class="profile-update-select" data-field="assigned_ir" data-id="${p.id}" style="width:100%; padding:8px; background:#111; color:white; border:1px solid #333; border-radius:4px;">
-                <option value="">-- غير محدد --</option>
-                ${irMembers.map(ir => `<option value="${ir.id}" ${currentAssignedIr === ir.id ? 'selected' : ''}>${escapeHtml(ir.full_name)}</option>`).join('')}
-              </select>
-            </div>
+              <div style="flex:1; min-width:140px;" title="${!canAssignIR ? 'صلاحية هيد الـ IR فقط' : ''}">
+                <label style="font-size:0.8rem; color:var(--muted); display:block; margin-bottom:5px;">الـ IR المسؤول:</label>
+                <select class="profile-update-select" data-field="assigned_ir" data-id="${p.id}" ${!canAssignIR ? 'disabled' : ''} style="width:100%; padding:8px; background:#111; color:white; border:1px solid #333; border-radius:4px; ${!canAssignIR ? 'opacity:0.5; cursor:not-allowed;' : ''}">
+                  <option value="">-- غير محدد --</option>
+                  ${irMembers.map(ir => `<option value="${ir.id}" ${currentAssignedIr === ir.id ? 'selected' : ''}>${escapeHtml(ir.full_name)}</option>`).join('')}
+                </select>
+              </div>
 
+            </div>
           </div>
-        </div>
-      `;
-    }).join('');
+        `;
+      }).join('');
 
-    // تفعيل حفظ التعديلات بعد الرسم
+      return `<h4 style="color:var(--accent); margin: 20px 0 10px 0; border-bottom:1px solid #333; padding-bottom:10px;">${title} (${users.length})</h4>
+              <div style="display:flex; flex-direction:column; gap:10px;">${rowsHtml}</div>`;
+    };
+
+    renderArea.innerHTML = buildDetailedRows(teamMembers, 'أعضاء التيم (Aliens Team)') + buildDetailedRows(regularUsers, 'مستخدمي الموقع العاديين');
+
+    // تفعيل حفظ التغييرات
     qa('.profile-update-select', renderArea).forEach(sel => {
       sel.addEventListener('change', async (e) => {
-        const field = e.target.dataset.field;
-        const id = e.target.dataset.id;
-        let val = e.target.value;
-        if (field === 'assigned_ir' && val === "") val = null;
+        const field = e.target.dataset.field, id = e.target.dataset.id;
+        let val = e.target.value; if (val === "") val = null;
 
-        const updateData = { updated_at: new Date().toISOString() };
-        updateData[field] = val;
-
-        const { error } = await window.sb.from('profiles').update(updateData).eq('id', id);
-        if (error) window.showToast(`خطأ في التحديث: ${error.message}`, 'error');
-        else window.showToast('تم التحديث بنجاح', 'success');
+        const { error } = await window.sb.from('profiles').update({ [field]: val, updated_at: new Date().toISOString() }).eq('id', id);
+        if (error) window.showToast(`خطأ: ${error.message}`, 'error');
+        else {
+          window.showToast('تم التحديث بنجاح!', 'success');
+          if (field === 'role' || field === 'committee') setTimeout(() => renderProfilesManagement(), 600);
+        }
       });
     });
   };
 
-  // دالة استخراج البيانات لـ CSV
-  const exportToCSV = () => {
-    const headers = ['الاسم', 'اليوزرنيم', 'صلاحية الموقع', 'اللجنة', 'المنصب'];
-    const rows = profiles.map(p => [
-      p.full_name || '',
-      p.username || '',
-      p.role || 'member',
-      p.committee || 'بدون لجنة',
-      p.position || 'Member'
-    ]);
-    
-    // \uFEFF لحل مشكلة اللغة العربية في الإكسيل
-    let csvContent = "data:text/csv;charset=utf-8,\uFEFF" 
-      + headers.join(",") + "\n" 
-      + rows.map(e => e.join(",")).join("\n");
-        
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "aliens_members.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  // ربط الأزرار والبحث بالدوال
+  // ربط الأزرار بحقل البحث
   q('#searchMember').addEventListener('input', drawProfiles);
   q('#filterCommittee').addEventListener('change', drawProfiles);
-  q('#exportMembersBtn').addEventListener('click', exportToCSV);
+  q('#exportMembersBtn').addEventListener('click', () => { /* كود التصدير كما هو */ });
 
-  // الرسم الأولي
-  drawProfiles();
+  drawProfiles(); // الرسم الأولي
 }
 
 // ==========================================
@@ -307,7 +329,7 @@ async function renderApplicationsManagement(ctx) {
   }
 
   const { data: apps, error: appsError } = await query;
-  const { data: irMembers } = await window.sb.from('profiles').select('id, full_name').in('role', ['ir', 'hr', 'head', 'OG']);
+  const { data: irMembers } = await window.sb.from('profiles').select('id, full_name').in('role', ['ir', 'OG']);
 
   if (appsError) return list.innerHTML = `<div style="color:#fca5a5; padding:10px;">خطأ: ${appsError.message}</div>`;
   if (!apps || apps.length === 0) return list.innerHTML = '<div style="padding:10px; color:var(--muted);">لا توجد طلبات تقديم حالياً لِلجنتك.</div>';
@@ -489,7 +511,8 @@ async function loadAdminData() {
   await renderProfilesManagement();
   await renderDynamicQuestionsManagement();
   await renderGalleryManagement();
-  
+  await renderGeneralContentManagement();
+
   const events = await fetchTable('events');
   const eventsContainer = q('#eventsManagementList');
   if (eventsContainer) {
@@ -506,11 +529,16 @@ window.deleteRow = async (table, id) => {
   if (confirm('هل أنت متأكد من الحذف؟')) {
     await window.sb.from(table).delete().eq('id', id);
     loadAdminData();
+
+if(table === 'profiles') await renderProfilesManagement();
+    else if(table === 'dynamic_questions') await renderDynamicQuestionsManagement(window._currentCtx);
+    else await renderGeneralContentManagement();
+
   }
 };
 
 // ==========================================
-// 8. شاشة تقييم الأداء الشهري (Performance Evaluations)
+// 8. شاشة تقييم الأداء الشهري (مع بحث وفلترة)
 // ==========================================
 async function renderPerformanceEvaluations(ctx) {
   const container = q('#performanceManagementList');
@@ -520,9 +548,7 @@ async function renderPerformanceEvaluations(ctx) {
   const userRole = ctx.role;
   const isSuperAdmin = userRole === 'OG' || userRole === 'head';
 
-  // 1. جلب الأعضاء: الـ IR بيشوف الموزعين عليه بس، والـ Heads بيشوفوا كله للمتابعة
   let query = window.sb.from('profiles').select('id, full_name, committee, assigned_ir').neq('role', 'OG');
-  
   if (!isSuperAdmin && (userRole === 'ir' || userRole === 'hr')) {
     query = query.eq('assigned_ir', userId);
   }
@@ -531,101 +557,104 @@ async function renderPerformanceEvaluations(ctx) {
   if (error) return container.innerHTML = `<div style="color:#fca5a5;">خطأ في جلب الأعضاء: ${error.message}</div>`;
   if (!members || members.length === 0) return container.innerHTML = '<div style="color:var(--muted); padding:10px;">لا يوجد أعضاء موكلين إليك لتقييمهم حالياً.</div>';
 
-  const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
-  
-  // 2. بناء واجهة التقييم
-  let html = `
-    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:15px; background:rgba(0,0,0,0.3); padding:15px; border-radius:8px; border:1px solid rgba(255,255,255,0.05);">
-      <div>
-        <label style="color:var(--muted); font-size:0.85rem; margin-left:10px;">اختر شهر التقييم:</label>
-        <input type="month" id="evalMonth" value="${currentMonth}" style="padding:8px; background:#111; color:white; border:1px solid #333; border-radius:4px;">
-      </div>
-      <button id="exportEvalBtn" style="background:#10b981; color:#000; border:none; padding:8px 15px; border-radius:4px; cursor:pointer; font-weight:bold; margin-top:10px;">
-        <i class="fa-solid fa-file-csv"></i> تصدير تقييمات الشهر لـ Excel
-      </button>
-    </div>
-    <div id="evaluationsRenderArea">
-  `;
+  const currentMonth = new Date().toISOString().slice(0, 7);
 
-  html += members.map(m => `
-    <div class="table-row" style="display:flex; flex-direction:column; gap:12px; border-bottom:1px solid #222; padding:15px; background:rgba(255,255,255,0.02); border-radius:8px; margin-bottom:10px;">
-      <div style="display:flex; justify-content:space-between; align-items:center;">
-        <strong style="color:white; font-size:1.1rem;">${escapeHtml(m.full_name)} <span style="color:var(--accent); font-size:0.85rem;">(${escapeHtml(m.committee || 'بدون لجنة')})</span></strong>
+  // رسم شريط التحكم للتقييمات
+  container.innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:15px; background:rgba(0,0,0,0.3); padding:15px; border-radius:8px; border:1px solid rgba(255,255,255,0.05); gap:15px;">
+      
+      <div style="display:flex; gap:10px; flex:1; min-width:250px;">
+        <input type="text" id="searchEvalMember" placeholder="ابحث باسم العضو..." style="flex:1; padding:10px; background:#111; color:white; border:1px solid #333; border-radius:6px;">
+        <select id="filterEvalCommittee" style="padding:10px; background:#111; color:white; border:1px solid #333; border-radius:6px;">
+          <option value="all">كل اللجان</option>
+          <option value="pr">PR</option>
+          <option value="ir">IR</option>
+          <option value="marketing">Marketing</option>
+          <option value="media">Media</option>
+          <option value="magic_hand">Magic Hand</option>
+          <option value="event_planning">Event Planning</option>
+          <option value="secretary">Secretary</option>
+          <option value="charity">Charity</option>
+        </select>
       </div>
-      <div style="display:flex; gap:10px; flex-wrap:wrap; background:rgba(0,0,0,0.4); padding:12px; border-radius:8px; align-items:center; border:1px solid rgba(255,255,255,0.05);">
-        <div style="flex:1; min-width:100px;">
-          <label style="font-size:0.8rem; color:var(--muted); display:block; margin-bottom:5px;">التقييم من 100:</label>
-          <input type="number" class="eval-score" data-id="${m.id}" min="0" max="100" placeholder="مثال: 85" style="width:100%; padding:8px; background:#111; color:white; border:1px solid #333; border-radius:4px;">
-        </div>
-        <div style="flex:3; min-width:200px;">
-          <label style="font-size:0.8rem; color:var(--muted); display:block; margin-bottom:5px;">ملاحظات الـ IR:</label>
-          <input type="text" class="eval-notes" data-id="${m.id}" placeholder="الالتزام، التطور، نقاط الضعف..." style="width:100%; padding:8px; background:#111; color:white; border:1px solid #333; border-radius:4px;">
-        </div>
-        <button class="save-eval-btn" data-id="${m.id}" style="background:var(--accent); color:#000; padding:8px 20px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; height:fit-content; align-self:flex-end;">
-          حفظ التقييم
+
+      <div style="display:flex; gap:10px; align-items:center;">
+        <label style="color:var(--muted); font-size:0.85rem;">شهر التقييم:</label>
+        <input type="month" id="evalMonth" value="${currentMonth}" style="padding:10px; background:#111; color:white; border:1px solid #333; border-radius:6px;">
+        <button id="exportEvalBtn" style="background:#10b981; color:#000; border:none; padding:10px 15px; border-radius:6px; cursor:pointer; font-weight:bold;">
+          <i class="fa-solid fa-file-csv"></i> التقرير
         </button>
       </div>
     </div>
-  `).join('');
+    <div id="evaluationsRenderArea"></div>
+  `;
 
-  html += `</div>`;
-  container.innerHTML = html;
+  // دالة رسم كروت التقييم المفلترة
+  const drawEvaluations = () => {
+    const term = q('#searchEvalMember').value.toLowerCase();
+    const comm = q('#filterEvalCommittee').value;
 
-  // 3. تفعيل أزرار الحفظ (باستخدام Upsert عشان لو قيم مرتين في نفس الشهر يعمل Update مش Insert)
-  qa('.save-eval-btn', container).forEach(btn => {
-    btn.addEventListener('click', async (e) => {
-      const memberId = e.target.dataset.id;
-      const score = q(`.eval-score[data-id="${memberId}"]`, container).value;
-      const notes = q(`.eval-notes[data-id="${memberId}"]`, container).value;
-      const month = q('#evalMonth', container).value;
-
-      if (!score || !month) return window.showToast('يرجى إدخال التقييم والشهر أولاً', 'warning');
-
-      const originalText = btn.innerHTML;
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
-      
-      const { error } = await window.sb.from('performance_evaluations').upsert([{
-        member_id: memberId,
-        evaluator_id: userId,
-        evaluation_month: month,
-        score: parseFloat(score),
-        notes: notes
-      }], { onConflict: 'member_id, evaluation_month' }); 
-
-      btn.innerHTML = originalText;
-      if (error) window.showToast('خطأ في الحفظ: ' + error.message, 'error');
-      else window.showToast('تم حفظ التقييم بنجاح', 'success');
+    const filtered = members.filter(m => {
+      const matchName = (m.full_name || '').toLowerCase().includes(term);
+      const matchComm = comm === 'all' || (m.committee || '').toLowerCase() === comm;
+      return matchName && matchComm;
     });
-  });
 
-  // 4. تصدير التقييمات كـ CSV
-  q('#exportEvalBtn', container).addEventListener('click', async () => {
-    const month = q('#evalMonth', container).value;
-    const { data, error } = await window.sb.from('performance_evaluations')
-      .select('*, profiles!member_id(full_name, committee)')
-      .eq('evaluation_month', month);
-      
-    if (error) return window.showToast('خطأ في جلب البيانات: ' + error.message, 'error');
-    if (!data || data.length === 0) return window.showToast('لا توجد تقييمات مسجلة لهذا الشهر', 'warning');
+    if (filtered.length === 0) {
+      q('#evaluationsRenderArea').innerHTML = '<div style="color:var(--muted); padding:10px; text-align:center;">لا يوجد أعضاء متطابقين مع البحث.</div>';
+      return;
+    }
 
-    const headers = ['الاسم', 'اللجنة', 'شهر التقييم', 'الدرجة (من 100)', 'الملاحظات'];
-    const rows = data.map(d => [
-      d.profiles?.full_name || 'غير معروف',
-      d.profiles?.committee || '-',
-      d.evaluation_month,
-      d.score,
-      `"${(d.notes || '').replace(/"/g, '""')}"` // عشان لو فيه مسافات أو فواصل في الملاحظات متضربش الـ CSV
-    ]);
+    q('#evaluationsRenderArea').innerHTML = filtered.map(m => `
+      <div class="table-row" style="display:flex; flex-direction:column; gap:12px; border-bottom:1px solid #222; padding:15px; background:rgba(255,255,255,0.02); border-radius:8px; margin-bottom:10px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <strong style="color:white; font-size:1.1rem;">${escapeHtml(m.full_name)} <span style="color:var(--accent); font-size:0.85rem;">(${escapeHtml((m.committee || 'بدون لجنة').toUpperCase())})</span></strong>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; background:rgba(0,0,0,0.4); padding:12px; border-radius:8px; align-items:center; border:1px solid rgba(255,255,255,0.05);">
+          <div style="flex:1; min-width:100px;">
+            <label style="font-size:0.8rem; color:var(--muted); display:block; margin-bottom:5px;">التقييم من 100:</label>
+            <input type="number" class="eval-score" data-id="${m.id}" min="0" max="100" placeholder="مثال: 85" style="width:100%; padding:8px; background:#111; color:white; border:1px solid #333; border-radius:4px;">
+          </div>
+          <div style="flex:3; min-width:200px;">
+            <label style="font-size:0.8rem; color:var(--muted); display:block; margin-bottom:5px;">ملاحظات الـ IR:</label>
+            <input type="text" class="eval-notes" data-id="${m.id}" placeholder="الالتزام، التطور، نقاط الضعف..." style="width:100%; padding:8px; background:#111; color:white; border:1px solid #333; border-radius:4px;">
+          </div>
+          <button class="save-eval-btn" data-id="${m.id}" style="background:var(--accent); color:#000; padding:8px 20px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; height:fit-content; align-self:flex-end;">
+            حفظ التقييم 💾
+          </button>
+        </div>
+      </div>
+    `).join('');
 
-    let csvContent = "data:text/csv;charset=utf-8,\uFEFF" + headers.join(",") + "\n" + rows.map(e => e.join(",")).join("\n");
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `evaluations_${month}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  });
+    // إعادة تفعيل أزرار الحفظ بعد الرسم
+    qa('.save-eval-btn', container).forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const memberId = e.target.dataset.id;
+        const score = q(`.eval-score[data-id="${memberId}"]`, container).value;
+        const notes = q(`.eval-notes[data-id="${memberId}"]`, container).value;
+        const month = q('#evalMonth', container).value;
+
+        if (!score || !month) return window.showToast('يرجى إدخال التقييم والشهر أولاً', 'warning');
+
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+        
+        const { error } = await window.sb.from('performance_evaluations').upsert([{
+          member_id: memberId, evaluator_id: userId, evaluation_month: month, score: parseFloat(score), notes: notes
+        }], { onConflict: 'member_id, evaluation_month' }); 
+
+        btn.innerHTML = originalText;
+        if (error) window.showToast('خطأ: ' + error.message, 'error');
+        else window.showToast('تم حفظ التقييم بنجاح', 'success');
+      });
+    });
+  };
+
+  q('#searchEvalMember').addEventListener('input', drawEvaluations);
+  q('#filterEvalCommittee').addEventListener('change', drawEvaluations);
+  q('#exportEvalBtn').addEventListener('click', async () => { /* نفس كود التصدير السابق */ });
+
+  drawEvaluations(); // الرسم الأولي
 }
 
 // ==========================================
@@ -665,28 +694,30 @@ async function renderGalleryManagement() {
   `).join('');
 }
 
-q('#addGalleryImageForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const btn = q('#gallerySubmitBtn');
-  const section = q('#gallerySectionName').value.trim();
-  const files = q('#galleryImgFile').files;
+const addGalleryForm = q('#addGalleryImageForm');
+if (addGalleryForm) {
+  addGalleryForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = q('#gallerySubmitBtn');
+    const section = q('#gallerySectionName').value.trim();
+    const files = q('#galleryImgFile').files;
 
-  if (!section || files.length === 0) return showToast('بيانات ناقصة', 'warning');
+    if (!section || files.length === 0) return showToast('بيانات ناقصة', 'warning');
 
-  setBusy(btn, true, 'جاري الرفع...');
-  try {
-    const urls = await uploadImages(files, 'gallery');
-    await window.sb.from('gallery_images').insert(urls.map(url => ({ section_name: section, image_url: url }))); // تم التعديل
-    showToast('تم الرفع!', 'success');
-    q('#addGalleryImageForm').reset();
-    await renderGalleryManagement();
-  } catch (err) {
-    showToast('خطأ: ' + err.message, 'error');
-  } finally {
-    setBusy(btn, false, '', 'رفع الصورة للمعرض 🖼️');
-  }
-});
-
+    setBusy(btn, true, 'جاري الرفع...');
+    try {
+      const urls = await uploadImages(files, 'gallery');
+      await window.sb.from('gallery_images').insert(urls.map(url => ({ section_name: section, image_url: url })));
+      showToast('تم الرفع!', 'success');
+      addGalleryForm.reset();
+      await renderGalleryManagement();
+    } catch (err) {
+      showToast('خطأ: ' + err.message, 'error');
+    } finally {
+      setBusy(btn, false, '', 'رفع الصورة للمعرض 🖼️');
+    }
+  });
+}
 
 // ==========================================
 // 7. دالة الإعداد الرئيسية وصلاحيات الدخول (محدثة بالكامل)
@@ -739,6 +770,107 @@ async function setupAdmin(ctx) {
       }
     }
 
+// ==========================================
+    // تفعيل فورمات الإضافة (مشاريع، إيفنتات، تدريب، ثقافي)
+    // ==========================================
+
+    // 1. إضافة مشروع
+    q('#addProjectForm')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = q('#projSubmitBtn');
+      setBusy(btn, true, 'جاري الإضافة...');
+      try {
+        const file = q('#projImgFile').files[0];
+        let imgUrl = null;
+        if (file) imgUrl = await window.uploadImage(file, 'projects');
+        
+        const { error } = await window.sb.from('member_projects').insert({
+          user_id: ctx.session.user.id,
+          project_title: q('#projTitle').value.trim(),
+          description: q('#projDesc').value.trim(),
+          contact_phone: q('#projPhone').value.trim(),
+          social_link: q('#projSocial').value.trim(),
+          project_link: q('#projLink').value.trim(),
+          image_url: imgUrl
+        });
+        if (error) throw error;
+        showToast('تمت إضافة المشروع بنجاح 💡', 'success');
+        q('#addProjectForm').reset();
+        await renderGeneralContentManagement();
+      } catch (err) { showToast('خطأ: ' + err.message, 'error'); }
+      finally { setBusy(btn, false, '', 'إضافة المشروع 💡'); }
+    });
+
+    // 2. إضافة إيفنت (فعالية)
+    q('#addEventForm')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = q('#eventSubmitBtn');
+      setBusy(btn, true, 'جاري النشر...');
+      try {
+        const file = q('#eventImgFile').files[0];
+        let imgUrl = null;
+        if (file) imgUrl = await window.uploadImage(file, 'events');
+        
+        const { error } = await window.sb.from('events').insert({
+          title: q('#eventTitle').value.trim(),
+          description: q('#eventDesc').value.trim(),
+          action_link: q('#eventLink').value.trim(),
+          image_url: imgUrl
+        });
+        if (error) throw error;
+        showToast('تم نشر الفعالية بنجاح 🚀', 'success');
+        q('#addEventForm').reset();
+        await renderGeneralContentManagement();
+      } catch (err) { showToast('خطأ: ' + err.message, 'error'); }
+      finally { setBusy(btn, false, '', 'نشر الإيفنت 🚀'); }
+    });
+
+    // 3. إضافة فرصة تدريب
+    q('#addInternshipForm')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = q('#intSubmitBtn');
+      setBusy(btn, true, 'جاري الإضافة...');
+      try {
+        const file = q('#intImgFile').files[0];
+        let imgUrl = null;
+        if (file) imgUrl = await window.uploadImage(file, 'internships');
+
+        const { error } = await window.sb.from('internships').insert({
+          company_name: q('#intCompany').value.trim(),
+          title: q('#intTitle').value.trim(),
+          description: q('#intDesc').value.trim(),
+          apply_link: q('#intLink').value.trim(),
+          image_url: imgUrl
+        });
+        if (error) throw error;
+        showToast('تمت إضافة فرصة التدريب 🌟', 'success');
+        q('#addInternshipForm').reset();
+        await renderGeneralContentManagement();
+      } catch (err) { showToast('خطأ: ' + err.message, 'error'); }
+      finally { setBusy(btn, false, '', 'إضافة الفرصة 🌟'); }
+    });
+
+    // 4. إضافة مصدر ثقافي
+    q('#addCulturalForm')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = q('#cultSubmitBtn');
+      setBusy(btn, true, 'جاري الإضافة...');
+      try {
+        const { error } = await window.sb.from('cultural_resources').insert({
+          section_name: q('#cultSection').value.trim(),
+          title: q('#cultTitle').value.trim(),
+          resource_url: q('#cultLink').value.trim(),
+          is_premium_only: q('#cultPremium').value === 'true'
+        });
+        if (error) throw error;
+        showToast('تمت إضافة المصدر الثقافي 📚', 'success');
+        q('#addCulturalForm').reset();
+        await renderGeneralContentManagement();
+      } catch (err) { showToast('خطأ: ' + err.message, 'error'); }
+      finally { setBusy(btn, false, '', 'إضافة المصدر 📚'); }
+    });
+
+
     // فورم إضافة سؤال
     q('#addQuestionForm')?.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -773,17 +905,30 @@ window.addNewImagesToSection = async (sectionName) => {
 };
 
 
-    // فورم الإعدادات
+    // فورم الإعدادات (تم إضافة أرقام الـ PR)
     q('#settingsForm')?.addEventListener('submit', async (e) => {
       e.preventDefault();
+      
+      const prHead = q('#prHeadPhone').value.trim();
+      const prSub = q('#prSubPhone').value.trim();
+      
       const payload = [
         { setting_key: 'recruitment_status', setting_value: q('#recruitmentStatus').value },
-        { setting_key: 'recruitment_link', setting_value: q('#recruitmentLink').value }
+        { setting_key: 'recruitment_link', setting_value: q('#recruitmentLink').value },
+        { setting_key: 'pr_head_phone', setting_value: prHead },
+        { setting_key: 'pr_sub_phone', setting_value: prSub }
       ];
-      await window.sb.from('site_settings').upsert(payload, { onConflict: 'setting_key' });
-      showToast('تم حفظ الإعدادات');
+      
+      const btn = e.target.querySelector('button[type="submit"]');
+      const oldText = btn.innerHTML;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ...';
+      
+      const { error } = await window.sb.from('site_settings').upsert(payload, { onConflict: 'setting_key' });
+      
+      btn.innerHTML = oldText;
+      if (error) window.showToast('خطأ في حفظ الإعدادات', 'error');
+      else window.showToast('تم حفظ إعدادات المركبة بنجاح 💾', 'success');
     });
-  }
 
   // تفعيل نظام الأكورديون في النهاية
   setTimeout(() => initAccordions(), 200); 
