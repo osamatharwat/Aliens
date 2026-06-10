@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aliens Space | حائط الذكريات</title>
+  <title>Aliens Space | Memories</title>
   <link rel="icon" type="image/svg+xml" href="icon.svg">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
@@ -19,27 +19,25 @@
   </header>
   <main>
     <section class="page-hero-section">
-      <h1 class="section-title">حائط <span>الذكريات</span></h1>
+      <h1 class="section-title" data-i18n="memo_title">Wall of <span>Memories</span></h1>
     </section>
     <section class="add-memory-section">
       <div class="memory-form-card">
-        <h3><i class="fa-solid fa-pen-nib"></i> وثق لحظتك (يُنشر فوراً)</h3>
+        <h3 data-i18n="memo_box_title"><i class="fa-solid fa-pen-nib"></i> Document your moment</h3>
         <form id="memoryForm">
-          <textarea id="memoryText" placeholder="اكتب رسالتك للذكرى هنا..." rows="3" required></textarea>
+          <textarea id="memoryText" data-i18n="memo_placeholder" placeholder="Write your memory message here..." rows="3" required></textarea>
           <div class="admin-form-group" style="text-align: right; margin-top: 10px;">
-            <label style="color: var(--accent);"><i class="fa-solid fa-camera"></i> إرفاق صورة (اختياري)</label>
+            <label style="color: var(--accent);" data-i18n="memo_photo_label"><i class="fa-solid fa-camera"></i> Attach photo (Optional)</label>
             <input type="file" id="memoryImgFile" accept="image/*" class="file-input" multiple>
           </div>
-          <button type="submit" class="cta-btn primary-btn" id="submitMemoryBtn">توثيق ونشر 🚀</button>
+          <button type="submit" class="cta-btn primary-btn" id="submitMemoryBtn" data-i18n="memo_btn">Publish 🚀</button>
           <p id="memoryMsg" class="auth-msg"></p>
         </form>
       </div>
     </section>
     <section class="memories-container"><div class="memories-grid" id="memoriesGrid"></div></section>
   </main>
-
-  <footer>© 2026 Aliens Student Activity - Delta University.</footer>
-
+  <footer data-i18n="footer_text">© 2026 Aliens Student Activity - Delta University. Designed with 💚 for the Familia.</footer>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/particles.js/2.0.0/particles.min.js"></script>
   <script src="core.js"></script>

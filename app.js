@@ -26,7 +26,6 @@ async function openApplicationForm() {
     modal.id = 'applyModal';
     modal.className = 'modal-overlay';
     
-    // تم إضافة تصميم عصري للفورم وإضافة السنة الدراسية واللجان كاملة
     modal.innerHTML = `
       <div class="modal-card" style="max-width: 600px; max-height: 90vh; overflow-y: auto; background: #0a0f18; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 25px;">
         <div class="modal-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px; border-bottom: 1px solid #222; padding-bottom: 15px;">
@@ -83,7 +82,6 @@ async function openApplicationForm() {
     document.body.appendChild(modal);
     modal.querySelector('.modal-close').onclick = () => modal.classList.remove('show');
 
-    // جلب الأسئلة بناءً على اللجنة
     q('#applyCommittee', modal).addEventListener('change', async (e) => {
       const committee = e.target.value;
       const qArea = q('#dynamicQuestionsArea', modal);
@@ -103,7 +101,6 @@ async function openApplicationForm() {
       }
     });
 
-    // إرسال الطلب للإدارة
     q('#nativeApplyForm', modal).addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = q('#submitApplyBtn', modal); 
@@ -111,13 +108,12 @@ async function openApplicationForm() {
       
       const name = q('#applyName', modal).value.trim();
       const phone = q('#applyPhone', modal).value.trim();
-      const facultyLevel = q('#applyFacultyLevel', modal).value; // جلب قيمة السنة الدراسية
+      const facultyLevel = q('#applyFacultyLevel', modal).value; 
       const committee = q('#applyCommittee', modal).value;
 
       if (!facultyLevel) return setMessage(msg, 'يرجى اختيار السنة الدراسية.', 'warning');
       if (!committee) return setMessage(msg, 'يرجى اختيار اللجنة.', 'warning');
 
-      // تجميع الإجابات في شكل JSON
       const answers = {};
       qa('.dynamic-answer', modal).forEach(ta => {
           answers[ta.dataset.question] = ta.value.trim();
@@ -128,7 +124,7 @@ async function openApplicationForm() {
         const { error } = await window.sb.from('applications').insert([{
             applicant_name: name,
             phone: phone,
-            faculty_level: facultyLevel, // حفظ السنة الدراسية في الداتابيز
+            faculty_level: facultyLevel,
             committee_key: committee,
             committee_name: q('#applyCommittee').options[q('#applyCommittee').selectedIndex].text,
             dynamic_answers: answers,
@@ -164,8 +160,6 @@ window.loginAction = async function(event) {
   
   try {
     let email = input;
-    
-    // إذا لم يكن إيميل، ابحث في جدول البروفايل عن الـ email المرتبط بالـ username
     if (!isEmail(input)) {
       const { data: profile, error: profileErr } = await window.sb
         .from('profiles')
@@ -179,22 +173,19 @@ window.loginAction = async function(event) {
       email = profile.email;
     }
     
-    // تسجيل الدخول
     const { data, error } = await window.sb.auth.signInWithPassword({ email, password });
-    
     if (error) {
        return setMessage(msg, 'البريد أو كلمة المرور غير صحيحة.', 'error');
     }
     
-    // تحديث الكاش والتحويل
     window._cachedContext = null; 
     await getContext(); 
-    window.location.href = 'index.html'; // خليه يروح للرئيسية وهو هيحول نفسه للوحة التحكم
-    
+    window.location.href = 'index.html'; 
   } catch (err) {
     setMessage(msg, 'خطأ في الاتصال بالسيرفر.', 'error');
   }
 }
+
 async function loadGalleryPage() {
   const container = q('#dynamicGalleryContainer');
   if (!container) return;
@@ -202,10 +193,7 @@ async function loadGalleryPage() {
   const { data: items } = await window.sb.from('gallery_images').select('*').order('created_at', { ascending: false });
   const userId = window._cachedContext?.session?.user?.id;
   
-  // 1. التعديل هنا: استخدمنا image_name بدل image_id
   const { data: myLikes } = userId ? await window.sb.from('gallery_likes').select('image_name').eq('user_id', userId) : { data: [] };
-  
-  // 2. التعديل هنا: استخدام image_name للمقارنة
   const likedIds = new Set(myLikes?.map(l => l.image_name) || []);
 
   const sections = (items || []).reduce((acc, item) => {
@@ -239,7 +227,6 @@ container.innerHTML = Object.keys(sections).map(section => `
   </div>
 `).join('');
 
-// لا تنسى استدعاء تحديث العدادات لكل الصور بعد ما الكود يخلص
 items.forEach(img => updateLikeCount(img.id));
 }
 
@@ -253,32 +240,26 @@ async function updateLikeCount(imageId) {
   if (counter) counter.innerText = count || 0;
 }
 
-
 window.toggleLike = async (imageId) => {
   const userId = window._cachedContext?.session?.user?.id;
   if (!userId) return showToast('يجب تسجيل الدخول للإعجاب', 'warning');
 
-  // 1. تحديث الـ UI فوراً (Optimistic UI)
   const btn = q(`button[onclick="toggleLike(${imageId})"]`);
   const icon = btn.querySelector('i');
   const isLiked = icon.classList.contains('fa-solid');
   
-  // نعكس الحالة فوراً
   icon.classList.toggle('fa-solid');
   icon.classList.toggle('fa-regular');
   btn.style.color = isLiked ? '#fff' : '#ef4444';
 
-  // 2. تحديث الداتابيز في الخلفية
   try {
     if (isLiked) {
       await window.sb.from('gallery_likes').delete().eq('image_name', imageId).eq('user_id', userId);
     } else {
       await window.sb.from('gallery_likes').insert([{ image_name: imageId, user_id: userId }]);
     }
-    // تحديث العداد بعد الرفع
     updateLikeCount(imageId);
   } catch (e) {
-    // لو حصل خطأ، نرجع الحالة زي ما كانت
     icon.classList.toggle('fa-solid');
     icon.classList.toggle('fa-regular');
     btn.style.color = isLiked ? '#ef4444' : '#fff';
@@ -286,9 +267,6 @@ window.toggleLike = async (imageId) => {
   }
 };
 
-// ==========================================
-// نظام الذكريات (Memories) باللايكات والتعليقات
-// ==========================================
 async function setupMemoriesPage(ctx) {
   const form = q('#memoryForm');
   const grid = q('#memoriesGrid');
@@ -297,7 +275,6 @@ async function setupMemoriesPage(ctx) {
     if(!grid) return;
     grid.innerHTML = '<div style="color:var(--muted); text-align:center; grid-column:1/-1;"><i class="fa-solid fa-spinner fa-spin"></i> جاري تحميل الذكريات...</div>';
     
-    // سحب الذكريات مع التعليقات واللايكات
     const { data, error } = await window.sb
       .from('memories')
       .select('*, profiles(full_name, avatar_url), memory_likes(user_id), memory_comments(id, author_name, comment_text, created_at)')
@@ -348,7 +325,6 @@ async function setupMemoriesPage(ctx) {
 
   await loadMemories();
 
-  // فورم الإضافة الأساسي
   if(form) {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -366,9 +342,6 @@ async function setupMemoriesPage(ctx) {
   }
 }
 
-// ==========================================
-// نظام عرض الكروت الموحد (مربوط بقاعدة البيانات الحقيقية)
-// ==========================================
 async function renderGenericGrid(tableName, containerId, cardRenderer) {
   const grid = q(`#${containerId}`);
   if(!grid) return;
@@ -382,17 +355,31 @@ async function renderGenericGrid(tableName, containerId, cardRenderer) {
   grid.innerHTML = data.map(cardRenderer).join('');
 }
 
-// ==========================================
-// دالة الـ Init المحدثة
-// ==========================================
+// دالة الـ Init المعدلة
+
 async function initPage() {
   const ctx = await getContext(); 
   const page = getPageKey();
 
-  if (page === 'home' || page === 'index') await syncWhatsAppButtons();
-  if (page === 'admin') await setupAdmin(ctx); 
+  // تفعيل الإشعارات إذا كانت الدالة موجودة في core.js
+  if (typeof window.setupRealtimeNotifications === 'function') {
+    window.setupRealtimeNotifications();
+  }
+
+  if (page === 'home' || page === 'index') {
+    await syncWhatsAppButtons();
+    // إظهار الرسالة مرة واحدة في الجلسة (تدعم اللغتين)
+    if (!sessionStorage.getItem('welcome_toast_shown')) {
+      setTimeout(() => {
+        const isAr = (localStorage.getItem('aliens_lang') || 'en') === 'ar';
+        const msg = isAr ? '🚀 لا تنسَ تصفح "مشاريع أعضائنا" من القائمة لدعمهم!' : '🚀 Don\'t forget to check out "Members Projects" to support them!';
+        if (window.showToast) window.showToast(msg, 'info');
+        sessionStorage.setItem('welcome_toast_shown', 'true');
+      }, 2000);
+    }
+  }
   
-  // تشغيل الصفحات الميتة بتوجيه صحيح لأعمدة الداتابيز
+  if (page === 'admin' && typeof setupAdmin === 'function') await setupAdmin(ctx); 
   if (page === 'memories') await setupMemoriesPage(ctx);
   
   if (page === 'events') await renderGenericGrid('events', 'eventsGrid', (item) => `
@@ -452,6 +439,7 @@ async function initPage() {
   q('#logoutBtn')?.addEventListener('click', window.handleLogout);
 }
 
+
 document.addEventListener('DOMContentLoaded', async () => {
   if (!window._initDone) { 
     window._initDone = true; 
@@ -462,10 +450,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
-// =========================================================
-// نظام إنشاء الحساب الديناميكي (Sign Up) - النسخة النهائية المعتمدة
-// =========================================================
-
 document.addEventListener('DOMContentLoaded', () => {
   const signupForm = q('#signupForm');
   if (!signupForm) return;
@@ -475,7 +459,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const btn = q('#signupForm button[type="submit"]');
     const msg = q('#signupMsg');
     
-    // جلب البيانات من الفورم
     const name = q('#signupName').value.trim();
     const username = normalizeUsername(q('#signupUsername').value);
     const email = q('#signupEmail').value.trim();
@@ -485,14 +468,12 @@ document.addEventListener('DOMContentLoaded', () => {
     setBusy(btn, true, 'جاري إنشاء الحساب...', 'إنشاء الحساب 📝');
     if (msg) { msg.textContent = ''; msg.style.display = 'none'; }
 
-    // القيم الافتراضية لأي عضو جديد
     let finalRole = 'member';
     let finalCommittee = '';
     let finalPosition = 'Member';
-    let codeIdToUpdate = null; // عشان نزود عدد الاستخدامات لو فيه كود
+    let codeIdToUpdate = null;
 
     try {
-      // 1. التحقق من كود الترقية وسحب البيانات الجاهزة من الداتابيز
      if (promoCode) {
         const { data: codeData, error: codeError } = await window.sb
           .from('promo_codes')
@@ -504,15 +485,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!codeData) throw new Error("كود الترقية الذي أدخلته غير صحيح أو منتهي!");
         if (codeData.is_active === false) throw new Error("عفواً، هذا الكود تم إيقاف تفعيله.");
 
-        // سحب البيانات المباشرة من العواميد اللي ظبطناها في الداتابيز
         finalRole = codeData.role || 'member';
-        // خلينا الافتراضي 'none' عشان الداتابيز متبقاش فاضية
         finalCommittee = codeData.committee_key || 'none';
         finalPosition = codeData.committee_position || 'Member';
         codeIdToUpdate = codeData.id;
       }
 
-      // 2. إنشاء الحساب في Supabase Auth
       const { data, error } = await window.sb.auth.signUp({
         email,
         password,
@@ -523,43 +501,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (error) throw error;
 
-      // 3. تحديث جدول الـ profiles بالعواميد الموحدة والقديمة (الضخ المزدوج)
       if (data?.user) {
         setTimeout(async () => {
-          // تحديث بيانات العضو
           const { error: updateErr } = await window.sb.from('profiles').update({
             role: finalRole,
-            committee_key: finalCommittee,      // العمود الجديد
-            committee_position: finalPosition,  // العمود الجديد للرتبة
-            committee: finalCommittee,          // العمود القديم (عشان core.js يقرأه)
-            position: finalPosition,            // العمود القديم (عشان core.js يقرأه)
+            committee_key: finalCommittee,      
+            committee_position: finalPosition,  
+            committee: finalCommittee,          
+            position: finalPosition,            
             updated_at: new Date().toISOString()
           }).eq('id', data.user.id);
           
           if (updateErr) console.error("Error updating profile:", updateErr);
 
-          // زيادة عداد استخدامات البرومو كود بـ 1
           if (codeIdToUpdate) {
-             await window.sb.rpc('increment_promo_use', { row_id: codeIdToUpdate }) // لو عاملها بـ RPC
+             await window.sb.rpc('increment_promo_use', { row_id: codeIdToUpdate })
              .catch(async () => {
-                // بديل سريع لو معندكش دالة RPC
                 const { data: currentCode } = await window.sb.from('promo_codes').select('current_uses').eq('id', codeIdToUpdate).single();
                 if (currentCode) {
                   await window.sb.from('promo_codes').update({ current_uses: (currentCode.current_uses || 0) + 1 }).eq('id', codeIdToUpdate);
+
                 }
              });
           }
-        }, 1500); // تأخير 1.5 ثانية لضمان عمل الـ Trigger
+        }, 1500); 
       }
 
-      // 4. إظهار رسالة النجاح والدخول الفوري
       if (msg) {
         msg.className = 'auth-msg success show'; 
         msg.style.display = 'block';
         msg.innerHTML = '<i class="fa-solid fa-check-circle"></i> تم إنشاء حسابك بنجاح! يرجي التفعيل من خلال البريد الالكتروني ... 🚀';
         signupForm.reset();
         
-        // توجيه المستخدم بعد ثانيتين
         setTimeout(() => {
           window.location.href = 'auth.html';
         }, 2000);
@@ -577,21 +550,16 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// =========================================================
-// نظام تسجيل الخروج الإجباري (Sign Out)
-// =========================================================
 window.handleLogout = async function(e) {
   if (e) e.preventDefault();
   try {
     if (window.sb) {
       await window.sb.auth.signOut();
     }
-    // تنظيف الكاش والسيشن عشان ميفتكرش اليوزر القديم
     localStorage.removeItem('aliens_role');
-    localStorage.removeItem('sb-hvvfvsugamyexvvqhzkw-auth-token'); // مسح توكن التخزين
+    localStorage.removeItem('sb-hvvfvsugamyexvvqhzkw-auth-token'); 
     sessionStorage.clear();
     
-    // توجيه لصفحة تسجيل الدخول
     window.location.href = 'auth.html';
   } catch (err) {
     console.error("Logout Error:", err);
@@ -599,7 +567,6 @@ window.handleLogout = async function(e) {
   }
 };
 
-// ربط الدالة بأي زرار خروج في الشاشة أوتوماتيك
 document.addEventListener('click', (e) => {
   const logoutBtn = e.target.closest('#logoutQuickBtn') || 
                     e.target.closest('#sidebarLogoutBtn') || 
@@ -610,9 +577,7 @@ document.addEventListener('click', (e) => {
   }
 });
 
-// أضف هذا الجزء في app.js لربط جميع أزرار الانضمام
 document.addEventListener('click', (e) => {
-  // بنشوف لو العنصر اللي اتضغط عليه هو الزرار أو جزء جواه
   const btn = e.target.closest('.join-crew-btn');
   if (btn) {
     e.preventDefault();
@@ -624,19 +589,13 @@ document.addEventListener('click', (e) => {
   }
 });
 
-
-// ==========================================
-// مزامنة أزرار الواتساب (PR Head & Sub-Head)
-// ==========================================
 async function syncWhatsAppButtons() {
   const headBtn = q('#headWhatsAppBtn');
   const subBtn = q('#subWhatsAppBtn');
   
-  // إذا كانت الأزرار غير موجودة في الصفحة الحالية، لا تفعل شيئاً
   if (!headBtn && !subBtn) return;
 
   try {
-    // جلب الإعدادات من جدول site_settings
     const { data: settings, error } = await window.sb
       .from('site_settings')
       .select('setting_key, setting_value')
@@ -647,35 +606,32 @@ async function syncWhatsAppButtons() {
       return;
     }
 
-    // دالة لتنظيف الرقم وتنسيقه لـ WhatsApp (إضافة 20 للكود المصري إذا لم يوجد)
     const formatPhone = (phoneStr) => {
       if (!phoneStr) return null;
-      let clean = phoneStr.replace(/\D/g, ''); // إزالة أي رموز أو مسافات
+      let clean = phoneStr.replace(/\D/g, ''); 
       if (clean.startsWith('0')) clean = '20' + clean.substring(1);
-      else if (clean.length === 10) clean = '20' + clean; // لو رقم بدون كود
+      else if (clean.length === 10) clean = '20' + clean; 
       return clean;
     };
 
-    // البحث عن القيم في الإعدادات
     const headSetting = settings.find(s => s.setting_key === 'pr_head_phone')?.setting_value;
     const subSetting = settings.find(s => s.setting_key === 'pr_sub_phone')?.setting_value;
 
     const headPhone = formatPhone(headSetting);
     const subPhone = formatPhone(subSetting);
 
-    // ربط الروابط
     if (headBtn && headPhone) {
       headBtn.href = `https://wa.me/${headPhone}`;
       headBtn.style.display = 'inline-flex';
     } else if (headBtn) {
-      headBtn.style.display = 'none'; // إخفاء لو الرقم غير موجود
+      headBtn.style.display = 'none'; 
     }
 
     if (subBtn && subPhone) {
       subBtn.href = `https://wa.me/${subPhone}`;
       subBtn.style.display = 'inline-flex';
     } else if (subBtn) {
-      subBtn.style.display = 'none'; // إخفاء لو الرقم غير موجود
+      subBtn.style.display = 'none'; 
     }
 
   } catch (err) {
@@ -693,7 +649,7 @@ window.toggleMemoryLike = async function(memoryId, currentlyLiked) {
     } else {
       await window.sb.from('memory_likes').insert({ memory_id: memoryId, user_id: userId });
     }
-    setupMemoriesPage(ctx); // إعادة التحميل لتحديث الرقم
+    setupMemoriesPage(ctx); 
   } catch(e) { showToast('خطأ في الإعجاب', 'error'); }
 };
 
@@ -707,6 +663,6 @@ window.addMemoryComment = async function(memoryId) {
       memory_id: memoryId, user_id: ctx.session.user.id, author_name: ctx.profile?.full_name || 'عضو', comment_text: text
     });
     showToast('تمت إضافة التعليق', 'success');
-    setupMemoriesPage(ctx); // إعادة التحميل
+    setupMemoriesPage(ctx); 
   } catch(e) { showToast('خطأ في التعليق', 'error'); }
 };

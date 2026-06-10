@@ -22,7 +22,6 @@ const state = {
   cache: { pageData: new Map(), galleryLikes: new Map(), currentUserLikes: new Set() }
 };
 
-// دوال مساعدة (Utility Functions)
 function q(selector, root = document) { return root.querySelector(selector); }
 function qa(selector, root = document) { return Array.from(root.querySelectorAll(selector)); }
 function getFileName() { return (window.location.pathname.split('/').pop() || 'index.html').toLowerCase(); }
@@ -101,39 +100,23 @@ function uploadPath(folder, file) {
 }
 
 function validateImageFile(file, maxMB = 5) {
-  // 1. اتأكد إن الـ file موجود وعنده خاصية الـ name
   if (!file || !file.name) return 'الملف غير موجود أو تالف.';
-  
-  // 2. استخدام Optional Chaining لتجنب الخطأ
   const fileName = (file.name || '').toLowerCase();
   const validExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.heic', '.heif'];
   const hasValidExtension = validExtensions.some(ext => fileName.endsWith(ext));
-  
-  // 3. التحقق من النوع (مع توفير قيمة افتراضية في حالة عدم وجود file.type)
   const fileType = file.type || '';
-  
-  if (!hasValidExtension && !fileType.startsWith('image/')) {
-    return 'الملف لازم يكون صورة (jpg, png, webp, etc).';
-  }
-
-  // 4. فحص الحجم
-  if (file.size > maxMB * 1024 * 1024) {
-    return `حجم الصورة أكبر من ${maxMB}MB.`;
-  }
-  
+  if (!hasValidExtension && !fileType.startsWith('image/')) return 'الملف لازم يكون صورة (jpg, png, webp, etc).';
+  if (file.size > maxMB * 1024 * 1024) return `حجم الصورة أكبر من ${maxMB}MB.`;
   return '';
 }
 
-// في core.js
 async function uploadImage(file, folder) {
   if (!sb || !file) return null;
   const err = validateImageFile(file);
   if (err) throw new Error(err);
-  
   const path = uploadPath(folder, file);
   const { error } = await sb.storage.from(STORAGE_BUCKET).upload(path, file);
   if (error) throw error;
-  
   const { data } = sb.storage.from(STORAGE_BUCKET).getPublicUrl(path);
   return data?.publicUrl || null;
 }
@@ -143,35 +126,6 @@ async function uploadImages(files, folder, maxCount = 6) {
   const urls = [];
   for (const file of safeFiles) {
     try { 
-      // هنا الـ uploadImage هتكون مرئية لأنها في نفس الملف
-      const url = await uploadImage(file, folder); 
-      if (url) urls.push(url); 
-    } catch (e) { 
-      console.error('فشل رفع الصورة:', e); 
-      throw e; 
-    }
-  }
-  return urls;
-}// في core.js
-async function uploadImage(file, folder) {
-  if (!sb || !file) return null;
-  const err = validateImageFile(file);
-  if (err) throw new Error(err);
-  
-  const path = uploadPath(folder, file);
-  const { error } = await sb.storage.from(STORAGE_BUCKET).upload(path, file);
-  if (error) throw error;
-  
-  const { data } = sb.storage.from(STORAGE_BUCKET).getPublicUrl(path);
-  return data?.publicUrl || null;
-}
-
-async function uploadImages(files, folder, maxCount = 6) {
-  const safeFiles = Array.from(files || []).slice(0, maxCount);
-  const urls = [];
-  for (const file of safeFiles) {
-    try { 
-      // هنا الـ uploadImage هتكون مرئية لأنها في نفس الملف
       const url = await uploadImage(file, folder); 
       if (url) urls.push(url); 
     } catch (e) { 
@@ -190,7 +144,6 @@ async function getContext() {
   if (sessionError || !session) return { session: null, profile: null, role: 'guest' };
   
   try {
-    // سحب كل العواميد الموحدة (القديمة والجديدة)
     const { data: profile } = await sb.from('profiles')
       .select('id, role, committee, committee_key, position, committee_position, full_name, avatar_url, username')
       .eq('id', session.user.id)
@@ -225,6 +178,30 @@ function normalizeUrlList(raw) {
   return String(raw).split(',').map(s => s.trim()).filter(Boolean);
 }
 
-// تصدير الدوال عالمياً
 window.getContext = getContext;
 window.showToast = showToast;
+
+// ==========================================
+// 📡 تفعيل الإشعارات اللحظية (Realtime Subscriptions)
+// ==========================================
+window.setupRealtimeNotifications = () => {
+  if (!window.sb) return;
+  window.sb.channel('public-updates')
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'internships' }, () => {
+      const isAr = (localStorage.getItem('aliens_lang') || 'en') === 'ar';
+      window.showToast(isAr ? '🌟 فرصة تدريب جديدة متاحة الآن!' : '🌟 New internship available now!', 'info');
+    })
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'cultural_resources' }, () => {
+      const isAr = (localStorage.getItem('aliens_lang') || 'en') === 'ar';
+      window.showToast(isAr ? '📚 مصدر ثقافي جديد تمت إضافته!' : '📚 New cultural resource added!', 'info');
+    })
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'gallery_images' }, () => {
+      const isAr = (localStorage.getItem('aliens_lang') || 'en') === 'ar';
+      window.showToast(isAr ? '🖼️ تم إضافة صور جديدة للمعرض!' : '🖼️ New photos added to gallery!', 'success');
+    })
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'member_projects' }, () => {
+      const isAr = (localStorage.getItem('aliens_lang') || 'en') === 'ar';
+      window.showToast(isAr ? '💡 مشروع جديد لأحد الأعضاء تم نشره!' : '💡 New member project published!', 'success');
+    })
+    .subscribe();
+};
