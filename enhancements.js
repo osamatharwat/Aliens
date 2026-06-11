@@ -9,15 +9,12 @@
 
   const normalizeUsername = (value) => String(value || '').trim().toLowerCase();
 
-const roleLabel = (role) => {
-    if (!role) return 'Guest';
-    const r = String(role).toLowerCase();
-    
-    if (['head', 'og'].includes(r)) return 'Admin';
-    if (['ir', 'hr'].includes(r)) return 'HR / IR';
-    if (r === 'guest') return 'Guest';
-    if (r === 'member') return 'Member';
-    return r.toUpperCase(); 
+  const roleLabel = (role) => {
+    if (role === 'head' || role === 'OG') return 'Admin';
+    if (role === 'moderator') return 'Moderator';
+    if (role === 'premium') return 'Premium';
+    if (role === 'member') return 'Member';
+    return 'Guest';
   };
 
   const initials = (name) => {
@@ -177,19 +174,33 @@ const roleLabel = (role) => {
     ['committees.html', 'committees', 'fa-people-group']
   ];
 
-  const fullLinks = (role) => {
+ const fullLinks = (role) => {
     const links = [...topLinks];
-    if (role === 'member' || role === 'premium' || role === 'head' || role === 'moderator' || role === 'OG') {
+    
+    // تحويل الرتبة لحروف صغيرة عشان المقارنة
+    const r = String(role || '').toLowerCase();
+    
+    // تحديد لو اليوزر ده زائر ولا عضو
+    const isGuest = !r || r === 'guest';
+    
+    // تحديد لو اليوزر ده من الإدارة أو الـ HR
+    const isAdminOrHR = ['head', 'og', 'ir', 'hr', 'moderator'].includes(r);
+
+    // 1. لو هو مش ضيف (يعني عضو في أي لجنة: media, pr, member, etc.)
+    if (!isGuest) {
       links.push(['memories.html', 'memories', 'fa-feather-pointed']);
       links.push(['projects.html', 'projects', 'fa-store']);
       links.push(['cultural.html', 'cultural', 'fa-book-open']);
-      links.push(['profile.html', 'editProfile', 'fa-user']);
-    }
-    if (role === 'premium' || role === 'head' || role === 'moderator' || role === 'OG') {
       links.push(['internships.html', 'internships', 'fa-briefcase']);
       links.push(['cv.html', 'cv', 'fa-file-lines']);
+      links.push(['profile.html', 'editProfile', 'fa-user']);
     }
-    if (role === 'head' || role === 'moderator' || role === 'OG') links.push(['admin.html', 'admin', 'fa-gauge-high']);
+
+    // 2. لو هو إدارة أو IR تظهرله لوحة التحكم
+    if (isAdminOrHR) {
+      links.push(['admin.html', 'admin', 'fa-gauge-high']);
+    }
+
     return links;
   };
 
